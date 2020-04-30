@@ -7,7 +7,7 @@ namespace Freedom35.ImageProcessing
     /// <summary>
     /// Class representing a bitmap image.
     /// </summary>
-    public sealed class Bitmap //: Image
+    public sealed class Bitmap : IImage
     {
         /// <summary>
         /// Create Bitmap using FromStream / FromFile / FromBytes
