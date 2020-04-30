@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>.NET STandard library for image processing.</Description>
+    <Authors>Alan Barr (GitHub: freedom35)</Authors>
+    <Company>Alan Barr (GitHub: freedom35)</Company>
+    <Copyright>Copyright © Alan Barr 2020</Copyright>
+    <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>

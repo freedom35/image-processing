@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Freedom35.ImageProcessing", "Freedom35.ImageProcessing\Freedom35.ImageProcessing.csproj", "{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingTests", "ImageProcessingTests\ImageProcessingTests.csproj", "{A658FF5A-FFFF-4755-9F20-3C588A05E062}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B86EBAAD-D062-42A3-92CE-7A9C18D6421A}
+	EndGlobalSection
+EndGlobal
