@@ -102,7 +102,7 @@ namespace Freedom35.ImageProcessing
         public static Bitmap FromBytes(byte[] buffer)
         {
             // Verify bitmap in buffer - other file types not supported
-            if (!Encoding.TryGetImageType(buffer, out ImageType type) || type != ImageType.Bitmap)
+            if (!ImageEncoding.TryGetImageType(buffer, out ImageType type) || type != ImageType.Bitmap)
             {
                 throw new NotSupportedException($"Unsupported image type: {type}");
             }
