@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Description>.NET Core Windows app for demonstrating image processing functions.</Description>
+    <Authors>Alan Barr (GitHub: freedom35)</Authors>
+    <PackageLicenseFile></PackageLicenseFile>
+    <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Freedom35.ImageProcessing\Freedom35.ImageProcessing.csproj" />
+  </ItemGroup>
+
+</Project>
