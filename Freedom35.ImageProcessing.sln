@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Freedom35.ImageProcessing",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageProcessingTests", "ImageProcessingTests\ImageProcessingTests.csproj", "{A658FF5A-FFFF-4755-9F20-3C588A05E062}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Freedom35.ImageConversion", "Freedom35.ImageConversion\Freedom35.ImageConversion.csproj", "{8A3B8D60-6E0F-4D00-809F-8D6A61EC9EE2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A3B8D60-6E0F-4D00-809F-8D6A61EC9EE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A3B8D60-6E0F-4D00-809F-8D6A61EC9EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A3B8D60-6E0F-4D00-809F-8D6A61EC9EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A3B8D60-6E0F-4D00-809F-8D6A61EC9EE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
