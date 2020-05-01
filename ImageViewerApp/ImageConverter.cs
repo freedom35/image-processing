@@ -1,0 +1,75 @@
+﻿using System;
+using System.Windows.Media.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Windows.Data;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Media;
+
+namespace ImageViewerApp
+{
+    /// <summary>
+    /// Converts System.Drawing.Image to System.Windows.Media.ImageSource for WPF controls.
+    /// </summary>
+    [ValueConversion(typeof(Image), typeof(ImageSource))]
+    internal sealed class ImageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Image img)
+            {
+                return ConvertImageToBitmap(img);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // One-way converter
+            throw new NotSupportedException();
+        }
+
+        public static BitmapImage ConvertImageToBitmap(Image img)
+        {
+            // First convert to stream
+            using MemoryStream stream = new MemoryStream();
+            img.Save(stream, ImageFormat.Bmp);
+
+            return ConvertStreamToBitmap(stream);
+        }
+
+        public static BitmapImage ConvertStreamToBitmap(MemoryStream stream)
+        {
+            BitmapImage bmp = null;
+
+            if (stream != null && stream.CanSeek && stream.CanRead)
+            {
+                // Ensure stream reset
+                stream.Seek(0, SeekOrigin.Begin);
+
+                bmp = new BitmapImage();
+
+                // Cache on load so image is retained once memory stream is closed
+                bmp.BeginInit();
+                bmp.StreamSource = stream;
+                bmp.CacheOption = BitmapCacheOption.OnLoad; 
+                bmp.EndInit();
+
+                // Close stream before freezing
+                stream.Close();
+
+                // Save on resources.
+                if (bmp.CanFreeze)
+                {
+                    bmp.Freeze();
+                }
+            }
+
+            return bmp;
+        }
+    }
+}

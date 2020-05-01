@@ -6,7 +6,47 @@
         xmlns:local="clr-namespace:ImageViewerApp"
         mc:Ignorable="d"
         Title="Image Viewer App" Height="600" Width="800" Background="DodgerBlue">
-    <Grid>
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="ImageOption" >
+            <Setter Property="Margin" Value="0,0,0,5" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="8,4,8,4" />
+        </Style>
 
+        <local:ImageConverter x:Key="imageConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <!-- Select Image -->
+        <WrapPanel Grid.Column="0" Grid.Row="0">
+            <Label>
+                <TextBlock Text="Open Image" />
+            </Label>
+        </WrapPanel>
+        
+        <!-- Image Viewer -->
+        <Grid Grid.Column="0" Grid.Row="1" Margin="10" Background="GhostWhite">
+            <Image x:Name="pbImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" >
+            
+            </Image>
+        </Grid>
+
+        <!-- Options -->
+        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Vertical" Margin="10">
+            <Button Style="{StaticResource ImageOption}">
+                <Label>Option 1</Label>
+            </Button>
+            <Button Style="{StaticResource ImageOption}">
+                <Label>Option 2</Label>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>
