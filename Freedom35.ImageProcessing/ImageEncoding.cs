@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Freedom35.ImageProcessing
 {
@@ -8,44 +9,12 @@ namespace Freedom35.ImageProcessing
     /// </summary>
     public static class ImageEncoding
     {
-        #region Encoding Definitions
+        //private static ImageType[] GetEncodingDefinitions()
+        //{
+        //    return Enum.GetValues(typeof(ImageType)).OfType<ImageType>().Where(t => t != ImageType.Unknown).ToArray();
+        //}
 
-        /// <summary>
-        /// BMP - BM
-        /// </summary>
-        private static byte[] BitmapEncoding => new byte[] { 0x42, 0x4d };
-
-        /// <summary>
-        /// TIFF - II*
-        /// </summary>
-        private static byte[] TiffEncoding => new byte[] { 0x49, 0x49, 0x2a };
-
-        /// <summary>
-        /// JPEG - ......JFIF
-        /// </summary>
-        private static byte[] JpegEncoding => new byte[] { 0xff, 0xd8, 0xff, 0xf4, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46 };
-
-        /// <summary>
-        /// PNG - .PNG
-        /// </summary>
-        private static byte[] PngEncoding => new byte[] { 0x89, 0x50, 0x4e, 0x47 };
-
-        #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private static List<Tuple<ImageType, byte[]>> GetEncodingDefinitions()
-        {
-            return new List<Tuple<ImageType, byte[]>>()
-            {
-                new Tuple<ImageType, byte[]>(ImageType.Bitmap, BitmapEncoding),
-                new Tuple<ImageType, byte[]>(ImageType.TIFF, TiffEncoding),
-                new Tuple<ImageType, byte[]>(ImageType.JPEG, JpegEncoding),
-                new Tuple<ImageType, byte[]>(ImageType.PNG, PngEncoding)
-            };
-        }
+        //private static readonly ImageType[] imageTypes = Enum.GetValues(typeof(ImageType)).Cast<ImageType>().Where(t => t != ImageType.Unknown).ToArray();
 
         /// <summary>
         /// 
@@ -57,15 +26,17 @@ namespace Freedom35.ImageProcessing
         {
             imageType = ImageType.Unknown;
 
-            // Encoding definitions
-            List<Tuple<ImageType, byte[]>> encodings = GetEncodingDefinitions();
+            // Get image types to compare
+            IEnumerable<ImageType> imageTypes = Enum.GetValues(typeof(ImageType)).Cast<ImageType>().Where(t => t != ImageType.Unknown);
 
             // Decode image type in buffer
-            foreach (Tuple<ImageType, byte[]> encoding in encodings)
+            foreach (ImageType type in imageTypes)
             {
-                if (IsImageType(buffer, encoding.Item2))
+                byte[] encodingBytes = type.GetEncodingBytes();
+
+                if (IsImageType(buffer, encodingBytes))
                 {
-                    imageType = encoding.Item1;
+                    imageType = type;
                     break;
                 }
             }
