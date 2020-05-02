@@ -17,6 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BitmapTemp.cs" />
+    <Compile Remove="IImage.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 

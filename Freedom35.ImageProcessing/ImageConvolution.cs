@@ -102,13 +102,15 @@ namespace Freedom35.ImageProcessing
                     }
 
                     // Check value within range
+                    // (Some filter values are negative)
                     if (tmp < 0)
                     {
                         tmp = 0;
                     }
-                    else if (tmp > 255)
+                    else if (tmp > byte.MaxValue)
                     {
-                        tmp = 255;
+                        // Value oversaturated
+                        tmp = byte.MaxValue;
                     }
 
                     // Get current pixel

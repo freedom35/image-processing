@@ -15,17 +15,17 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to get bytes from</param>
         /// <returns>Image bytes</returns>
-        public static byte[] Get(Image image)
+        public static byte[] FromImage(Image image)
         {
-            return Get(ImageConvert.ImageToBitmap(image));
+            return FromBitmap(ImageConvert.ImageToBitmap(image));
         }
 
         /// <summary>
-        /// Gets the bytes from a bitmap image.
+        /// Gets the image bytes from a bitmap image.
         /// </summary>
         /// <param name="bitmap">Bitmap to get bytes from</param>
         /// <returns>Image bytes</returns>
-        public static byte[] Get(Bitmap bitmap)
+        public static byte[] FromBitmap(Bitmap bitmap)
         {
             using (MemoryStream stream = new MemoryStream())
             {
@@ -40,9 +40,9 @@ namespace Freedom35.ImageProcessing
         /// <param name="image">Image to get bytes from</param>
         /// <param name="bmpData">Data relating to bitmap</param>
         /// <returns>Image bytes</returns>
-        public static byte[] Get(Image image, out BitmapData bmpData)
+        public static byte[] FromImage(Image image, out BitmapData bmpData)
         {
-            return Get(ImageConvert.ImageToBitmap(image), out bmpData);
+            return FromBitmap(ImageConvert.ImageToBitmap(image), out bmpData);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Freedom35.ImageProcessing
         /// <param name="bitmap">Bitmap to get bytes from</param>
         /// <param name="bmpData">Data relating to bitmap</param>
         /// <returns>Image bytes</returns>
-        public static byte[] Get(Bitmap bitmap, out BitmapData bmpData)
+        public static byte[] FromBitmap(Bitmap bitmap, out BitmapData bmpData)
         {
             // Lock full image
             Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
@@ -69,6 +69,32 @@ namespace Freedom35.ImageProcessing
             bitmap.UnlockBits(bmpData);
 
             return rgbValues;
+        }
+
+        /// <summary>
+        /// Gets the image bytes from an image file.
+        /// </summary>
+        /// <param name="path">Path to image</param>
+        /// <returns>Image bytes</returns>
+        public static byte[] FromFile(string path)
+        {
+            using (Image image = Image.FromFile(path))
+            {
+                return FromImage(image);
+            }
+        }
+
+        /// <summary>
+        /// Gets the image bytes from an image stream.
+        /// </summary>
+        /// <param name="stream">Image stream</param>
+        /// <returns>Image bytes</returns>
+        public static byte[] FromStream(Stream stream)
+        {
+            using (Image image = Image.FromStream(stream))
+            {
+                return FromImage(image);
+            }
         }
     }
 }
