@@ -1,7 +1,6 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Collections.Generic;
 
 namespace Freedom35.ImageProcessing
 {
@@ -24,7 +23,7 @@ namespace Freedom35.ImageProcessing
         public static Bitmap ApplyMultiple(Bitmap bitmap, params ConvolutionFilterType[] filterTypes)
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
-            
+
             // Create new image for each filter
             foreach (ConvolutionFilterType filterType in filterTypes)
             {
@@ -78,7 +77,7 @@ namespace Freedom35.ImageProcessing
 
             int templateLen = template.GetLength(0);
             int pixelDepth = (bmpData.Stride / bmpData.Width);
-            
+
             // Move through image
             for (int bmpX = 0; bmpX < bmpData.Width; bmpX++)
             {

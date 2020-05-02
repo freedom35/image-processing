@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Windows.Media.Imaging;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Windows.Data;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace ImageViewerApp
 {
@@ -56,7 +56,7 @@ namespace ImageViewerApp
                 // Cache on load so image is retained once memory stream is closed
                 bmp.BeginInit();
                 bmp.StreamSource = stream;
-                bmp.CacheOption = BitmapCacheOption.OnLoad; 
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
                 bmp.EndInit();
 
                 // Close stream before freezing

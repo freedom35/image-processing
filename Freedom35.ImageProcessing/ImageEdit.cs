@@ -1,8 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.IO;
 
 namespace Freedom35.ImageProcessing
 {
@@ -29,14 +27,12 @@ namespace Freedom35.ImageProcessing
 
             // Lock the bitmap's bits while we change them.  
             bmpData = bitmap.LockBits(rect, lockMode, bitmap.PixelFormat);
-            
-            // Get number of bytes in image
-            int byteCount = (bmpData.Stride * bmpData.Height);
 
-            byte[] rgbValues = new byte[byteCount];
+            // Create length with number of bytes in image
+            byte[] rgbValues = new byte[bmpData.Stride * bmpData.Height];
 
             // Copy the RGB values into the array.
-            Marshal.Copy(bmpData.Scan0, rgbValues, 0, byteCount);
+            Marshal.Copy(bmpData.Scan0, rgbValues, 0, rgbValues.Length);
 
             return rgbValues;
         }

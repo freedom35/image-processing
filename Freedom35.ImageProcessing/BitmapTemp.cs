@@ -84,7 +84,7 @@ namespace Freedom35.ImageProcessing
 
                 // Path may be used to save image back to file later.
                 bitmap.OriginalPath = path;
-                
+
                 return bitmap;
             }
         }
