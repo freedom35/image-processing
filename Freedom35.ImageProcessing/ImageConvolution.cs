@@ -4,9 +4,9 @@ using System.Drawing.Imaging;
 
 namespace Freedom35.ImageProcessing
 {
-    public static class ImageConvolutionFilter
+    public static class ImageConvolution
     {
-        public static Image ApplyMultiple(Image image, params ConvolutionFilterType[] filterTypes)
+        public static Image ApplyFilters(Image image, params ConvolutionFilter[] filterTypes)
         {
             // Remember original image type
             ImageFormat originalFormat = image.RawFormat;
@@ -14,20 +14,20 @@ namespace Freedom35.ImageProcessing
             // Convert to bitmap for image processing
             Bitmap bitmap = ImageConvert.ImageToBitmap(image);
 
-            Bitmap combinedBitmap = ApplyMultiple(bitmap, filterTypes);
+            Bitmap combinedBitmap = ApplyFilters(bitmap, filterTypes);
 
             // Return processed image to original format
             return ImageConvert.ImageToFormat(combinedBitmap, originalFormat);
         }
 
-        public static Bitmap ApplyMultiple(Bitmap bitmap, params ConvolutionFilterType[] filterTypes)
+        public static Bitmap ApplyFilters(Bitmap bitmap, params ConvolutionFilter[] filterTypes)
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
 
             // Create new image for each filter
-            foreach (ConvolutionFilterType filterType in filterTypes)
+            foreach (ConvolutionFilter filterType in filterTypes)
             {
-                Bitmap bmp = Apply(bitmap, filterType);
+                Bitmap bmp = ApplyFilter(bitmap, filterType);
                 bitmaps.Add(bmp);
             }
 
@@ -43,7 +43,7 @@ namespace Freedom35.ImageProcessing
             return bitmap;
         }
 
-        public static Image Apply(Image image, ConvolutionFilterType filterType)
+        public static Image ApplyFilter(Image image, ConvolutionFilter filterType)
         {
             // Remember original image type
             ImageFormat originalFormat = image.RawFormat;
@@ -52,7 +52,7 @@ namespace Freedom35.ImageProcessing
             Bitmap bitmap = ImageConvert.ImageToBitmap(image);
 
             // Apply filter to bitmap
-            Bitmap bitmapWithFilter = Apply(bitmap, filterType);
+            Bitmap bitmapWithFilter = ApplyFilter(bitmap, filterType);
 
             // Covert processed image to original format
             return ImageConvert.ImageToFormat(bitmapWithFilter, originalFormat);
@@ -64,7 +64,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="bitmap">Image to apply filter to.</param>
         /// <param name="filterType">Type of filter.</param>
-        public static Bitmap Apply(Bitmap bitmap, ConvolutionFilterType filterType)
+        public static Bitmap ApplyFilter(Bitmap bitmap, ConvolutionFilter filterType)
         {
             // Returning new image
             Bitmap clone = (Bitmap)bitmap.Clone();
@@ -73,7 +73,7 @@ namespace Freedom35.ImageProcessing
             byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
 
             // Get convolution filter to apply
-            int[,] template = filterType.GetTemplate();
+            int[,] template = filterType.GetTemplateMatrix();
 
             int templateLen = template.GetLength(0);
             int pixelDepth = (bmpData.Stride / bmpData.Width);
