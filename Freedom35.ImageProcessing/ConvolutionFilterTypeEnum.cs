@@ -5,7 +5,7 @@ namespace Freedom35.ImageProcessing
     /// <summary>
     /// Definition of different image filter types.
     /// </summary>
-    public enum ImageFilter
+    public enum ConvolutionFilterType
     {
         /// <summary>
         /// Default edge detection filter.
@@ -61,21 +61,21 @@ namespace Freedom35.ImageProcessing
     /// <summary>
     /// Extends ImageFilter enum.
     /// </summary>
-    public static class ImageFilterEnumExt
+    public static class ConvolutionFilterTypeEnumExt
     {
         /// <summary>
         /// Gets template matrix for filter.
         /// </summary>
         /// <param name="filterType">Type of filter</param>
         /// <returns>2D matrix of values</returns>
-        public static int[,] GetTemplate(this ImageFilter filterType)
+        public static int[,] GetTemplate(this ConvolutionFilterType filterType)
         {
             switch (filterType)
             {
                 // Use Laplacian as default edge detection/sharpen filter
-                case ImageFilter.Edge:
-                case ImageFilter.Sharpen:
-                case ImageFilter.LaplacianA:
+                case ConvolutionFilterType.Edge:
+                case ConvolutionFilterType.Sharpen:
+                case ConvolutionFilterType.LaplacianA:
                     return new int[3, 3]
                     {
                         {  0, -1,  0 },
@@ -83,7 +83,7 @@ namespace Freedom35.ImageProcessing
                         {  0, -1,  0 }
                     };
 
-                case ImageFilter.LaplacianB:
+                case ConvolutionFilterType.LaplacianB:
                     return new int[3, 3]
                     {
                         { -1, -1, -1 },
@@ -91,7 +91,7 @@ namespace Freedom35.ImageProcessing
                         { -1, -1, -1 }
                     };
 
-                case ImageFilter.SobelHorizontal:
+                case ConvolutionFilterType.SobelHorizontal:
                     return new int[3, 3]
                     {
                         { -1,  0,  1 },
@@ -99,7 +99,7 @@ namespace Freedom35.ImageProcessing
                         { -1,  0,  1 }
                     };
 
-                case ImageFilter.SobelVertical:
+                case ConvolutionFilterType.SobelVertical:
                     return new int[3, 3]
                     {
                         {  1,  2,  1 },
@@ -107,8 +107,8 @@ namespace Freedom35.ImageProcessing
                         { -1, -2, -1 }
                     };
 
-                case ImageFilter.Smoothing:
-                case ImageFilter.NoiseReduction:
+                case ConvolutionFilterType.Smoothing:
+                case ConvolutionFilterType.NoiseReduction:
                     return new int[3, 3]
                     {
                         { 1,  1,  1 },
@@ -116,7 +116,7 @@ namespace Freedom35.ImageProcessing
                         { 1,  1,  1 }
                     };
 
-                case ImageFilter.MexicanHat:
+                case ConvolutionFilterType.MexicanHat:
                     return new int[3, 3]
                     {
                         { 1,  2,  1 },
@@ -124,7 +124,7 @@ namespace Freedom35.ImageProcessing
                         { 1,  2,  1 }
                     };
 
-                case ImageFilter.Emboss:
+                case ConvolutionFilterType.Emboss:
                     return new int[3, 3]
                     {
                         { -2, -1,  0 },

@@ -16,7 +16,7 @@ namespace ImageProcessingTests
                 150
             };
 
-            byte[] convertedImage = ImageProcessing.ConvertColorImageToGrayscale(imageBytes);
+            byte[] convertedImage = ConvertColor.ConvertColorImageToGrayscale(imageBytes);
 
             Assert.IsNotNull(convertedImage);
             Assert.AreEqual(convertedImage.Length, imageBytes.Length / 3);
@@ -32,7 +32,7 @@ namespace ImageProcessingTests
                 50
             };
 
-            ImageProcessing.ConvertColorImageToGrayscale(imageBytes);
+            ConvertColor.ConvertColorImageToGrayscale(imageBytes);
         }
 
 
@@ -41,7 +41,7 @@ namespace ImageProcessingTests
         {
             byte[] imageBytes = { };
 
-            byte[] convertedImage = ImageProcessing.ConvertColorImageToGrayscale(imageBytes);
+            byte[] convertedImage = ConvertColor.ConvertColorImageToGrayscale(imageBytes);
 
             Assert.AreEqual(convertedImage.Length, 0);
         }
@@ -56,7 +56,7 @@ namespace ImageProcessingTests
                 150
             };
 
-            byte[] convertedImage = ImageProcessing.ConvertGrayscaleImageToBlackAndWhite(imageBytes);
+            byte[] convertedImage = ConvertColor.ConvertGrayscaleImageToBlackAndWhite(imageBytes);
 
             Assert.IsTrue(convertedImage.All(b => b == 0 || b == 255));
         }

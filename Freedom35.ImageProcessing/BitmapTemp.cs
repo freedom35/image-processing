@@ -7,12 +7,12 @@ namespace Freedom35.ImageProcessing
     /// <summary>
     /// Class representing a bitmap image.
     /// </summary>
-    public sealed class Bitmap : IImage
+    public sealed class BitmapTemp : IImage
     {
         /// <summary>
         /// Create Bitmap using FromStream / FromFile / FromBytes
         /// </summary>
-        private Bitmap()
+        private BitmapTemp()
         {
         }
 
@@ -74,13 +74,13 @@ namespace Freedom35.ImageProcessing
 
         #endregion
 
-        public static Bitmap FromFile(string path)
+        public static BitmapTemp FromFile(string path)
         {
             // Only need to read file
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 // Create image
-                Bitmap bitmap = FromStream(file);
+                BitmapTemp bitmap = FromStream(file);
 
                 // Path may be used to save image back to file later.
                 bitmap.OriginalPath = path;
@@ -89,7 +89,7 @@ namespace Freedom35.ImageProcessing
             }
         }
 
-        public static Bitmap FromStream(Stream stream)
+        public static BitmapTemp FromStream(Stream stream)
         {
             byte[] buffer = new byte[stream.Length];
 
@@ -99,7 +99,7 @@ namespace Freedom35.ImageProcessing
             return FromBytes(buffer);
         }
 
-        public static Bitmap FromBytes(byte[] buffer)
+        public static BitmapTemp FromBytes(byte[] buffer)
         {
             // Verify bitmap in buffer - other file types not supported
             if (!ImageEncoding.TryGetImageType(buffer, out ImageType type) || type != ImageType.Bitmap)
@@ -112,7 +112,7 @@ namespace Freedom35.ImageProcessing
             int dataOffset = 0;
 
             // Create bitmap object
-            Bitmap bitmap = new Bitmap()
+            BitmapTemp bitmap = new BitmapTemp()
             {
                 ImageBytes = buffer.Skip(dataOffset).ToArray()
             };

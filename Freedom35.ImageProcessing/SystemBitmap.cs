@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Freedom35.ImageProcessing
 {
@@ -14,41 +15,44 @@ namespace Freedom35.ImageProcessing
         /// Converts system image to bitmap.
         /// (Image processing performed on bytes in bitmap format)
         /// </summary>
-        public static System.Drawing.Bitmap ConvertImageToBitmap(System.Drawing.Image image)
+        public static Bitmap ConvertImageToBitmap(Image image)
         {
-            return (System.Drawing.Bitmap)ConvertImageFormat(image, ImageFormat.Bmp);
+            return (Bitmap)ConvertImageFormat(image, ImageFormat.Bmp);
         }
 
         /// <summary>
         /// Converts system image format.
         /// </summary>
-        public static System.Drawing.Image ConvertImageFormat(System.Drawing.Image image, ImageFormat targetFormat)
+        public static Image ConvertImageFormat(Image image, ImageFormat targetFormat)
         {
+            // Returning new image
+            Image clone = (Image)image.Clone();
+
             // Check not already a Bitmap
             if (!image.RawFormat.Equals(targetFormat))
             {
-                using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+                using (MemoryStream ms = new MemoryStream())
                 {
                     // Save to stream in Bitmap format
                     image.Save(ms, targetFormat);
 
                     // Dispose of current image
-                    image.Dispose();
+                    //image.Dispose();
 
                     // Create new image
-                    image = System.Drawing.Image.FromStream(ms);
+                    clone = Image.FromStream(ms);
                 }
             }
 
-            return image;
+            return clone;
         }
 
         /// <summary>
         /// Get the bytes from a bitmap image.
         /// </summary>
-        public static byte[] GetBytes(System.Drawing.Bitmap bitmap)
+        public static byte[] GetBytes(Bitmap bitmap)
         {
-            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
+            using (MemoryStream stream = new MemoryStream())
             {
                 bitmap.Save(stream, ImageFormat.Bmp);
                 return stream.ToArray();
@@ -77,13 +81,21 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Begin editing an image.
         /// </summary>
-        public static byte[] BeginEdit(System.Drawing.Bitmap bitmap, out BitmapData bmpData)
+        public static byte[] BeginEdit(Bitmap bitmap, out BitmapData bmpData)
+        {
+            return BeginEdit(bitmap, ImageLockMode.ReadWrite, out bmpData);
+        }
+
+        /// <summary>
+        /// Begin editing an image.
+        /// </summary>
+        public static byte[] BeginEdit(Bitmap bitmap, ImageLockMode lockMode, out BitmapData bmpData)
         {
             // Lock full image
             Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
 
             // Lock the bitmap's bits while we change them.  
-            bmpData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
+            bmpData = bitmap.LockBits(rect, lockMode, bitmap.PixelFormat);
             
             // Get number of bytes in image
             int byteCount = (bmpData.Stride * bmpData.Height);
@@ -99,7 +111,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Finished editing an image.
         /// </summary>
-        public static void EndEdit(System.Drawing.Bitmap bitmap, BitmapData bmpData, byte[] rgbValues)
+        public static void EndEdit(Bitmap bitmap, BitmapData bmpData, byte[] rgbValues)
         {
             // Copy the RGB values back to the bitmap
             Marshal.Copy(rgbValues, 0, bmpData.Scan0, rgbValues.Length);
