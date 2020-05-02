@@ -1,13 +1,11 @@
-﻿
-using System;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Freedom35.ImageProcessing
 {
-    public static class ConvolutionFilter
+    public static class ImageConvolutionFilter
     {
         public static Image ApplyMultiple(Image image, params ConvolutionFilterType[] filterTypes)
         {
@@ -15,12 +13,12 @@ namespace Freedom35.ImageProcessing
             ImageFormat originalFormat = image.RawFormat;
 
             // Convert to bitmap for image processing
-            Bitmap bitmap = SystemBitmap.ConvertImageToBitmap(image);
+            Bitmap bitmap = ImageConvert.ImageToBitmap(image);
 
             Bitmap combinedBitmap = ApplyMultiple(bitmap, filterTypes);
 
             // Return processed image to original format
-            return SystemBitmap.ConvertImageFormat(combinedBitmap, originalFormat);
+            return ImageConvert.ImageToFormat(combinedBitmap, originalFormat);
         }
 
         public static Bitmap ApplyMultiple(Bitmap bitmap, params ConvolutionFilterType[] filterTypes)
@@ -30,12 +28,12 @@ namespace Freedom35.ImageProcessing
             // Create new image for each filter
             foreach (ConvolutionFilterType filterType in filterTypes)
             {
-                Bitmap bmp = ApplyFilter(bitmap, filterType);
+                Bitmap bmp = Apply(bitmap, filterType);
                 bitmaps.Add(bmp);
             }
 
             // Combine to create a new image
-            bitmap = Combine.Images(bitmaps);
+            bitmap = ImageCombine.All(bitmaps);
 
             // No longer needed
             foreach (Bitmap bmp in bitmaps)
@@ -46,19 +44,19 @@ namespace Freedom35.ImageProcessing
             return bitmap;
         }
 
-        public static Image ApplyFilter(Image image, ConvolutionFilterType filterType)
+        public static Image Apply(Image image, ConvolutionFilterType filterType)
         {
             // Remember original image type
             ImageFormat originalFormat = image.RawFormat;
 
             // Convert to bitmap for image processing
-            Bitmap bitmap = SystemBitmap.ConvertImageToBitmap(image);
+            Bitmap bitmap = ImageConvert.ImageToBitmap(image);
 
             // Apply filter to bitmap
-            Bitmap bitmapWithFilter = ApplyFilter(bitmap, filterType);
+            Bitmap bitmapWithFilter = Apply(bitmap, filterType);
 
             // Covert processed image to original format
-            return SystemBitmap.ConvertImageFormat(bitmapWithFilter, originalFormat);
+            return ImageConvert.ImageToFormat(bitmapWithFilter, originalFormat);
         }
 
         /// <summary>
@@ -67,13 +65,13 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="bitmap">Image to apply filter to.</param>
         /// <param name="filterType">Type of filter.</param>
-        public static Bitmap ApplyFilter(Bitmap bitmap, ConvolutionFilterType filterType)
+        public static Bitmap Apply(Bitmap bitmap, ConvolutionFilterType filterType)
         {
             // Returning new image
             Bitmap clone = (Bitmap)bitmap.Clone();
 
             // Lock image for processing
-            byte[] rgbValues = SystemBitmap.BeginEdit(clone, out BitmapData bmpData);
+            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
 
             // Get convolution filter to apply
             int[,] template = filterType.GetTemplate();
@@ -130,7 +128,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Copy modified array back to image, and release lock
-            SystemBitmap.EndEdit(clone, bmpData, rgbValues);
+            ImageEdit.End(clone, bmpData, rgbValues);
 
             // Return new instance
             return clone;

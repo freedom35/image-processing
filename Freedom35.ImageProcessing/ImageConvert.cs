@@ -1,18 +1,57 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace Freedom35.ImageProcessing
 {
     /// <summary>
     /// Methods for converting color.
     /// </summary>
-    public static class ConvertColor
+    public static class ImageConvert
     {
+        /// <summary>
+        /// Converts system image to bitmap.
+        /// (Image processing performed on bytes in bitmap format)
+        /// </summary>
+        public static Bitmap ImageToBitmap(Image image)
+        {
+            return (Bitmap)ImageToFormat(image, ImageFormat.Bmp);
+        }
+
+        /// <summary>
+        /// Converts system image format.
+        /// </summary>
+        public static Image ImageToFormat(Image image, ImageFormat targetFormat)
+        {
+            // Returning new image
+            Image clone = (Image)image.Clone();
+
+            // Check not already a Bitmap
+            if (!image.RawFormat.Equals(targetFormat))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    // Save to stream in Bitmap format
+                    image.Save(ms, targetFormat);
+
+                    // Dispose of current image
+                    //image.Dispose();
+
+                    // Create new image
+                    clone = Image.FromStream(ms);
+                }
+            }
+
+            return clone;
+        }
+
         /// <summary>
         /// Converts color image bytes to grayscale.
         /// </summary>
         /// <returns>New image as grayscale</returns>
         /// <param name="rgbBytes">bytes for color image</param>
-        public static byte[] ConvertColorImageToGrayscale(byte[] rgbBytes)
+        public static byte[] ColorImageToGrayscale(byte[] rgbBytes)
         {
             // Check image bytes non-null
             int length = rgbBytes?.Length ?? 0;
@@ -42,10 +81,10 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <returns>New image as black and white</returns>
         /// <param name="grayscaleBytes">bytes for grayscale image</param>
-        public static byte[] ConvertGrayscaleImageToBlackAndWhite(byte[] grayscaleBytes)
+        public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes)
         {
             // Use mid-threshold value for each pixel
-            return ConvertGrayscaleImageToBlackAndWhite(grayscaleBytes, 128);
+            return GrayscaleImageToBlackAndWhite(grayscaleBytes, 128);
         }
 
         /// <summary>
@@ -54,7 +93,7 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image as black and white</returns>
         /// <param name="grayscaleBytes">bytes for grayscale image</param>
         /// <param name="whiteThreshold">Threshold value for determining a white value</param>
-        public static byte[] ConvertGrayscaleImageToBlackAndWhite(byte[] grayscaleBytes, byte whiteThreshold)
+        public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes, byte whiteThreshold)
         {
             // Check image bytes non-null
             int length = grayscaleBytes?.Length ?? 0;
