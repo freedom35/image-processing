@@ -3,7 +3,7 @@
 namespace Freedom35.ImageProcessing
 {
     /// <summary>
-    /// Definition of different 2D image filter types.
+    /// Definition of different 2D image convolution types.
     /// </summary>
     public enum ConvolutionType
     {
@@ -13,7 +13,7 @@ namespace Freedom35.ImageProcessing
         Edge,
 
         /// <summary>
-        /// Default smoothing filter.
+        /// Default smoothing/blur filter.
         /// </summary>
         SmoothingA,
 

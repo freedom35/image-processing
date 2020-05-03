@@ -110,5 +110,52 @@ namespace Freedom35.ImageProcessing
 
             return bwBytes;
         }
+
+        /// <summary>
+        /// Inverts image to negative.
+        /// </summary>
+        /// <param name="image">Image to convert</param>
+        /// <returns>Negative image</returns>
+        public static Image ToNegative(Image image)
+        {
+            Bitmap bitmap = ImageToBitmap(image);
+
+            Bitmap negativeBitmap = ToNegative(bitmap);
+
+            // Restore original image format
+            return ImageToFormat(negativeBitmap, image.RawFormat);
+        }
+
+        /// <summary>
+        /// Inverts image to negative.
+        /// </summary>
+        /// <param name="bitmap">Image to convert</param>
+        /// <returns>Negative image</returns>
+        public static Bitmap ToNegative(Bitmap bitmap)
+        {
+            // Return new image
+            Bitmap clone = (Bitmap)bitmap.Clone();
+
+            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+
+            int pixelDepth = (bmpData.Stride / bmpData.Width);
+
+            int limit = (pixelDepth > 1 ? rgbValues.Length - (pixelDepth - 1) : rgbValues.Length);
+
+            for (int i = 0; i < limit; i += pixelDepth)
+            {
+                rgbValues[i] = (byte)~rgbValues[i];
+
+                if (pixelDepth == 3)
+                {
+                    rgbValues[i + 1] = (byte)~rgbValues[i + 1];
+                    rgbValues[i + 2] = (byte)~rgbValues[i + 2];
+                }
+            }
+
+            ImageEdit.End(clone, bmpData, rgbValues);
+
+            return clone;
+        }
     }
 }
