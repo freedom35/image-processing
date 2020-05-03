@@ -4,9 +4,18 @@ using System.Drawing.Imaging;
 
 namespace Freedom35.ImageProcessing
 {
+    /// <summary>
+    /// Class to apply convolution kernels to an image.
+    /// </summary>
     public static class ImageConvolution
     {
-        public static Image ApplyFilters(Image image, params ConvolutionFilter[] filterTypes)
+        /// <summary>
+        /// Applies multiple convolution kernels to bitmap.
+        /// </summary>
+        /// <param name="bitmap">Image to apply kernel to</param>
+        /// <param name="convolutionTypes">Convolutions to apply</param>
+        /// <returns>Image with all kernels applied</returns>
+        public static Image ApplyKernels(Image image, params ConvolutionType[] convolutionTypes)
         {
             // Remember original image type
             ImageFormat originalFormat = image.RawFormat;
@@ -14,20 +23,26 @@ namespace Freedom35.ImageProcessing
             // Convert to bitmap for image processing
             Bitmap bitmap = ImageConvert.ImageToBitmap(image);
 
-            Bitmap combinedBitmap = ApplyFilters(bitmap, filterTypes);
+            Bitmap combinedBitmap = ApplyKernels(bitmap, convolutionTypes);
 
             // Return processed image to original format
             return ImageConvert.ImageToFormat(combinedBitmap, originalFormat);
         }
 
-        public static Bitmap ApplyFilters(Bitmap bitmap, params ConvolutionFilter[] filterTypes)
+        /// <summary>
+        /// Applies multiple convolution kernels to bitmap.
+        /// </summary>
+        /// <param name="bitmap">Bitmap to apply kernel to</param>
+        /// <param name="convolutionTypes">Convolutions to apply</param>
+        /// <returns>Bitmap with all kernels applied</returns>
+        public static Bitmap ApplyKernels(Bitmap bitmap, params ConvolutionType[] convolutionTypes)
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
 
             // Create new image for each filter
-            foreach (ConvolutionFilter filterType in filterTypes)
+            foreach (ConvolutionType type in convolutionTypes)
             {
-                Bitmap bmp = ApplyFilter(bitmap, filterType);
+                Bitmap bmp = ApplyKernel(bitmap, type);
                 bitmaps.Add(bmp);
             }
 
@@ -43,7 +58,24 @@ namespace Freedom35.ImageProcessing
             return bitmap;
         }
 
-        public static Image ApplyFilter(Image image, ConvolutionFilter filterType)
+        /// <summary>
+        /// Applies convolution matrix/kernel to image.
+        /// </summary>
+        /// <param name="image">Image to apply kernel to</param>
+        /// <param name="convolutionType">Type of convolution</param>
+        /// <returns>Image with kernel applied</returns>
+        public static Image ApplyKernel(Image image, ConvolutionType convolutionType)
+        {
+            return ApplyKernel(image, convolutionType.GetConvolutionMatrix());
+        }
+
+        /// <summary>
+        /// Applies convolution matrix/kernel to image.
+        /// </summary>
+        /// <param name="image">Image to apply kernel to</param>
+        /// <param name="kernelMatrix">Kernel matrix</param>
+        /// <returns>Image with kernel applied</returns>
+        public static Image ApplyKernel(Image image, int[,] kernelMatrix)
         {
             // Remember original image type
             ImageFormat originalFormat = image.RawFormat;
@@ -52,19 +84,35 @@ namespace Freedom35.ImageProcessing
             Bitmap bitmap = ImageConvert.ImageToBitmap(image);
 
             // Apply filter to bitmap
-            Bitmap bitmapWithFilter = ApplyFilter(bitmap, filterType);
+            Bitmap bitmapWithFilter = ApplyKernel(bitmap, kernelMatrix);
 
             // Covert processed image to original format
             return ImageConvert.ImageToFormat(bitmapWithFilter, originalFormat);
         }
 
         /// <summary>
-        /// Applies convolution filter to image.
+        /// Applies convolution matrix/kernel to image.
         /// i.e. edge detection.
         /// </summary>
-        /// <param name="bitmap">Image to apply filter to.</param>
-        /// <param name="filterType">Type of filter.</param>
-        public static Bitmap ApplyFilter(Bitmap bitmap, ConvolutionFilter filterType)
+        /// <param name="bitmap">Image to apply kernel to</param>
+        /// <param name="convolutionType">Type of convolution</param>
+        /// <returns>Bitmap with kernel applied</returns>
+        public static Bitmap ApplyKernel(Bitmap bitmap, ConvolutionType convolutionType)
+        {
+            // Get convolution kernel to apply
+            int[,] matrix = convolutionType.GetConvolutionMatrix();
+
+            return ApplyKernel(bitmap, matrix);
+        }
+
+        /// <summary>
+        /// Applies convolution matrix/kernel to image.
+        /// i.e. edge detection.
+        /// </summary>
+        /// <param name="bitmap">Image to apply kernel to</param>
+        /// <param name="kernelMatrix">Kernel matrix</param>
+        /// <returns>Bitmap with kernel applied</returns>
+        public static Bitmap ApplyKernel(Bitmap bitmap, int[,] kernelMatrix)
         {
             // Returning new image
             Bitmap clone = (Bitmap)bitmap.Clone();
@@ -72,52 +120,79 @@ namespace Freedom35.ImageProcessing
             // Lock image for processing
             byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
 
-            // Get convolution filter to apply
-            int[,] template = filterType.GetTemplateMatrix();
+            // Matrix is typically square, but may not be
+            int matrixLenX = kernelMatrix.GetLength(0);
+            int matrixLenY = kernelMatrix.GetLength(1);
 
-            int templateLen = template.GetLength(0);
-            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            // Get bitmap info
+            int bmpWidth = bmpData.Width;
+            int bmpHeight = bmpData.Height;
+            int bmpStride = bmpData.Stride;
+            int pixelDepth = (bmpStride / bmpWidth);
+
+            // Re-used often
+            int bmpX, bmpY, mX, mY, iX, iY;
+            int newValue;
+            int pixelIndex;
 
             // Move through image
-            for (int bmpX = 0; bmpX < bmpData.Width; bmpX++)
+            for (bmpX = 0; bmpX < bmpWidth; bmpX++)
             {
-                for (int bmpY = 0; bmpY < bmpData.Height; bmpY++)
+                for (bmpY = 0; bmpY < bmpHeight; bmpY++)
                 {
-                    int tmp = 0;
+                    newValue = 0;
 
-                    for (int templateX = 0; templateX < templateLen; templateX++)
+                    // Move through matrix to calculate new value
+                    for (mX = 0; mX < matrixLenX; mX++)
                     {
-                        for (int templateY = 0; templateY < templateLen; templateY++)
-                        {
-                            // Image coordinates with respect to template.
-                            int iX = bmpX + templateX;
-                            int iY = bmpY + templateY;
+                        // Image X coordinate with respect to matrix.
+                        iX = bmpX + mX;
 
-                            if (iX < bmpData.Width && iY < bmpData.Height)
+                        // Check within image
+                        if (iX < bmpWidth)
+                        {
+                            for (mY = 0; mY < matrixLenY; mY++)
                             {
-                                // Apply filter
-                                tmp += template[templateX, templateY] * rgbValues[(iX * pixelDepth) + (iY * bmpData.Stride)];
+                                // Image Y coordinate with respect to matrix.
+                                iY = bmpY + mY;
+
+                                // Check within image
+                                if (iY < bmpHeight)
+                                {
+                                    // Add convolution value
+                                    newValue += kernelMatrix[mX, mY] * rgbValues[(iX * pixelDepth) + (iY * bmpStride)];
+                                }
+                                else
+                                {
+                                    // Outside of image bounds
+                                    break;
+                                }
                             }
+                        }
+                        else
+                        {
+                            // Outside of image bounds
+                            break;
                         }
                     }
 
                     // Check value within range
                     // (Some filter values are negative)
-                    if (tmp < 0)
+                    if (newValue < 0)
                     {
-                        tmp = 0;
+                        newValue = 0;
                     }
-                    else if (tmp > byte.MaxValue)
+                    else if (newValue > byte.MaxValue)
                     {
                         // Value oversaturated
-                        tmp = byte.MaxValue;
+                        newValue = byte.MaxValue;
                     }
 
                     // Get current pixel
-                    int pixelIndex = (bmpX * pixelDepth) + (bmpY * bmpData.Stride);
+                    pixelIndex = (bmpX * pixelDepth) + (bmpY * bmpStride);
 
                     // Update pixel value
-                    rgbValues[pixelIndex] = (byte)tmp;
+                    rgbValues[pixelIndex] = (byte)newValue;
 
                     // 3 bits per pixel on colour image (RGB)
                     if (pixelDepth == 3)
