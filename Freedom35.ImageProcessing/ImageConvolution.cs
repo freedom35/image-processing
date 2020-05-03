@@ -21,12 +21,12 @@ namespace Freedom35.ImageProcessing
             ImageFormat originalFormat = image.RawFormat;
 
             // Convert to bitmap for image processing
-            Bitmap bitmap = ImageConvert.ImageToBitmap(image);
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
             Bitmap combinedBitmap = ApplyKernels(bitmap, convolutionTypes);
 
             // Return processed image to original format
-            return ImageConvert.ImageToFormat(combinedBitmap, originalFormat);
+            return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
         }
 
         /// <summary>
@@ -81,13 +81,13 @@ namespace Freedom35.ImageProcessing
             ImageFormat originalFormat = image.RawFormat;
 
             // Convert to bitmap for image processing
-            Bitmap bitmap = ImageConvert.ImageToBitmap(image);
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
             // Apply filter to bitmap
             Bitmap bitmapWithFilter = ApplyKernel(bitmap, kernelMatrix);
 
             // Covert processed image to original format
-            return ImageConvert.ImageToFormat(bitmapWithFilter, originalFormat);
+            return ImageFormatting.ToFormat(bitmapWithFilter, originalFormat);
         }
 
         /// <summary>

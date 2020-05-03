@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 
 namespace Freedom35.ImageProcessing
 {
@@ -10,42 +9,6 @@ namespace Freedom35.ImageProcessing
     /// </summary>
     public static class ImageConvert
     {
-        /// <summary>
-        /// Converts system image to bitmap.
-        /// (Image processing performed on bytes in bitmap format)
-        /// </summary>
-        public static Bitmap ImageToBitmap(Image image)
-        {
-            return (Bitmap)ImageToFormat(image, ImageFormat.Bmp);
-        }
-
-        /// <summary>
-        /// Converts system image format.
-        /// </summary>
-        public static Image ImageToFormat(Image image, ImageFormat targetFormat)
-        {
-            // Returning new image
-            Image clone = (Image)image.Clone();
-
-            // Check not already a Bitmap
-            if (!image.RawFormat.Equals(targetFormat))
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    // Save to stream in Bitmap format
-                    image.Save(ms, targetFormat);
-
-                    // Dispose of current image
-                    //image.Dispose();
-
-                    // Create new image
-                    clone = Image.FromStream(ms);
-                }
-            }
-
-            return clone;
-        }
-
         /// <summary>
         /// Converts color image bytes to grayscale.
         /// </summary>
@@ -118,12 +81,12 @@ namespace Freedom35.ImageProcessing
         /// <returns>Negative image</returns>
         public static Image ToNegative(Image image)
         {
-            Bitmap bitmap = ImageToBitmap(image);
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
             Bitmap negativeBitmap = ToNegative(bitmap);
 
             // Restore original image format
-            return ImageToFormat(negativeBitmap, image.RawFormat);
+            return ImageFormatting.ToFormat(negativeBitmap, image.RawFormat);
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image bytes</returns>
         public static byte[] FromImage(Image image)
         {
-            return FromBitmap(ImageConvert.ImageToBitmap(image));
+            return FromBitmap(ImageFormatting.ToBitmap(image));
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image bytes</returns>
         public static byte[] FromImage(Image image, out BitmapData bmpData)
         {
-            return FromBitmap(ImageConvert.ImageToBitmap(image), out bmpData);
+            return FromBitmap(ImageFormatting.ToBitmap(image), out bmpData);
         }
 
         /// <summary>
