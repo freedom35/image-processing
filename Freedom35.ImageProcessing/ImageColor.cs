@@ -7,7 +7,7 @@ namespace Freedom35.ImageProcessing
     /// <summary>
     /// Methods for converting color.
     /// </summary>
-    public static class ImageConvert
+    public static class ImageColor
     {
         /// <summary>
         /// Converts color image bytes to grayscale.
@@ -47,7 +47,7 @@ namespace Freedom35.ImageProcessing
         public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes)
         {
             // Use mid-threshold value for each pixel
-            return GrayscaleImageToBlackAndWhite(grayscaleBytes, 128);
+            return GrayscaleImageToBlackAndWhite(grayscaleBytes, 0x80);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <returns>New image as black and white</returns>
         /// <param name="grayscaleBytes">bytes for grayscale image</param>
-        /// <param name="whiteThreshold">Threshold value for determining a white value</param>
+        /// <param name="whiteThreshold">Threshold value for determining a white value (lower will be black)</param>
         public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes, byte whiteThreshold)
         {
             // Check image bytes non-null
@@ -99,26 +99,27 @@ namespace Freedom35.ImageProcessing
             // Return new image
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            // Edit clone
+            byte[] imageBytes = ImageEdit.Begin(clone, out BitmapData bmpData);
 
-            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            ToNegative(imageBytes);
 
-            int limit = (pixelDepth > 1 ? rgbValues.Length - (pixelDepth - 1) : rgbValues.Length);
-
-            for (int i = 0; i < limit; i += pixelDepth)
-            {
-                rgbValues[i] = (byte)~rgbValues[i];
-
-                if (pixelDepth == 3)
-                {
-                    rgbValues[i + 1] = (byte)~rgbValues[i + 1];
-                    rgbValues[i + 2] = (byte)~rgbValues[i + 2];
-                }
-            }
-
-            ImageEdit.End(clone, bmpData, rgbValues);
+            ImageEdit.End(clone, bmpData, imageBytes);
 
             return clone;
+        }
+
+        /// <summary>
+        /// Inverts image to negative.
+        /// </summary>
+        /// <param name="imageBytes">Image bytes to convert</param>
+        public static void ToNegative(byte[] imageBytes)
+        {
+            // Invert bits on each byte
+            for (int i = 0; i < imageBytes.Length; i++)
+            {
+                imageBytes[i] = (byte)~imageBytes[i];
+            }
         }
     }
 }
