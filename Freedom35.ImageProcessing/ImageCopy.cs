@@ -15,7 +15,7 @@ namespace Freedom35.ImageProcessing
         public static void FromSourceToDestination(Bitmap imageSource, Bitmap imageDestination)
         {
             // Lock destination during copy/write
-            byte[] rgbValuesDest = ImageEdit.BeginWrite(imageDestination, out BitmapData bmpDataDest);
+            byte[] rgbValuesDest = ImageEdit.Begin(imageDestination, out BitmapData bmpDataDest);
 
             // Copy entire image
             Rectangle rect = new Rectangle(0, 0, imageSource.Width, imageSource.Height);
@@ -30,7 +30,7 @@ namespace Freedom35.ImageProcessing
             imageSource.UnlockBits(bmpDataSource);
 
             // Release lock on destination
-            ImageEdit.EndWrite(imageDestination, bmpDataDest, rgbValuesDest);
+            ImageEdit.End(imageDestination, bmpDataDest, rgbValuesDest);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Freedom35.ImageProcessing
             Bitmap combinedImage = (Bitmap)images.ElementAt(0).Clone();
 
             // Get bytes for image
-            byte[] rgbValues1 = ImageEdit.BeginWrite(combinedImage, out BitmapData bmpData1);
+            byte[] rgbValues1 = ImageEdit.Begin(combinedImage, out BitmapData bmpData1);
 
             int pixelDepth = (bmpData1.Stride / bmpData1.Width);
 
@@ -52,7 +52,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Release combined image
-            ImageEdit.EndWrite(combinedImage, bmpData1, rgbValues1);
+            ImageEdit.End(combinedImage, bmpData1, rgbValues1);
 
             return combinedImage;
         }
