@@ -100,11 +100,11 @@ namespace Freedom35.ImageProcessing
             Bitmap clone = (Bitmap)bitmap.Clone();
 
             // Edit clone
-            byte[] imageBytes = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
+            byte[] imageBytes = ImageEdit.Begin(clone, out BitmapData bmpData);
 
             ToNegative(imageBytes);
 
-            ImageEdit.EndWrite(clone, bmpData, imageBytes);
+            ImageEdit.End(clone, bmpData, imageBytes);
 
             return clone;
         }

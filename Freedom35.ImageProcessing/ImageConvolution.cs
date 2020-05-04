@@ -118,7 +118,7 @@ namespace Freedom35.ImageProcessing
             Bitmap clone = (Bitmap)bitmap.Clone();
 
             // Lock image for processing
-            byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
+            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
 
             // Matrix is typically square, but may not be
             int matrixLenX = kernelMatrix.GetLength(0);
@@ -204,7 +204,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Copy modified array back to image, and release lock
-            ImageEdit.EndWrite(clone, bmpData, rgbValues);
+            ImageEdit.End(clone, bmpData, rgbValues);
 
             // Return new instance
             return clone;
