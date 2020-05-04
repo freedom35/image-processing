@@ -12,9 +12,17 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Begin editing an image.
         /// </summary>
-        public static byte[] Begin(Bitmap bitmap, out BitmapData bmpData)
+        public static byte[] BeginWrite(Bitmap bitmap, out BitmapData bmpData)
         {
             return Begin(bitmap, ImageLockMode.ReadWrite, out bmpData);
+        }
+
+        /// <summary>
+        /// Begin reading an image.
+        /// </summary>
+        public static byte[] BeginRead(Bitmap bitmap, out BitmapData bmpData)
+        {
+            return Begin(bitmap, ImageLockMode.ReadOnly, out bmpData);
         }
 
         /// <summary>
@@ -39,12 +47,22 @@ namespace Freedom35.ImageProcessing
 
         /// <summary>
         /// Finished editing an image.
+        /// (Copies new byte values to image and unlocks bitmap)
         /// </summary>
-        public static void End(Bitmap bitmap, BitmapData bmpData, byte[] rgbValues)
+        public static void EndWrite(Bitmap bitmap, BitmapData bmpData, byte[] rgbValues)
         {
             // Copy the RGB values back to the bitmap
             Marshal.Copy(rgbValues, 0, bmpData.Scan0, rgbValues.Length);
 
+            // Unlock the bits.
+            bitmap.UnlockBits(bmpData);
+        }
+
+        /// <summary>
+        /// Finished reading an image.
+        /// </summary>
+        public static void EndRead(Bitmap bitmap, BitmapData bmpData)
+        {
             // Unlock the bits.
             bitmap.UnlockBits(bmpData);
         }

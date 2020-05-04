@@ -96,5 +96,107 @@ namespace Freedom35.ImageProcessing
                 return FromImage(image);
             }
         }
+
+        /// <summary>
+        /// Gets the minimum pixel value within an image.
+        /// (For color images, min pixel avg returned)
+        /// </summary>
+        /// <param name="image">Image to search</param>
+        /// <returns>Minimum pixel value</returns>
+        public static byte GetMinValue(Image image)
+        {
+            return GetMinValue(ImageFormatting.ToBitmap(image));
+        }
+
+        /// <summary>
+        /// Gets the minimum pixel value within an image.
+        /// (For color images, min pixel avg returned)
+        /// </summary>
+        /// <param name="bitmap">Image to search</param>
+        /// <returns>Minimum pixel value</returns>
+        public static byte GetMinValue(Bitmap bitmap)
+        {
+            // Start with highest value
+            byte min = byte.MaxValue;
+
+            byte[] rgbValues = ImageEdit.BeginRead(bitmap, out BitmapData bmpData);
+
+            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            byte avg;
+
+            // Find minimum value
+            // (Zero is lowest possible, so stop looking once found)
+            for (int i = 0; i < rgbValues.Length && min > byte.MinValue; i += pixelDepth)
+            {
+                if (pixelDepth == 3)
+                {
+                    avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+
+                    if (avg < min)
+                    {
+                        min = avg;
+                    }
+                }
+                else if (rgbValues[i] < min)
+                {
+                    min = rgbValues[i];
+                }
+            }
+
+            ImageEdit.EndRead(bitmap, bmpData);
+
+            return min;
+        }
+
+        /// <summary>
+        /// Gets the maximum pixel value within an image.
+        /// (For color images, max pixel avg is returned)
+        /// </summary>
+        /// <param name="image">Image to search</param>
+        /// <returns>Maximum pixel value</returns>
+        public static byte GetMaxValue(Image image)
+        {
+            return GetMaxValue(ImageFormatting.ToBitmap(image));
+        }
+
+        /// <summary>
+        /// Gets the maximum pixel value within an image.
+        /// (For color images, max pixel avg is returned)
+        /// </summary>
+        /// <param name="bitmap">Image to search</param>
+        /// <returns>Maximum pixel value</returns>
+        public static byte GetMaxValue(Bitmap bitmap)
+        {
+            // Start with lowest value
+            byte max = byte.MinValue;
+
+            byte[] rgbValues = ImageEdit.BeginRead(bitmap, out BitmapData bmpData);
+
+            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            byte avg;
+
+            // Find maximum value
+            // (255 is highest possible, so stop looking once found)
+            for (int i = 0; i < rgbValues.Length && max < byte.MaxValue; i += pixelDepth)
+            {
+                if (pixelDepth == 3)
+                {
+                    avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+                    
+                    if (avg > max)
+                    {
+                        max = avg;
+                    }
+                }
+                else if (rgbValues[i] > max)
+                {
+                    max = rgbValues[i];
+                }
+            }
+
+            ImageEdit.EndRead(bitmap, bmpData);
+
+            return max;
+        }
     }
 }

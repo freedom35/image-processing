@@ -37,7 +37,7 @@ namespace Freedom35.ImageProcessing
         {
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
             // Determine whether color
             int pixelDepth = (bmpData.Stride / bmpData.Width);
@@ -54,7 +54,7 @@ namespace Freedom35.ImageProcessing
                 }
             }
 
-            ImageEdit.End(clone, bmpData, rgbValues);
+            ImageEdit.EndWrite(clone, bmpData, rgbValues);
 
             return clone;
         }
@@ -87,7 +87,7 @@ namespace Freedom35.ImageProcessing
         {
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
             // Determine whether color
             int pixelDepth = (bmpData.Stride / bmpData.Width);
@@ -114,7 +114,7 @@ namespace Freedom35.ImageProcessing
                 }
             }
 
-            ImageEdit.End(clone, bmpData, rgbValues);
+            ImageEdit.EndWrite(clone, bmpData, rgbValues);
 
             return clone;
         }
@@ -147,7 +147,7 @@ namespace Freedom35.ImageProcessing
         {
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
             // Determine whether color
             int pixelDepth = (bmpData.Stride / bmpData.Width);
@@ -174,7 +174,7 @@ namespace Freedom35.ImageProcessing
                 }
             }
 
-            ImageEdit.End(clone, bmpData, rgbValues);
+            ImageEdit.EndWrite(clone, bmpData, rgbValues);
 
             return clone;
         }
@@ -207,7 +207,7 @@ namespace Freedom35.ImageProcessing
         {
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
             int pixelDepth = (bmpData.Stride / bmpData.Width);
 
@@ -249,7 +249,7 @@ namespace Freedom35.ImageProcessing
                 }
             }
 
-            ImageEdit.End(clone, bmpData, rgbValues);
+            ImageEdit.EndWrite(clone, bmpData, rgbValues);
 
             return clone;
         }

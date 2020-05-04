@@ -118,7 +118,7 @@ namespace Freedom35.ImageProcessing
             Bitmap clone = (Bitmap)bitmap.Clone();
 
             // Lock image for processing
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
             // Matrix is typically square, but may not be
             int matrixLenX = kernelMatrix.GetLength(0);
@@ -194,7 +194,7 @@ namespace Freedom35.ImageProcessing
                     // Update pixel value
                     rgbValues[pixelIndex] = (byte)newValue;
 
-                    // 3 bits per pixel on colour image (RGB)
+                    // 3 bits per pixel on color image (RGB)
                     if (pixelDepth == 3)
                     {
                         rgbValues[pixelIndex + 1] = rgbValues[pixelIndex];
@@ -204,7 +204,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Copy modified array back to image, and release lock
-            ImageEdit.End(clone, bmpData, rgbValues);
+            ImageEdit.EndWrite(clone, bmpData, rgbValues);
 
             // Return new instance
             return clone;
