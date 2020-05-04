@@ -60,7 +60,7 @@ namespace Freedom35.ImageProcessing
             bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
             // Create length with number of bytes in image
-            byte[] rgbValues = new byte[bmpData.Stride * bmpData.Height];
+            byte[] rgbValues = new byte[bmpData.GetImageLength()];
 
             // Copy the RGB values into the array.
             Marshal.Copy(bmpData.Scan0, rgbValues, 0, rgbValues.Length);
@@ -121,7 +121,7 @@ namespace Freedom35.ImageProcessing
 
             byte[] rgbValues = ImageEdit.BeginRead(bitmap, out BitmapData bmpData);
 
-            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            int pixelDepth = bmpData.GetPixelDepth();
             byte avg;
 
             // Find minimum value
@@ -172,7 +172,7 @@ namespace Freedom35.ImageProcessing
 
             byte[] rgbValues = ImageEdit.BeginRead(bitmap, out BitmapData bmpData);
 
-            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            int pixelDepth = bmpData.GetPixelDepth();
             byte avg;
 
             // Find maximum value
@@ -182,7 +182,7 @@ namespace Freedom35.ImageProcessing
                 if (pixelDepth == 3)
                 {
                     avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
-                    
+
                     if (avg > max)
                     {
                         max = avg;

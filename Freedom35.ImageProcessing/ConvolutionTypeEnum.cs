@@ -112,7 +112,7 @@ namespace Freedom35.ImageProcessing
                         {  0,  0,  0 },
                         { -1, -2, -1 }
                     };
-                    
+
                 case ConvolutionType.EdgeSobelVertical:
                     return new int[3, 3]
                     {

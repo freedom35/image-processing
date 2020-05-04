@@ -77,7 +77,7 @@ namespace Freedom35.ImageProcessing
 
                 case ImageType.TIFF:
                     return TiffEncoding;
-                
+
                 case ImageType.JPEG:
                     return JpegEncoding;
 

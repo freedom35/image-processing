@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Freedom35.ImageProcessing
@@ -40,8 +39,8 @@ namespace Freedom35.ImageProcessing
             byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
             // Determine whether color
-            int pixelDepth = (bmpData.Stride / bmpData.Width);
-            
+            int pixelDepth = bmpData.GetPixelDepth();
+
             // Apply threshold value to image.
             for (int i = 0; i < rgbValues.Length; i += pixelDepth)
             {
@@ -90,7 +89,7 @@ namespace Freedom35.ImageProcessing
             byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
             // Determine whether color
-            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            int pixelDepth = bmpData.GetPixelDepth();
 
             // Apply threshold value to image.
             for (int i = 0; i < rgbValues.Length; i += pixelDepth)
@@ -150,7 +149,7 @@ namespace Freedom35.ImageProcessing
             byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
             // Determine whether color
-            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            int pixelDepth = bmpData.GetPixelDepth();
 
             // Apply threshold value to image.
             for (int i = 0; i < rgbValues.Length; i += pixelDepth)
@@ -162,7 +161,7 @@ namespace Freedom35.ImageProcessing
 
                 if (pixelDepth == 3 && i < rgbValues.Length - 2)
                 {
-                    if (rgbValues[i+ 1] > maxValue)
+                    if (rgbValues[i + 1] > maxValue)
                     {
                         rgbValues[i + 1] = maxValue;
                     }
@@ -209,7 +208,7 @@ namespace Freedom35.ImageProcessing
 
             byte[] rgbValues = ImageEdit.BeginWrite(clone, out BitmapData bmpData);
 
-            int pixelDepth = (bmpData.Stride / bmpData.Width);
+            int pixelDepth = bmpData.GetPixelDepth();
 
             // Adjust image to within min/max.
             for (int i = 0; i < rgbValues.Length; i += pixelDepth)

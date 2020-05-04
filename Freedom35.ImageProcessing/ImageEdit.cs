@@ -37,7 +37,7 @@ namespace Freedom35.ImageProcessing
             bmpData = bitmap.LockBits(rect, lockMode, bitmap.PixelFormat);
 
             // Create length with number of bytes in image
-            byte[] rgbValues = new byte[bmpData.Stride * bmpData.Height];
+            byte[] rgbValues = new byte[bmpData.GetImageLength()];
 
             // Copy the RGB values into the array.
             Marshal.Copy(bmpData.Scan0, rgbValues, 0, rgbValues.Length);
