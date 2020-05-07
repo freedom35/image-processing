@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Freedom35.ImageProcessing
 {
     /// <summary>
-    /// Class to handle System.Drawing.Bitmap related methods.
+    /// Class to handle editing System.Drawing.Bitmap.
     /// </summary>
     internal static class ImageEdit
     {
