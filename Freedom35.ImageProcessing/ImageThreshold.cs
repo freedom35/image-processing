@@ -9,8 +9,8 @@ namespace Freedom35.ImageProcessing
     public static class ImageThreshold
     {
         /// <summary>
-        /// Any pixel values below (or equal to) threshold will be changed to 0 (black).
-        /// Any pixel values above threshold will be changed to 255 (white).
+        /// Any pixel values below threshold will be changed to 0 (black).
+        /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
         /// </summary>
         /// <param name="bitmap">Image to process</param>
         /// <param name="threshold">Threshold value</param>
@@ -26,8 +26,8 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Any pixel values below (or equal to) threshold will be changed to 0 (black).
-        /// Any pixel values above threshold will be changed to 255 (white).
+        /// Any pixel values below threshold will be changed to 0 (black).
+        /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
         /// </summary>
         /// <param name="bitmap">Image to process</param>
         /// <param name="threshold">Threshold value</param>
@@ -42,20 +42,57 @@ namespace Freedom35.ImageProcessing
             int pixelDepth = bmpData.GetPixelDepth();
 
             // Apply threshold value to image.
-            for (int i = 0; i < rgbValues.Length; i += pixelDepth)
-            {
-                rgbValues[i] = rgbValues[i] > threshold ? byte.MaxValue : byte.MinValue;
-
-                if (pixelDepth == 3 && i < rgbValues.Length - 2)
-                {
-                    rgbValues[i + 1] = rgbValues[i + 1] > threshold ? byte.MaxValue : byte.MinValue;
-                    rgbValues[i + 2] = rgbValues[i + 2] > threshold ? byte.MaxValue : byte.MinValue;
-                }
-            }
+            Apply(rgbValues, pixelDepth, threshold);
 
             ImageEdit.End(clone, bmpData, rgbValues);
 
             return clone;
+        }
+
+        /// <summary>
+        /// Any pixel values below threshold will be changed to 0 (black).
+        /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
+        /// </summary>
+        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="pixelDepth">Pixel depth</param>
+        /// <param name="threshold">Threshold value</param>
+        public static void Apply(byte[] imageBytes, int pixelDepth, byte threshold)
+        {
+            // Check if color
+            if (pixelDepth > 1)
+            {
+                int pixelSum;
+                bool belowThreshold;
+
+                // Loop each pixel
+                for (int i = 0; i < imageBytes.Length; i += pixelDepth)
+                {
+                    pixelSum = 0;
+
+                    // Sum each pixel component
+                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    {
+                        pixelSum += imageBytes[i + j];
+                    }
+
+                    // Compare average to threshold
+                    belowThreshold = (pixelSum / pixelDepth) < threshold;
+
+                    // Apply threshold
+                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    {
+                        imageBytes[i + j] = belowThreshold ? byte.MinValue : byte.MaxValue;
+                    }
+                }
+            }
+            else
+            {
+                // Apply threshold value to image
+                for (int i = 0; i < imageBytes.Length; i++)
+                {
+                    imageBytes[i] = imageBytes[i] < threshold ? byte.MinValue : byte.MaxValue;
+                }
+            }
         }
 
         /// <summary>
