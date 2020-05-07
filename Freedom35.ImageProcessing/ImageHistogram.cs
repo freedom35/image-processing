@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace Freedom35.ImageProcessing
 {
@@ -134,6 +135,102 @@ namespace Freedom35.ImageProcessing
             ImageEdit.End(clone, bmpData, rgbValues);
 
             return clone;
+        }
+
+        /// <summary>
+        /// Creates a black & white histogram.
+        /// </summary>
+        /// <param name="histogramSource">Image histogram is based on</param>
+        /// <param name="histogramSize">Size of histogram to create</param>
+        /// <returns>Bitmap containing histogram</returns>
+        public static Bitmap Create(Image histogramSource, Size histogramSize)
+        {
+            Bitmap bitmap = ImageFormatting.ToBitmap(histogramSource);
+
+            return Create(bitmap, histogramSize, Color.Black, Color.White);
+        }
+
+        /// <summary>
+        /// Creates a black & white histogram.
+        /// </summary>
+        /// <param name="histogramSource">Bitmap histogram is based on</param>
+        /// <param name="histogramSize">Size of histogram to create</param>
+        /// <returns>Bitmap containing histogram</returns>
+        public static Bitmap Create(Bitmap histogramSource, Size histogramSize)
+        {
+            return Create(histogramSource, histogramSize, Color.Black, Color.White);
+        }
+
+        /// <summary>
+        /// Creates a histogram image.
+        /// </summary>
+        /// <param name="histogramSource">Image histogram is based on</param>
+        /// <param name="histogramSize">Size of histogram to create</param>
+        /// <param name="histogramBackground">Background color of histogram to create</param>
+        /// <param name="histogramForeground">Foreground color of histogram to create</param>
+        /// <returns>Bitmap containing histogram</returns>
+        public static Bitmap Create(Image histogramSource, Size histogramSize, Color histogramBackground, Color histogramForeground)
+        {
+            Bitmap bitmap = ImageFormatting.ToBitmap(histogramSource);
+
+            return Create(bitmap, histogramSize, histogramBackground, histogramForeground);
+        }
+
+        /// <summary>
+        /// Creates a histogram image.
+        /// </summary>
+        /// <param name="histogramSource">Bitmap histogram is based on</param>
+        /// <param name="histogramSize">Size of histogram to create</param>
+        /// <param name="histogramBackground">Background color of histogram to create</param>
+        /// <param name="histogramForeground">Foreground color of histogram to create</param>
+        /// <returns>Bitmap containing histogram</returns>
+        public static Bitmap Create(Bitmap histogramSource, Size histogramSize, Color histogramBackground, Color histogramForeground)
+        {
+            // Get histogram values for source bitmap
+            int[] histogramValues = GetHistogramValues(histogramSource);
+
+            int maxValue = histogramValues.Length > 0 ? histogramValues.Max() : 0;
+
+            int histogramWidth = histogramSize.Width;
+            int histogramHeight = histogramSize.Height;
+
+            float scaleX = (float)histogramWidth / histogramValues.Length;
+            float scaleY = (float)histogramHeight / maxValue;
+
+            // Create new bitmap to contain histogram
+            Bitmap bitmapHistogram = new Bitmap(histogramWidth, histogramHeight);
+
+            using (Graphics g = Graphics.FromImage(bitmapHistogram))
+            {
+                // Initialize background color for bitmap
+                g.FillRectangle(new SolidBrush(histogramBackground), 0, 0, histogramWidth, histogramHeight);
+
+                // Create brush for foreground
+                SolidBrush histogramBrush = new SolidBrush(histogramForeground);
+
+                // Each value should be same width
+                float valueWidth = scaleX;
+
+                // Draw each bar from bottom-up
+                float y = histogramHeight;
+
+                float x, valueHeight;
+
+                // Draw vertical bar for each histgram value
+                for (int i = 0; i < histogramValues.Length; i++)
+                {
+                    // X position of vertical bar
+                    x = i * scaleX;
+
+                    // Vertical bar representing number of pixels at value
+                    valueHeight = histogramValues[i] * scaleY;
+
+                    // Draw vertical bar
+                    g.FillRectangle(histogramBrush, x, y, valueWidth, valueHeight);
+                }
+            }
+
+            return bitmapHistogram;
         }
     }
 }
