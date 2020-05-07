@@ -36,7 +36,7 @@ namespace Freedom35.ImageProcessing
             foreach (Bitmap bitmap in images.Skip(1))
             {
                 // Only reading this image
-                byte[] rgbValues2 = ImageBytes.FromBitmap(bitmap);
+                byte[] rgbValues2 = ImageBytes.FromImageAsBitmap(bitmap);
 
                 // Combine images
                 for (int i = 0; i < rgbValues1.Length; i += pixelDepth)

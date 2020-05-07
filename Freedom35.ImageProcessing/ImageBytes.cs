@@ -13,28 +13,48 @@ namespace Freedom35.ImageProcessing
     public static class ImageBytes
     {
         /// <summary>
-        /// Converts the image to a bitmap, and gets the bytes.
+        /// Gets the image bytes, retaining original format.
         /// </summary>
         /// <param name="image">Image to get bytes from</param>
         /// <returns>Image bytes</returns>
-        public static byte[] FromImage(Image image)
-        {
-            return FromBitmap(ImageFormatting.ToBitmap(image));
-        }
-
-        /// <summary>
-        /// Gets the image bytes from a bitmap image.
-        /// </summary>
-        /// <param name="bitmap">Bitmap to get bytes from</param>
-        /// <returns>Image bytes</returns>
-        public static byte[] FromBitmap(Bitmap bitmap)
+        public static byte[] FromImageAsRaw(Image image)
         {
             using (MemoryStream stream = new MemoryStream())
             {
-                bitmap.Save(stream, ImageFormat.Bmp);
+                image.Save(stream, image.RawFormat);
                 return stream.ToArray();
             }
         }
+
+        /// <summary>
+        /// Gets the image bytes in bitmap format.
+        /// </summary>
+        /// <param name="image">Image to get bytes from</param>
+        /// <returns>Image bytes</returns>
+        public static byte[] FromImageAsBitmap(Image image)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                image.Save(stream, ImageFormat.Bmp);
+                return stream.ToArray();
+            }
+        }
+
+        ///// <summary>
+        ///// Gets the image bytes from a bitmap image.
+        ///// </summary>
+        ///// <param name="bitmap">Bitmap to get bytes from</param>
+        ///// <returns>Image bytes</returns>
+        //public static byte[] FromBitmap(Bitmap bitmap)
+        //{
+        //    using (MemoryStream stream = new MemoryStream())
+        //    {
+        //        bitmap.Save(stream, ImageFormat.Bmp);
+        //        return stream.ToArray();
+        //    }
+
+        //    //return FromBitmap(bitmap, out BitmapData _);
+        //}
 
         /// <summary>
         /// Converts the image to a bitmap, and gets the bytes.
@@ -82,7 +102,7 @@ namespace Freedom35.ImageProcessing
         {
             using (Image image = Image.FromFile(path))
             {
-                return FromImage(image);
+                return FromImageAsBitmap(image);
             }
         }
 
@@ -95,7 +115,20 @@ namespace Freedom35.ImageProcessing
         {
             using (Image image = Image.FromStream(stream))
             {
-                return FromImage(image);
+                return FromImageAsBitmap(image);
+            }
+        }
+
+        /// <summary>
+        /// Gets the image bytes from an embedded resource.
+        /// </summary>
+        /// <param name="resourcePath">Path to resource</param>
+        /// <returns>Image bytes</returns>
+        public static byte[] FromResource(string resourcePath)
+        {
+            using (Stream resourceStream = System.Reflection.Assembly.GetCallingAssembly().GetManifestResourceStream(resourcePath))
+            {
+                return FromStream(resourceStream);
             }
         }
 
