@@ -14,13 +14,14 @@ namespace Freedom35.ImageProcessing
 
         /// <summary>
         /// Default smoothing/blur filter.
+        /// (3x3, all 1's)
         /// </summary>
-        SmoothingA,
+        Smoothing,
 
         /// <summary>
         /// Alternate smoothing filter.
         /// </summary>
-        SmoothingB,
+        SmoothingWithHighPeak,
 
         /// <summary>
         /// Reduces image noise (by smoothing).
@@ -42,13 +43,13 @@ namespace Freedom35.ImageProcessing
         /// Laplacian A edge/high-pass filter.
         /// (Matrix with peak of 4)
         /// </summary>
-        EdgeLaplacianA,
+        EdgeLaplacianWithPeak4,
 
         /// <summary>
         /// Laplacian B edge/high-pass filter.
         /// (Matrix with diagonals and peak of 8)
         /// </summary>
-        EdgeLaplacianB,
+        EdgeLaplacianWithPeak8,
 
         /// <summary>
         /// Applies Gaussian smoothing and Laplacian edge.
@@ -87,9 +88,9 @@ namespace Freedom35.ImageProcessing
             switch (convolutionType)
             {
                 // Use Laplacian as default edge detection/sharpen filter
-                case ConvolutionType.EdgeLaplacianA:
                 case ConvolutionType.Edge:
                 case ConvolutionType.Sharpen:
+                case ConvolutionType.EdgeLaplacianWithPeak4:
                     return new int[3, 3]
                     {
                         {  0, -1,  0 },
@@ -97,7 +98,7 @@ namespace Freedom35.ImageProcessing
                         {  0, -1,  0 }
                     };
 
-                case ConvolutionType.EdgeLaplacianB:
+                case ConvolutionType.EdgeLaplacianWithPeak8:
                     return new int[3, 3]
                     {
                         { -1, -1, -1 },
@@ -121,7 +122,7 @@ namespace Freedom35.ImageProcessing
                         { -1,  0,  1 }
                     };
 
-                case ConvolutionType.SmoothingA:
+                case ConvolutionType.Smoothing:
                 case ConvolutionType.NoiseReduction:
                     return new int[3, 3]
                     {
@@ -130,7 +131,7 @@ namespace Freedom35.ImageProcessing
                         { 1,  1,  1 }
                     };
 
-                case ConvolutionType.SmoothingB:
+                case ConvolutionType.SmoothingWithHighPeak:
                     return new int[3, 3]
                     {
                         { 1,   3,  1 },
