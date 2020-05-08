@@ -10,12 +10,12 @@ namespace Freedom35.ImageProcessing
     public static class ImageConvolution
     {
         /// <summary>
-        /// Applies multiple convolution kernels to bitmap.
+        /// Applies multiple convolution kernels in sequence to image.
         /// </summary>
-        /// <param name="bitmap">Image to apply kernel to</param>
+        /// <param name="image">Image to apply kernel to</param>
         /// <param name="convolutionTypes">Convolutions to apply</param>
-        /// <returns>Image with all kernels applied</returns>
-        public static Image ApplyKernels(Image image, params ConvolutionType[] convolutionTypes)
+        /// <returns>Image with all kernels applied in sequence</returns>
+        public static Image ApplyKernelsInSequence(Image image, params ConvolutionType[] convolutionTypes)
         {
             // Remember original image type
             ImageFormat originalFormat = image.RawFormat;
@@ -23,27 +23,76 @@ namespace Freedom35.ImageProcessing
             // Convert to bitmap for image processing
             Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-            Bitmap combinedBitmap = ApplyKernels(bitmap, convolutionTypes);
+            Bitmap combinedBitmap = ApplyKernelsInSequence(bitmap, convolutionTypes);
 
             // Return processed image to original format
             return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
         }
 
         /// <summary>
-        /// Applies multiple convolution kernels to bitmap.
+        /// Applies multiple convolution kernels in sequence to bitmap.
         /// </summary>
         /// <param name="bitmap">Bitmap to apply kernel to</param>
         /// <param name="convolutionTypes">Convolutions to apply</param>
-        /// <returns>Bitmap with all kernels applied</returns>
-        public static Bitmap ApplyKernels(Bitmap bitmap, params ConvolutionType[] convolutionTypes)
+        /// <returns>Bitmap with all kernels applied in sequence</returns>
+        public static Bitmap ApplyKernelsInSequence(Bitmap bitmap, params ConvolutionType[] convolutionTypes)
+        {
+            Bitmap kernelBitmap = bitmap;
+
+            // Apply kernels in sequence
+            for (int i = 0; i < convolutionTypes.Length; i++)
+            {
+                Bitmap bmpTmp = ApplyKernel(kernelBitmap, convolutionTypes[i]);
+                
+                // Don't dispose of original image
+                if (i > 0)
+                {
+                    // No longer needed
+                    kernelBitmap.Dispose();
+                }
+
+                // Apply next kernel to new image
+                kernelBitmap = bmpTmp;
+            }
+
+            // Return bitmap with kernels applied
+            return kernelBitmap;
+        }
+
+        /// <summary>
+        /// Applies multiple convolution kernels to source image, then combines the results.
+        /// </summary>
+        /// <param name="image">Image to apply kernel to</param>
+        /// <param name="convolutionTypes">Convolutions to apply</param>
+        /// <returns>Image with all kernels combined</returns>
+        public static Image ApplyKernelsThenCombine(Image image, params ConvolutionType[] convolutionTypes)
+        {
+            // Remember original image type
+            ImageFormat originalFormat = image.RawFormat;
+
+            // Convert to bitmap for image processing
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+            Bitmap combinedBitmap = ApplyKernelsThenCombine(bitmap, convolutionTypes);
+
+            // Return processed image to original format
+            return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+        }
+
+        /// <summary>
+        /// Applies multiple convolution kernels to source bitmap, then combines the results.
+        /// </summary>
+        /// <param name="bitmap">Bitmap to apply kernel to</param>
+        /// <param name="convolutionTypes">Convolutions to apply</param>
+        /// <returns>Bitmap with all kernels combined</returns>
+        public static Bitmap ApplyKernelsThenCombine(Bitmap bitmap, params ConvolutionType[] convolutionTypes)
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
 
-            // Create new image for each filter
+            // Appky each kernel to the original image
             foreach (ConvolutionType type in convolutionTypes)
             {
-                Bitmap bmp = ApplyKernel(bitmap, type);
-                bitmaps.Add(bmp);
+                bitmaps.Add(ApplyKernel(bitmap, type));
             }
 
             // Combine to create a new image
