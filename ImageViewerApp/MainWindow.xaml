@@ -32,8 +32,18 @@
                     <TextBlock Text="Open Image..." TextAlignment="Center" Margin="5" />
                 </Label>
             </Button>
+            <Button x:Name="btRestoreImage" Click="Button_RestoreImage_Click" Margin="5,0,0,0" IsEnabled="False">
+                <Label>
+                    <TextBlock Text="Restore Image" TextAlignment="Center" Margin="5" />
+                </Label>
+            </Button>
+            <Button x:Name="btUndoImageChange" Click="Button_UndoImageChange_Click" Margin="5,0,0,0" IsEnabled="False">
+                <Label>
+                    <TextBlock Text="Undo" TextAlignment="Center" Margin="5" />
+                </Label>
+            </Button>
             <Label Margin="5" VerticalAlignment="Center">
-                <TextBlock x:Name="tbImageName" Text="Image Name" TextWrapping="WrapWithOverflow" Foreground="Snow" />
+                <TextBlock x:Name="tbImageName" Text="" TextWrapping="WrapWithOverflow" Foreground="Snow" />
             </Label>
         </WrapPanel>
         
@@ -46,7 +56,7 @@
 
         <!-- Options -->
         <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Vertical" Margin="10">
-            <Button Style="{StaticResource ImageOption}">
+            <Button Style="{StaticResource ImageOption}" Click="Button_Click">
                 <Label>Option 1</Label>
             </Button>
             <Button Style="{StaticResource ImageOption}">

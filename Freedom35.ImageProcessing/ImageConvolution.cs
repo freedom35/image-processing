@@ -130,13 +130,15 @@ namespace Freedom35.ImageProcessing
             ImageFormat originalFormat = image.RawFormat;
 
             // Convert to bitmap for image processing
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-            // Apply filter to bitmap
-            Bitmap bitmapWithFilter = ApplyKernel(bitmap, kernelMatrix);
-
-            // Covert processed image to original format
-            return ImageFormatting.ToFormat(bitmapWithFilter, originalFormat);
+            using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+            {
+                // Apply filter to bitmap
+                using (Bitmap bitmapWithFilter = ApplyKernel(bitmap, kernelMatrix))
+                {
+                    // Covert processed image to original format
+                    return ImageFormatting.ToFormat(bitmapWithFilter, originalFormat);
+                }
+            }
         }
 
         /// <summary>

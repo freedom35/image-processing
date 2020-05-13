@@ -19,7 +19,7 @@ namespace ImageViewerApp
         {
             if (value is Image img)
             {
-                return ConvertImageToBitmap(img);
+                return ConvertImageToBitmapSource(img);
             }
             else
             {
@@ -33,16 +33,16 @@ namespace ImageViewerApp
             throw new NotSupportedException();
         }
 
-        public static BitmapImage ConvertImageToBitmap(Image img)
+        public static BitmapImage ConvertImageToBitmapSource(Image image)
         {
             // First convert to stream
             using MemoryStream stream = new MemoryStream();
-            img.Save(stream, ImageFormat.Bmp);
+            image.Save(stream, ImageFormat.Bmp);
 
-            return ConvertStreamToBitmap(stream);
+            return ConvertStreamToBitmapSource(stream);
         }
 
-        public static BitmapImage ConvertStreamToBitmap(MemoryStream stream)
+        public static BitmapImage ConvertStreamToBitmapSource(MemoryStream stream)
         {
             BitmapImage bmp = null;
 
