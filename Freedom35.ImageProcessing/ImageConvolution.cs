@@ -17,16 +17,23 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image with all kernels applied in sequence</returns>
         public static Image ApplyKernelsInSequence(Image image, params ConvolutionType[] convolutionTypes)
         {
-            // Remember original image type
-            ImageFormat originalFormat = image.RawFormat;
+            if (image is Bitmap bmp)
+            {
+                return ApplyKernelsInSequence(bmp, convolutionTypes);
+            }
+            else
+            {
+                // Remember original image type
+                ImageFormat originalFormat = image.RawFormat;
 
-            // Convert to bitmap for image processing
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                // Convert to bitmap for image processing
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-            Bitmap combinedBitmap = ApplyKernelsInSequence(bitmap, convolutionTypes);
+                Bitmap combinedBitmap = ApplyKernelsInSequence(bitmap, convolutionTypes);
 
-            // Return processed image to original format
-            return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+                // Return processed image to original format
+                return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+            }
         }
 
         /// <summary>
@@ -67,16 +74,23 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image with all kernels combined</returns>
         public static Image ApplyKernelsThenCombine(Image image, params ConvolutionType[] convolutionTypes)
         {
-            // Remember original image type
-            ImageFormat originalFormat = image.RawFormat;
+            if (image is Bitmap bmp)
+            {
+                return ApplyKernelsThenCombine(bmp, convolutionTypes);
+            }
+            else
+            {
+                // Remember original image type
+                ImageFormat originalFormat = image.RawFormat;
 
-            // Convert to bitmap for image processing
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                // Convert to bitmap for image processing
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-            Bitmap combinedBitmap = ApplyKernelsThenCombine(bitmap, convolutionTypes);
+                Bitmap combinedBitmap = ApplyKernelsThenCombine(bitmap, convolutionTypes);
 
-            // Return processed image to original format
-            return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+                // Return processed image to original format
+                return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+            }
         }
 
         /// <summary>
@@ -126,17 +140,25 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image with kernel applied</returns>
         public static Image ApplyKernel(Image image, int[,] kernelMatrix)
         {
-            // Remember original image type
-            ImageFormat originalFormat = image.RawFormat;
-
-            // Convert to bitmap for image processing
-            using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+            // Skip conversion
+            if (image is Bitmap bmp)
             {
-                // Apply filter to bitmap
-                using (Bitmap bitmapWithFilter = ApplyKernel(bitmap, kernelMatrix))
+                return ApplyKernel(bmp, kernelMatrix);
+            }
+            else
+            {
+                // Remember original image type
+                ImageFormat originalFormat = image.RawFormat;
+
+                // Convert to bitmap for image processing
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
                 {
-                    // Covert processed image to original format
-                    return ImageFormatting.ToFormat(bitmapWithFilter, originalFormat);
+                    // Apply filter to bitmap
+                    using (Bitmap bitmapWithFilter = ApplyKernel(bitmap, kernelMatrix))
+                    {
+                        // Covert processed image to original format
+                        return ImageFormatting.ToFormat(bitmapWithFilter, originalFormat);
+                    }
                 }
             }
         }
