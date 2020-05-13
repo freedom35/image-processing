@@ -24,25 +24,34 @@ namespace Freedom35.ImageProcessing
         public static Image ToFormat(Image image, ImageFormat targetFormat)
         {
             // Returning new image
-            Image clone = (Image)image.Clone();
+            Image clone;
 
-            // Check not already a Bitmap
+            // Check not already a correct format
             if (!image.RawFormat.Equals(targetFormat))
             {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    // Save to stream in Bitmap format
-                    image.Save(ms, targetFormat);
+                // Do not dispose of stream, 
+                // or will cause issues for future image processing calls
+                MemoryStream ms = new MemoryStream();
+                image.Save(ms, targetFormat);
 
-                    // Dispose of current image
-                    //image.Dispose();
-
-                    // Create new image
-                    clone = Image.FromStream(ms);
-                }
+                clone = Image.FromStream(ms);
+            }
+            else
+            {
+                clone = (Image)image.Clone();
             }
 
             return clone;
         }
+
+        ///// <summary>
+        ///// Compares image formats.
+        ///// </summary>
+        //private static bool AreSameFormat(ImageFormat format1, ImageFormat format2)
+        //{
+        //    return format1.Equals(format2)
+        //        || format1.Equals(ImageFormat.Bmp) && format2.Equals(ImageFormat.MemoryBmp)
+        //        || format1.Equals(ImageFormat.MemoryBmp) && format2.Equals(ImageFormat.Bmp);
+        //}
     }
 }
