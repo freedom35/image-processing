@@ -82,7 +82,7 @@ namespace Freedom35.ImageProcessing
             bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
             // Create length with number of bytes in image
-            byte[] rgbValues = new byte[bmpData.GetImageLength()];
+            byte[] rgbValues = new byte[bmpData.GetByteCount()];
 
             // Copy the RGB values into the array.
             Marshal.Copy(bmpData.Scan0, rgbValues, 0, rgbValues.Length);
@@ -319,6 +319,70 @@ namespace Freedom35.ImageProcessing
 
             // Return average value within range
             return (byte)histogram.Average(b => b);
+        }
+
+        /// <summary>
+        /// Converts array of bytes to an array of bits.
+        /// </summary>
+        /// <param name="byteValues">Array of bytes values</param>
+        /// <returns>Array of bits</returns>
+        public static byte[] BytesToBits(byte[] byteValues)
+        {
+            byte[] bitValues = new byte[byteValues.Length * Constants.BitsPerByte];
+
+            byte val;
+            int bitIndex, j;
+
+            for (int i = 0; i < byteValues.Length; i++)
+            {
+                val = byteValues[i];
+
+                bitIndex = i * Constants.BitsPerByte;
+
+                for (j = 0; j < Constants.BitsPerByte; j++)
+                {
+                    // Get most significant bit
+                    bitValues[bitIndex + j] = (byte)((val & 0x80) >> 7);
+
+                    // Shift bits up
+                    val <<= 1;
+                }
+            }
+
+            return bitValues;
+        }
+
+        /// <summary>
+        /// Converts array of bits to an array of bytes.
+        /// </summary>
+        /// <param name="bitValues">Array of bit values</param>
+        /// <returns>Array of bytes</returns>
+        public static byte[] BitsToBytes(byte[] bitValues)
+        {
+            byte[] byteValues = new byte[bitValues.Length / Constants.BitsPerByte];
+
+            byte val;
+            int bitIndex, j;
+
+            for (int i = 0; i < byteValues.Length; i++)
+            {
+                val = 0;
+
+                bitIndex = i * Constants.BitsPerByte;
+
+                for (j = 0; j < Constants.BitsPerByte; j++)
+                {
+                    // Shift existing bits up
+                    val <<= 1;
+
+                    // Add byte value
+                    val += bitValues[bitIndex + j] > 0 ? Constants.One : Constants.Zero;
+                }
+
+                byteValues[i] = val;
+            }
+
+            return byteValues;
         }
     }
 }

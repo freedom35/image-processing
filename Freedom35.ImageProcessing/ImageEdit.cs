@@ -29,12 +29,24 @@ namespace Freedom35.ImageProcessing
             bmpData = bitmap.LockBits(rect, lockMode, bitmap.PixelFormat);
 
             // Create length with number of bytes in image
-            byte[] rgbValues = new byte[bmpData.GetImageLength()];
+            byte[] rgbValues = new byte[bmpData.GetByteCount()];
 
             // Copy the RGB values into the array.
             Marshal.Copy(bmpData.Scan0, rgbValues, 0, rgbValues.Length);
 
-            return rgbValues;
+            // Check if monochrome
+            if (bitmap.PixelFormat == PixelFormat.Format1bppIndexed)
+            {
+                // Adjust stride
+                bmpData.Stride *= Constants.BitsPerByte;
+
+                // Convert each bit to a separate byte
+                return ImageBytes.BytesToBits(rgbValues);
+            }
+            else
+            {
+                return rgbValues;
+            }
         }
 
         /// <summary>
@@ -43,6 +55,16 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         public static void End(Bitmap bitmap, BitmapData bmpData, byte[] rgbValues)
         {
+            // Convert monochrome back to byte array
+            if (bitmap.PixelFormat == PixelFormat.Format1bppIndexed)
+            {
+                // Restore stride
+                bmpData.Stride /= Constants.BitsPerByte;
+
+                // Consolidate to bytes
+                rgbValues = ImageBytes.BitsToBytes(rgbValues);
+            }
+
             // Copy the RGB values back to the bitmap
             Marshal.Copy(rgbValues, 0, bmpData.Scan0, rgbValues.Length);
 

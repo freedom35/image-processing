@@ -99,9 +99,6 @@ namespace Freedom35.ImageProcessing
 
             int sum;
 
-            const byte One = 0x01;
-            const byte Zero = 0x00;
-
             // Get 0 or 1 for each pixel
             for (int i = 0; i < binaryBytes.Length; i++)
             {
@@ -114,7 +111,7 @@ namespace Freedom35.ImageProcessing
                 }
 
                 // Set binary value
-                binaryBytes[i] = (sum / pixelDepth) < threshold ? Zero : One;
+                binaryBytes[i] = (sum / pixelDepth) < threshold ? Constants.Zero : Constants.One;
             }
 
             return binaryBytes;

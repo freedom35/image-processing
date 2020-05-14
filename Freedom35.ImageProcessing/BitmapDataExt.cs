@@ -21,7 +21,7 @@ namespace Freedom35.ImageProcessing
         /// Gets the number of bytes in an image.
         /// (Excluding encoding bytes)
         /// </summary>
-        public static int GetImageLength(this BitmapData bitmapData)
+        public static int GetByteCount(this BitmapData bitmapData)
         {
             return Math.Abs(bitmapData.Stride) * bitmapData.Height;
         }
