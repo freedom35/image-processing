@@ -219,9 +219,9 @@ namespace Freedom35.ImageProcessing
             int bmpWidth = bmpData.Width;
             int bmpHeight = bmpData.Height;
             int bmpStride = bmpData.Stride;
-            int pixelDepth = (bmpStride / bmpWidth);
+            int pixelDepth = bmpData.GetPixelDepth();
 
-            // Re-used often
+            // Reused often
             int bmpX, bmpY, mX, mY, iX, iY;
             int newValue;
             int pixelIndex;
