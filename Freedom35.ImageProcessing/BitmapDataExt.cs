@@ -14,7 +14,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         public static int GetPixelDepth(this BitmapData bitmapData)
         {
-            return Math.Abs(bitmapData.Stride) / bitmapData.Width;
+            return Math.Max(1, Math.Abs(bitmapData.Stride) / bitmapData.Width);
         }
 
         /// <summary>

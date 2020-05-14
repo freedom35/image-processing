@@ -222,7 +222,7 @@ namespace Freedom35.ImageProcessing
         /// Applies convolution matrix/kernel to image.
         /// i.e. edge detection.
         /// </summary>
-        /// <param name="imageBytes">RGB image bytes</param>
+        /// <param name="imageBytes">Image bytes (Grayscale/RGB)</param>
         /// <param name="bitmapData">Info on image properties</param>
         /// <param name="kernelMatrix">Kernel matrix</param>
         public static void ApplyKernel(byte[] imageBytes, BitmapData bitmapData, int[,] kernelMatrix)
@@ -243,72 +243,69 @@ namespace Freedom35.ImageProcessing
             int newValue;
             int pixelIndex;
             int iYbyStride;
+            
+            // 3 bits per pixel on color image (RGB)
+            int maxChannels = isColor ? 3 : 1;
 
-            // Move through rows
-            for (bmpY = 0; bmpY < bmpHeight; bmpY++)
+            // Perform convolution for each color channel
+            for (int colorChannel = 0; colorChannel < maxChannels; colorChannel++)
             {
-                // Check if edge case, skip if so
-                //if (bmpY + matrixLenY > bmpHeight)
-                //{
-                //    break;
-                //}
-
-                // Move through columns
-                for (bmpX = 0; bmpX < bmpWidth; bmpX++)
+                // Move through rows
+                for (bmpY = 0; bmpY < bmpHeight; bmpY++)
                 {
-                    // Check if edge case
-                    if ((bmpY + matrixLenY > bmpHeight) || (bmpX + matrixLenX > bmpWidth))
+                    // Move through columns
+                    for (bmpX = 0; bmpX < bmpWidth; bmpX++)
                     {
-                        // Assign non-value, black
-                        newValue = 0;
-                    }
-                    else
-                    {
-                        // Reset
-                        newValue = 0;
-
-                        // Move through matrix to calculate new value
-                        for (mY = 0; mY < matrixLenY; mY++)
+                        // Check if edge case
+                        if ((bmpY + matrixLenY > bmpHeight) || (bmpX + matrixLenX > bmpWidth))
                         {
-                            // Image Y coordinate with respect to matrix.
-                            iY = bmpY + mY;
+                            // Assign non-value, black
+                            newValue = 0;
+                        }
+                        else
+                        {
+                            // Reset
+                            newValue = 0;
 
-                            iYbyStride = iY * bmpStride;
-
-                            for (mX = 0; mX < matrixLenX; mX++)
+                            // Move through matrix to calculate new value
+                            for (mY = 0; mY < matrixLenY; mY++)
                             {
-                                // Image X coordinate with respect to matrix.
-                                iX = bmpX + mX;
+                                // Image Y coordinate with respect to matrix.
+                                iY = bmpY + mY;
 
-                                // Add convolution value for pixel
-                                newValue += kernelMatrix[mX, mY] * imageBytes[(iX * pixelDepth) + iYbyStride];
+                                iYbyStride = iY * bmpStride;
+
+                                for (mX = 0; mX < matrixLenX; mX++)
+                                {
+                                    // Image X coordinate with respect to matrix.
+                                    iX = bmpX + mX;
+
+                                    // Get R, G, or B index
+                                    pixelIndex = (iX * pixelDepth) + iYbyStride + colorChannel;
+
+                                    // Add convolution value for pixel
+                                    newValue += kernelMatrix[mX, mY] * imageBytes[pixelIndex];
+                                }
+                            }
+
+                            // Check value within range
+                            // (Some filter values are negative)
+                            if (newValue < 0)
+                            {
+                                newValue = 0;
+                            }
+                            else if (newValue > byte.MaxValue)
+                            {
+                                // Value oversaturated
+                                newValue = byte.MaxValue;
                             }
                         }
 
-                        // Check value within range
-                        // (Some filter values are negative)
-                        if (newValue < 0)
-                        {
-                            newValue = 0;
-                        }
-                        else if (newValue > byte.MaxValue)
-                        {
-                            // Value oversaturated
-                            newValue = byte.MaxValue;
-                        }
-                    }
+                        // Get current pixel
+                        pixelIndex = (bmpX * pixelDepth) + (bmpY * bmpStride) + colorChannel;
 
-                    // Get current pixel
-                    pixelIndex = (bmpX * pixelDepth) + (bmpY * bmpStride);
-
-                    // Update pixel value
-                    imageBytes[pixelIndex] = (byte)newValue;
-
-                    // 3 bits per pixel on color image (RGB)
-                    if (isColor)
-                    {
-                        imageBytes[pixelIndex + 1] = imageBytes[pixelIndex];
-                        imageBytes[pixelIndex + 2] = imageBytes[pixelIndex];
+                        // Update pixel value
+                        imageBytes[pixelIndex] = (byte)newValue;
                     }
                 }
             }
