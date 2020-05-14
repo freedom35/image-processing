@@ -248,51 +248,54 @@ namespace Freedom35.ImageProcessing
             for (bmpY = 0; bmpY < bmpHeight; bmpY++)
             {
                 // Check if edge case, skip if so
-                if (bmpY + matrixLenY > bmpHeight)
-                {
-                    break;
-                }
+                //if (bmpY + matrixLenY > bmpHeight)
+                //{
+                //    break;
+                //}
 
                 // Move through columns
                 for (bmpX = 0; bmpX < bmpWidth; bmpX++)
                 {
-                    // Check if edge case, skip if so
-                    if (bmpX + matrixLenX > bmpWidth)
+                    // Check if edge case
+                    if ((bmpY + matrixLenY > bmpHeight) || (bmpX + matrixLenX > bmpWidth))
                     {
-                        break;
-                    }
-
-                    // Reset
-                    newValue = 0;
-
-                    // Move through matrix to calculate new value
-                    for (mY = 0; mY < matrixLenY; mY++)
-                    {
-                        // Image Y coordinate with respect to matrix.
-                        iY = bmpY + mY;
-
-                        iYbyStride = iY * bmpStride;
-
-                        for (mX = 0; mX < matrixLenX; mX++)
-                        {
-                            // Image X coordinate with respect to matrix.
-                            iX = bmpX + mX;
-
-                            // Add convolution value for pixel
-                            newValue += kernelMatrix[mX, mY] * imageBytes[(iX * pixelDepth) + iYbyStride];
-                        }
-                    }
-
-                    // Check value within range
-                    // (Some filter values are negative)
-                    if (newValue < 0)
-                    {
+                        // Assign non-value, black
                         newValue = 0;
                     }
-                    else if (newValue > byte.MaxValue)
+                    else
                     {
-                        // Value oversaturated
-                        newValue = byte.MaxValue;
+                        // Reset
+                        newValue = 0;
+
+                        // Move through matrix to calculate new value
+                        for (mY = 0; mY < matrixLenY; mY++)
+                        {
+                            // Image Y coordinate with respect to matrix.
+                            iY = bmpY + mY;
+
+                            iYbyStride = iY * bmpStride;
+
+                            for (mX = 0; mX < matrixLenX; mX++)
+                            {
+                                // Image X coordinate with respect to matrix.
+                                iX = bmpX + mX;
+
+                                // Add convolution value for pixel
+                                newValue += kernelMatrix[mX, mY] * imageBytes[(iX * pixelDepth) + iYbyStride];
+                            }
+                        }
+
+                        // Check value within range
+                        // (Some filter values are negative)
+                        if (newValue < 0)
+                        {
+                            newValue = 0;
+                        }
+                        else if (newValue > byte.MaxValue)
+                        {
+                            // Value oversaturated
+                            newValue = byte.MaxValue;
+                        }
                     }
 
                     // Get current pixel

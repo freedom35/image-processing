@@ -37,11 +37,19 @@ namespace ImageProcessingTests
             ImageConvolution.ApplyKernel(imageBytes, bmpData, kernelMatrix);
 
             // Edge cases retain original values
+            //byte[] expectedBytes = {
+            //    2, 5, 7, 6, 4,
+            //    2, 4, 7, 7, 3,
+            //    3, 2, 7, 7, 3,
+            //    1, 1, 1, 4, 4
+            //};
+
+            // Edge cases assigned black value
             byte[] expectedBytes = {
-                2, 5, 7, 6, 4,
-                2, 4, 7, 7, 3,
-                3, 2, 7, 7, 3,
-                1, 1, 1, 4, 4
+                2, 5, 7, 6, 0,
+                2, 4, 7, 7, 0,
+                3, 2, 7, 7, 0,
+                0, 0, 0, 0, 0
             };
 
             // Check arrays are same length
