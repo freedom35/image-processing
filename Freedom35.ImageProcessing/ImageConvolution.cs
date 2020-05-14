@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -211,59 +212,74 @@ namespace Freedom35.ImageProcessing
             // Lock image for processing
             byte[] rgbValues = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
+            ApplyKernel(rgbValues, bmpData, kernelMatrix);
+
+            // Copy modified array back to image, and release lock
+            ImageEdit.End(bitmap, bmpData, rgbValues);
+        }
+
+        /// <summary>
+        /// Applies convolution matrix/kernel to image.
+        /// i.e. edge detection.
+        /// </summary>
+        /// <param name="imageBytes">RGB image bytes</param>
+        /// <param name="bitmapData">Info on image properties</param>
+        /// <param name="kernelMatrix">Kernel matrix</param>
+        public static void ApplyKernel(byte[] imageBytes, BitmapData bitmapData, int[,] kernelMatrix)
+        {
             // Matrix is typically square, but may not be
             int matrixLenX = kernelMatrix.GetLength(0);
             int matrixLenY = kernelMatrix.GetLength(1);
 
             // Get bitmap info
-            int bmpWidth = bmpData.Width;
-            int bmpHeight = bmpData.Height;
-            int bmpStride = bmpData.Stride;
-            int pixelDepth = bmpData.GetPixelDepth();
+            int bmpWidth = bitmapData.Width;
+            int bmpHeight = bitmapData.Height;
+            int bmpStride = Math.Abs(bitmapData.Stride);
+            int pixelDepth = bitmapData.GetPixelDepth();
+            bool isColor = bitmapData.IsColor();
 
             // Reused often
             int bmpX, bmpY, mX, mY, iX, iY;
             int newValue;
             int pixelIndex;
+            int iYbyStride;
 
-            // Move through image
-            for (bmpX = 0; bmpX < bmpWidth; bmpX++)
+            // Move through rows
+            for (bmpY = 0; bmpY < bmpHeight; bmpY++)
             {
-                for (bmpY = 0; bmpY < bmpHeight; bmpY++)
+                // Check if edge case, skip if so
+                if (bmpY + matrixLenY > bmpHeight)
                 {
+                    break;
+                }
+
+                // Move through columns
+                for (bmpX = 0; bmpX < bmpWidth; bmpX++)
+                {
+                    // Check if edge case, skip if so
+                    if (bmpX + matrixLenX > bmpWidth)
+                    {
+                        break;
+                    }
+
+                    // Reset
                     newValue = 0;
 
                     // Move through matrix to calculate new value
-                    for (mX = 0; mX < matrixLenX; mX++)
+                    for (mY = 0; mY < matrixLenY; mY++)
                     {
-                        // Image X coordinate with respect to matrix.
-                        iX = bmpX + mX;
+                        // Image Y coordinate with respect to matrix.
+                        iY = bmpY + mY;
 
-                        // Check within image
-                        if (iX < bmpWidth)
-                        {
-                            for (mY = 0; mY < matrixLenY; mY++)
-                            {
-                                // Image Y coordinate with respect to matrix.
-                                iY = bmpY + mY;
+                        iYbyStride = iY * bmpStride;
 
-                                // Check within image
-                                if (iY < bmpHeight)
-                                {
-                                    // Add convolution value
-                                    newValue += kernelMatrix[mX, mY] * rgbValues[(iX * pixelDepth) + (iY * bmpStride)];
-                                }
-                                else
-                                {
-                                    // Outside of image bounds
-                                    break;
-                                }
-                            }
-                        }
-                        else
+                        for (mX = 0; mX < matrixLenX; mX++)
                         {
-                            // Outside of image bounds
-                            break;
+                            // Image X coordinate with respect to matrix.
+                            iX = bmpX + mX;
+
+                            // Add convolution value for pixel
+                            newValue += kernelMatrix[mX, mY] * imageBytes[(iX * pixelDepth) + iYbyStride];
                         }
                     }
 
@@ -283,19 +299,16 @@ namespace Freedom35.ImageProcessing
                     pixelIndex = (bmpX * pixelDepth) + (bmpY * bmpStride);
 
                     // Update pixel value
-                    rgbValues[pixelIndex] = (byte)newValue;
+                    imageBytes[pixelIndex] = (byte)newValue;
 
                     // 3 bits per pixel on color image (RGB)
-                    if (pixelDepth == 3)
+                    if (isColor)
                     {
-                        rgbValues[pixelIndex + 1] = rgbValues[pixelIndex];
-                        rgbValues[pixelIndex + 2] = rgbValues[pixelIndex];
+                        imageBytes[pixelIndex + 1] = imageBytes[pixelIndex];
+                        imageBytes[pixelIndex + 2] = imageBytes[pixelIndex];
                     }
                 }
             }
-
-            // Copy modified array back to image, and release lock
-            ImageEdit.End(bitmap, bmpData, rgbValues);
         }
     }
 }

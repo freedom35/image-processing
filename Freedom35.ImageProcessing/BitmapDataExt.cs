@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using System;
+using System.Drawing.Imaging;
 
 namespace Freedom35.ImageProcessing
 {
@@ -13,7 +14,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         public static int GetPixelDepth(this BitmapData bitmapData)
         {
-            return bitmapData.Stride / bitmapData.Width;
+            return Math.Abs(bitmapData.Stride) / bitmapData.Width;
         }
 
         /// <summary>
@@ -22,7 +23,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         public static int GetImageLength(this BitmapData bitmapData)
         {
-            return bitmapData.Stride * bitmapData.Height;
+            return Math.Abs(bitmapData.Stride) * bitmapData.Height;
         }
 
         /// <summary>

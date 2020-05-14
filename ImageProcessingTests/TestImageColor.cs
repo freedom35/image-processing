@@ -5,7 +5,7 @@ using System.Linq;
 namespace ImageProcessingTests
 {
     [TestClass]
-    public class TestImageProcessing
+    public class TestImageColor
     {
         [TestMethod]
         public void TestConvertToGrayscale()

@@ -30,7 +30,7 @@ namespace Freedom35.ImageProcessing
             // Get bytes for image
             byte[] rgbValues1 = ImageEdit.Begin(combinedImage, out BitmapData bmpData1);
 
-            int pixelDepth = (bmpData1.Stride / bmpData1.Width);
+            int pixelDepth = bmpData1.GetPixelDepth();
 
             // Add additional images to first
             foreach (Bitmap bitmap in images.Skip(1))
