@@ -27,12 +27,14 @@ namespace Freedom35.ImageProcessing
                 ImageFormat originalFormat = image.RawFormat;
 
                 // Convert to bitmap for image processing
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                Bitmap combinedBitmap = ApplyKernelsInSequence(bitmap, convolutionTypes);
-
-                // Return processed image to original format
-                return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    using (Bitmap combinedBitmap = ApplyKernelsInSequence(bitmap, convolutionTypes))
+                    {
+                        // Return processed image to original format
+                        return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+                    }
+                }
             }
         }
 
@@ -84,12 +86,14 @@ namespace Freedom35.ImageProcessing
                 ImageFormat originalFormat = image.RawFormat;
 
                 // Convert to bitmap for image processing
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                Bitmap combinedBitmap = ApplyKernelsThenCombine(bitmap, convolutionTypes);
-
-                // Return processed image to original format
-                return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    using (Bitmap combinedBitmap = ApplyKernelsThenCombine(bitmap, convolutionTypes))
+                    {
+                        // Return processed image to original format
+                        return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+                    }
+                }
             }
         }
 
@@ -187,11 +191,25 @@ namespace Freedom35.ImageProcessing
         /// <returns>Bitmap with kernel applied</returns>
         public static Bitmap ApplyKernel(Bitmap bitmap, int[,] kernelMatrix)
         {
-            // Returning new image
+            // Returning new instance
             Bitmap clone = (Bitmap)bitmap.Clone();
 
+            // Apply kernel to clone
+            ApplyKernelDirect(ref clone, kernelMatrix);
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Applies convolution matrix/kernel to image.
+        /// i.e. edge detection.
+        /// </summary>
+        /// <param name="bitmap">Image to apply kernel to</param>
+        /// <param name="kernelMatrix">Kernel matrix</param>
+        public static void ApplyKernelDirect(ref Bitmap bitmap, int[,] kernelMatrix)
+        {
             // Lock image for processing
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            byte[] rgbValues = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
             // Matrix is typically square, but may not be
             int matrixLenX = kernelMatrix.GetLength(0);
@@ -277,10 +295,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Copy modified array back to image, and release lock
-            ImageEdit.End(clone, bmpData, rgbValues);
-
-            // Return new instance
-            return clone;
+            ImageEdit.End(bitmap, bmpData, rgbValues);
         }
     }
 }
