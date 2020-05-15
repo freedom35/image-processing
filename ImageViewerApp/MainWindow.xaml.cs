@@ -134,12 +134,15 @@ namespace ImageViewerApp
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_ApplyConvolution_Click(object sender, RoutedEventArgs e)
         {
-            if (currentImage != null)
+            if (currentImage != null && cmbConvolution.SelectedIndex > -1)
             {
-                DisplayImage(ImageConvolution.ApplyKernel(currentImage, ConvolutionType.Edge));
-                //DisplayImage(ImageResize.ResizeAsNew((Bitmap)currentImage, 0.8));
+                string strValue = (cmbConvolution.SelectedItem as string).Replace(" ", "");
+                
+                ConvolutionType type = (ConvolutionType)Enum.Parse(typeof(ConvolutionType), strValue);
+                
+                DisplayImage(ImageConvolution.ApplyKernel(currentImage, type));
             }
         }
     }
