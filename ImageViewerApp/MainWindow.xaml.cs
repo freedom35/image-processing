@@ -138,9 +138,9 @@ namespace ImageViewerApp
         {
             if (currentImage != null && cmbConvolution.SelectedIndex > -1)
             {
-                string strValue = (cmbConvolution.SelectedItem as string).Replace(" ", "");
-                
-                ConvolutionType type = (ConvolutionType)Enum.Parse(typeof(ConvolutionType), strValue);
+                string strValue = cmbConvolution.SelectedItem as string;
+
+                ConvolutionType type = EnumConverter.GetValueFromDescription<ConvolutionType>(strValue);
                 
                 DisplayImage(ImageConvolution.ApplyKernel(currentImage, type));
             }
