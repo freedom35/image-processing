@@ -40,12 +40,25 @@ namespace Freedom35.ImageProcessing
         /// <returns>Contrast-stretched image</returns>
         public static Image Stretch(Image image, byte min, byte max)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+            if (image is Bitmap bmp)
+            {
+                return Stretch(bmp, min, max);
+            }
+            else
+            {
+                // Convert to bitmap format to perform stretch
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                
+                StretchDirect(ref bitmap, min, max);
 
-            Bitmap stretchedBitmap = Stretch(bitmap, min, max);
+                // Restore original image format
+                Image stretchedImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
 
-            // Restore original image format
-            return ImageFormatting.ToFormat(stretchedBitmap, image.RawFormat);
+                // Dispose of temp bitmap
+                bitmap.Dispose();
+
+                return stretchedImage;
+            }
         }
 
         /// <summary>
@@ -60,8 +73,37 @@ namespace Freedom35.ImageProcessing
             // Return new image
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            StretchDirect(ref clone, min, max);
 
+            return clone;
+        }
+
+        /// <summary>
+        /// Stretches image contrast to specified min/max values.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="min">Minimum contrast value</param>
+        /// <param name="max">Maximum contrast value</param>
+        public static void StretchDirect(ref Bitmap bitmap, byte min, byte max)
+        {
+            // Lock image for processing
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            StretchDirect(imageBytes, bmpData, min, max);
+
+            // Copy modified array back to image, and release lock
+            ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
+
+        /// <summary>
+        /// Stretches image contrast to specified min/max values.
+        /// </summary>
+        /// <param name="imageBytes">Image bytes (Grayscale/RGB)</param>
+        /// <param name="bmpData">Info on image properties</param>
+        /// <param name="min">Minimum contrast value</param>
+        /// <param name="max">Maximum contrast value</param>
+        public static void StretchDirect(byte[] imageBytes, BitmapData bmpData, byte min, byte max)
+        {
             int pixelDepth = bmpData.GetPixelDepth();
             bool isColor = bmpData.IsColor();
 
@@ -71,7 +113,7 @@ namespace Freedom35.ImageProcessing
             byte val;
 
             // Bitmap converted from jpeg can potentially can potentially have array with extra odd byte.
-            int limit = (isColor ? rgbValues.Length - (pixelDepth - 1) : rgbValues.Length);
+            int limit = (isColor ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length);
 
             //////////////////////////////////////
             // First find current contrast range
@@ -80,11 +122,11 @@ namespace Freedom35.ImageProcessing
             {
                 if (isColor)
                 {
-                    val = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+                    val = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
                 }
                 else
                 {
-                    val = rgbValues[i];
+                    val = imageBytes[i];
                 }
 
                 // Check contrast ranges
@@ -106,7 +148,7 @@ namespace Freedom35.ImageProcessing
                 for (int j = 0; j < pixelDepth; j++)
                 {
                     // Contrast-stretch value
-                    val = (byte)((rgbValues[i + j] - lowest) * (max / (highest - lowest)));
+                    val = (byte)((imageBytes[i + j] - lowest) * (max / (highest - lowest)));
 
                     // Check limits
                     if (val < lowest)
@@ -118,14 +160,9 @@ namespace Freedom35.ImageProcessing
                         val = max;
                     }
 
-                    rgbValues[i + j] = val;
+                    imageBytes[i + j] = val;
                 }
             }
-
-            // Overwrite cloned image with stretched contrast
-            ImageEdit.End(clone, bmpData, rgbValues);
-
-            return clone;
         }
     }
 }
