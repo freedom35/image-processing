@@ -59,6 +59,10 @@ namespace ImageViewerApp
 
                 // Update filename
                 tbImageName.Text = filename;
+
+                // Update thumbnail
+                Image thumbnailImage = ImageThumbnail.CreateWithSameAspect(originalImage, (int)pbThumbnail.ActualWidth, (int)pbThumbnail.ActualHeight);
+                pbThumbnail.Source = ImageConverter.ConvertImageToBitmapSource(thumbnailImage);
             }
             catch (Exception ex)
             {
