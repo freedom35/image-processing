@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Freedom35.ImageProcessing
 {
@@ -10,22 +11,26 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Default edge detection filter.
         /// </summary>
+        [Description("Edge")]
         Edge,
 
         /// <summary>
         /// Default smoothing/blur filter.
         /// (3x3, all 1's)
         /// </summary>
+        [Description("Smoothing")]
         Smoothing,
 
         /// <summary>
         /// Alternate smoothing filter.
         /// </summary>
+        [Description("Smoothing (with high peak)")]
         SmoothingWithHighPeak,
 
         /// <summary>
         /// Reduces image noise (by smoothing).
         /// </summary>
+        [Description("Noise Reduction")]
         NoiseReduction,
 
         /// <summary>
@@ -37,39 +42,46 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Sharpens edges of image.
         /// </summary>
+        [Description("Sharpen")]
         Sharpen,
 
         /// <summary>
         /// Laplacian A edge/high-pass filter.
         /// (Matrix with peak of 4)
         /// </summary>
+        [Description("Edge Laplacian (with peak 4)")]
         EdgeLaplacianWithPeak4,
 
         /// <summary>
         /// Laplacian B edge/high-pass filter.
         /// (Matrix with diagonals and peak of 8)
         /// </summary>
+        [Description("Edge Laplacian (with peak 8)")]
         EdgeLaplacianWithPeak8,
 
         /// <summary>
         /// Applies Gaussian smoothing and Laplacian edge.
         /// (Less sensitive to noise, Gaussian σ = 1.4)
         /// </summary>
+        [Description("Edge Laplacian of Gaussian")]
         EdgeLaplacianOfGaussian,
 
         /// <summary>
         /// Sobel vertical edge/high-pass filter.
         /// </summary>
+        [Description("Sobel Vertical Edge")]
         EdgeSobelVertical,
 
         /// <summary>
         /// Sobel horizontal edge/high-pass filter.
         /// </summary>
+        [Description("Sobel Horizontal Edge")]
         EdgeSobelHorizontal,
 
         /// <summary>
         /// Creates an embossing effect.
         /// </summary>
+        [Description("Emboss")]
         Emboss
     }
 
