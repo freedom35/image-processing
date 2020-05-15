@@ -34,7 +34,7 @@ namespace ImageProcessingTests
             };
 
             // Apply kernel to bytes
-            ImageConvolution.ApplyKernel(imageBytes, bmpData, kernelMatrix);
+            byte[] resultBytes = ImageConvolution.ApplyKernel(imageBytes, bmpData, kernelMatrix);
 
             // Edge cases retain original values
             //byte[] expectedBytes = {
@@ -53,12 +53,12 @@ namespace ImageProcessingTests
             };
 
             // Check arrays are same length
-            Assert.AreEqual(expectedBytes.Length, imageBytes.Length);
+            Assert.AreEqual(expectedBytes.Length, resultBytes.Length);
 
             // Check each byte
             for (int i = 0; i < expectedBytes.Length; i++)
             {
-                Assert.AreEqual(expectedBytes[i], imageBytes[i]);
+                Assert.AreEqual(expectedBytes[i], resultBytes[i]);
             }
         }
 
@@ -88,7 +88,7 @@ namespace ImageProcessingTests
             };
 
             // Apply kernel to bytes
-            ImageConvolution.ApplyKernel(imageBytes, bmpData, kernelMatrix);
+            byte[] resultBytes = ImageConvolution.ApplyKernel(imageBytes, bmpData, kernelMatrix);
 
             // Edge cases assigned black value
             byte[] expectedBytes = {
@@ -99,12 +99,12 @@ namespace ImageProcessingTests
             };
 
             // Check arrays are same length
-            Assert.AreEqual(expectedBytes.Length, imageBytes.Length);
+            Assert.AreEqual(expectedBytes.Length, resultBytes.Length);
 
             // Check each byte
             for (int i = 0; i < expectedBytes.Length; i++)
             {
-                Assert.AreEqual(expectedBytes[i], imageBytes[i]);
+                Assert.AreEqual(expectedBytes[i], resultBytes[i]);
             }
         }
     }

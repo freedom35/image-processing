@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Freedom35.ImageProcessing
 {
@@ -212,7 +213,7 @@ namespace Freedom35.ImageProcessing
             // Lock image for processing
             byte[] rgbValues = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
-            ApplyKernel(rgbValues, bmpData, kernelMatrix);
+            rgbValues = ApplyKernel(rgbValues, bmpData, kernelMatrix);
 
             // Copy modified array back to image, and release lock
             ImageEdit.End(bitmap, bmpData, rgbValues);
@@ -225,11 +226,17 @@ namespace Freedom35.ImageProcessing
         /// <param name="imageBytes">Image bytes (Grayscale/RGB)</param>
         /// <param name="bitmapData">Info on image properties</param>
         /// <param name="kernelMatrix">Kernel matrix</param>
-        public static void ApplyKernel(byte[] imageBytes, BitmapData bitmapData, int[,] kernelMatrix)
+        /// <returns>byte array with kernel applied</returns>
+        public static byte[] ApplyKernel(byte[] imageBytes, BitmapData bitmapData, int[,] kernelMatrix)
         {
             // Matrix is typically square, but may not be
             int matrixLenX = kernelMatrix.GetLength(0);
             int matrixLenY = kernelMatrix.GetLength(1);
+
+            // Position in matrix where convolution value assigned
+            // (Use center for 3x3 etc.)
+            int matrixValX = (matrixLenX - 1) / 2;
+            int matrixValY = (matrixLenY - 1) / 2;
 
             // Get bitmap info
             int bmpWidth = bitmapData.Width;
@@ -247,6 +254,10 @@ namespace Freedom35.ImageProcessing
             // 3 bits per pixel on color image (RGB)
             int maxChannels = isColor ? 3 : 1;
 
+            // Create separate array so previous convolution values
+            // don't interfere with later values as traverse image
+            byte[] results = new byte[imageBytes.Length];
+
             // Perform convolution for each color channel
             for (int colorChannel = 0; colorChannel < maxChannels; colorChannel++)
             {
@@ -261,6 +272,9 @@ namespace Freedom35.ImageProcessing
                         {
                             // Assign non-value, black
                             newValue = 0;
+
+                            // Get target pixel for value
+                            pixelIndex = (bmpX * pixelDepth) + (bmpY * bmpStride);
                         }
                         else
                         {
@@ -299,16 +313,23 @@ namespace Freedom35.ImageProcessing
                                 // Value oversaturated
                                 newValue = byte.MaxValue;
                             }
+
+                            // Get target pixel for value
+                            pixelIndex = (bmpX + matrixValX) * pixelDepth;
+                            pixelIndex += (bmpY + matrixValY) * bmpStride;
                         }
 
-                        // Get current pixel
-                        pixelIndex = (bmpX * pixelDepth) + (bmpY * bmpStride) + colorChannel;
+                        // Adjust for color channel
+                        pixelIndex += colorChannel;
 
                         // Update pixel value
-                        imageBytes[pixelIndex] = (byte)newValue;
+                        results[pixelIndex] = (byte)newValue;
                     }
                 }
             }
+
+            // Return new values
+            return results;
         }
     }
 }
