@@ -17,12 +17,21 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static Image Apply(Image image, byte threshold)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-            Bitmap thresholdBitmap = Apply(bitmap, threshold);
-
-            // Restore original image format
-            return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+            if (image is Bitmap bmp)
+            {
+                return Apply(bmp, threshold);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    using (Bitmap thresholdBitmap = Apply(bitmap, threshold))
+                    {
+                        // Restore original image format
+                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -36,15 +45,7 @@ namespace Freedom35.ImageProcessing
         {
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
-
-            // Determine whether color
-            int pixelDepth = bmpData.GetPixelDepth();
-
-            // Apply threshold value to image.
-            Apply(rgbValues, pixelDepth, threshold);
-
-            ImageEdit.End(clone, bmpData, rgbValues);
+            ApplyDirect(ref clone, threshold);
 
             return clone;
         }
@@ -54,9 +55,28 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
         /// </summary>
         /// <param name="imageBytes">Image bytes</param>
+        /// <param name="threshold">Threshold value</param>
+        public static void ApplyDirect(ref Bitmap bitmap, byte threshold)
+        {
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            // Determine whether color
+            int pixelDepth = bmpData.GetPixelDepth();
+
+            // Apply threshold value to image.
+            ApplyDirect(imageBytes, pixelDepth, threshold);
+
+            ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
+
+        /// <summary>
+        /// Any pixel values below threshold will be changed to 0 (black).
+        /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
+        /// </summary>
+        /// <param name="imageBytes">Image bytes</param>
         /// <param name="pixelDepth">Pixel depth</param>
         /// <param name="threshold">Threshold value</param>
-        public static void Apply(byte[] imageBytes, int pixelDepth, byte threshold)
+        public static void ApplyDirect(byte[] imageBytes, int pixelDepth, byte threshold)
         {
             // Check if color
             if (pixelDepth > 1)
@@ -104,12 +124,21 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static Image ApplyMin(Image image, byte minValue)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-            Bitmap thresholdBitmap = ApplyMin(bitmap, minValue);
-
-            // Restore original image format
-            return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+            if (image is Bitmap bmp)
+            {
+                return ApplyMin(bmp, minValue);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    using (Bitmap thresholdBitmap = ApplyMin(bitmap, minValue))
+                    {
+                        // Restore original image format
+                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -123,36 +152,59 @@ namespace Freedom35.ImageProcessing
         {
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            ApplyMinDirect(ref bitmap, minValue);
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Any pixel values below threshold will be changed to min value.
+        /// (High-pass filter)
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="minValue">Min value to retain</param>
+        public static void ApplyMinDirect(ref Bitmap bitmap, byte minValue)
+        {
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
             // Determine whether color
             int pixelDepth = bmpData.GetPixelDepth();
 
+            ApplyMinDirect(imageBytes, pixelDepth, minValue);
+
+            ImageEdit.End(bitmap, bmpData, imageBytes);   
+        }
+
+        /// <summary>
+        /// Any pixel values below threshold will be changed to min value.
+        /// (High-pass filter)
+        /// </summary>
+        /// <param name="imageBytes">Image bytes (Grayscale/RGB)</param>
+        /// <param name="pixelDepth">Pixel depth. i.e. 1 for grayscale, 3 for color</param>
+        /// <param name="minValue">Min value to retain</param>
+        public static void ApplyMinDirect(byte[] imageBytes, int pixelDepth, byte minValue)
+        {
             // Apply threshold value to image.
-            for (int i = 0; i < rgbValues.Length; i += pixelDepth)
+            for (int i = 0; i < imageBytes.Length; i += pixelDepth)
             {
-                if (rgbValues[i] < minValue)
+                if (imageBytes[i] < minValue)
                 {
-                    rgbValues[i] = minValue;
+                    imageBytes[i] = minValue;
                 }
 
-                if (pixelDepth == 3 && i < rgbValues.Length - 2)
+                if (pixelDepth == 3 && i < imageBytes.Length - 2)
                 {
-                    if (rgbValues[i + 1] < minValue)
+                    if (imageBytes[i + 1] < minValue)
                     {
-                        rgbValues[i + 1] = minValue;
+                        imageBytes[i + 1] = minValue;
                     }
 
-                    if (rgbValues[i + 2] < minValue)
+                    if (imageBytes[i + 2] < minValue)
                     {
-                        rgbValues[i + 2] = minValue;
+                        imageBytes[i + 2] = minValue;
                     }
                 }
             }
-
-            ImageEdit.End(clone, bmpData, rgbValues);
-
-            return clone;
         }
 
         /// <summary>
@@ -164,12 +216,21 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static Image ApplyMax(Image image, byte maxValue)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-            Bitmap thresholdBitmap = ApplyMax(bitmap, maxValue);
-
-            // Restore original image format
-            return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+            if (image is Bitmap bmp)
+            {
+                return ApplyMax(bmp, maxValue);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    using (Bitmap thresholdBitmap = ApplyMax(bitmap, maxValue))
+                    {
+                        // Restore original image format
+                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -183,36 +244,59 @@ namespace Freedom35.ImageProcessing
         {
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            ApplyMaxDirect(ref clone, maxValue);
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Any pixel values above threshold will be changed to max value.
+        /// (Low-pass filter)
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="maxValue">Max value to retain</param>
+        public static void ApplyMaxDirect(ref Bitmap bitmap, byte maxValue)
+        {
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
             // Determine whether color
             int pixelDepth = bmpData.GetPixelDepth();
 
+            ApplyMaxDirect(imageBytes, pixelDepth, maxValue);
+
+            ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
+
+        /// <summary>
+        /// Any pixel values above threshold will be changed to max value.
+        /// (Low-pass filter)
+        /// </summary>
+        /// <param name="imageBytes">Image bytes (Grayscale/RGB)</param>
+        /// <param name="pixelDepth">Pixel depth. i.e. 1 for grayscale, 3 for color</param>
+        /// <param name="maxValue">Max value to retain</param>
+        public static void ApplyMaxDirect(byte[] imageBytes, int pixelDepth, byte maxValue)
+        {
             // Apply threshold value to image.
-            for (int i = 0; i < rgbValues.Length; i += pixelDepth)
+            for (int i = 0; i < imageBytes.Length; i += pixelDepth)
             {
-                if (rgbValues[i] > maxValue)
+                if (imageBytes[i] > maxValue)
                 {
-                    rgbValues[i] = maxValue;
+                    imageBytes[i] = maxValue;
                 }
 
-                if (pixelDepth == 3 && i < rgbValues.Length - 2)
+                if (pixelDepth == 3 && i < imageBytes.Length - 2)
                 {
-                    if (rgbValues[i + 1] > maxValue)
+                    if (imageBytes[i + 1] > maxValue)
                     {
-                        rgbValues[i + 1] = maxValue;
+                        imageBytes[i + 1] = maxValue;
                     }
 
-                    if (rgbValues[i + 1] > maxValue)
+                    if (imageBytes[i + 1] > maxValue)
                     {
-                        rgbValues[i + 2] = maxValue;
+                        imageBytes[i + 2] = maxValue;
                     }
                 }
             }
-
-            ImageEdit.End(clone, bmpData, rgbValues);
-
-            return clone;
         }
 
         /// <summary>
@@ -224,12 +308,21 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static Image ApplyMinMax(Image image, byte minValue, byte maxValue)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-            Bitmap thresholdBitmap = ApplyMinMax(bitmap, minValue, maxValue);
-
-            // Restore original image format
-            return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+            if (image is Bitmap bmp)
+            {
+                return ApplyMinMax(bmp, minValue, maxValue);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    using (Bitmap thresholdBitmap = ApplyMinMax(bitmap, minValue, maxValue))
+                    {
+                        // Restore original image format
+                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -241,53 +334,77 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static Bitmap ApplyMinMax(Bitmap bitmap, byte minValue, byte maxValue)
         {
+            // Return new image
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
+            ApplyMinMaxDirect(ref bitmap, minValue, maxValue);
 
+            return clone;
+        }
+
+        /// <summary>
+        /// Any pixel values outside the threshold will be changed to min/max.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="minValue">Minimum threshold value</param>
+        /// <param name="maxValue">Maximum threshold value</param>
+        public static void ApplyMinMaxDirect(ref Bitmap bitmap, byte minValue, byte maxValue)
+        {
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            ApplyMinMaxDirect(imageBytes, bmpData, minValue, maxValue);
+
+            ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
+
+        /// <summary>
+        /// Any pixel values outside the threshold will be changed to min/max.
+        /// </summary>
+        /// <param name="imageBytes">Image bytes (Grayscale/RGB)</param>
+        /// <param name="bmpData">Info on image properties</param>
+        /// <param name="minValue">Minimum threshold value</param>
+        /// <param name="maxValue">Maximum threshold value</param>
+        public static void ApplyMinMaxDirect(byte[] imageBytes, BitmapData bmpData, byte minValue, byte maxValue)
+        {
             int pixelDepth = bmpData.GetPixelDepth();
 
             // Adjust image to within min/max.
-            for (int i = 0; i < rgbValues.Length; i += pixelDepth)
+            for (int i = 0; i < imageBytes.Length; i += pixelDepth)
             {
                 // Change values outside threshold to extremes
-                if (rgbValues[i] < minValue)
+                if (imageBytes[i] < minValue)
                 {
-                    rgbValues[i] = minValue;
+                    imageBytes[i] = minValue;
                 }
-                else if (rgbValues[i] > maxValue)
+                else if (imageBytes[i] > maxValue)
                 {
-                    rgbValues[i] = maxValue;
+                    imageBytes[i] = maxValue;
                 }
 
                 // Extra bytes for color images (RGB)
-                if (pixelDepth == 3 && i < rgbValues.Length - 2)
+                if (pixelDepth == 3 && i < imageBytes.Length - 2)
                 {
                     // G
-                    if (rgbValues[i + 1] < minValue)
+                    if (imageBytes[i + 1] < minValue)
                     {
-                        rgbValues[i + 1] = minValue;
+                        imageBytes[i + 1] = minValue;
                     }
-                    else if (rgbValues[i + 1] > maxValue)
+                    else if (imageBytes[i + 1] > maxValue)
                     {
-                        rgbValues[i + 1] = maxValue;
+                        imageBytes[i + 1] = maxValue;
                     }
 
                     // B
-                    if (rgbValues[i + 2] < minValue)
+                    if (imageBytes[i + 2] < minValue)
                     {
-                        rgbValues[i + 2] = minValue;
+                        imageBytes[i + 2] = minValue;
                     }
-                    else if (rgbValues[i + 2] > maxValue)
+                    else if (imageBytes[i + 2] > maxValue)
                     {
-                        rgbValues[i + 2] = maxValue;
+                        imageBytes[i + 2] = maxValue;
                     }
                 }
             }
-
-            ImageEdit.End(clone, bmpData, rgbValues);
-
-            return clone;
         }
     }
 }
