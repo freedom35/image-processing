@@ -87,6 +87,16 @@ namespace Freedom35.ImageProcessing
             // Copy the RGB values into the array.
             Marshal.Copy(bmpData.Scan0, rgbValues, 0, rgbValues.Length);
 
+            // Check if monochrome
+            if (bitmap.PixelFormat == PixelFormat.Format1bppIndexed)
+            {
+                // Adjust stride
+                bmpData.Stride *= Constants.BitsPerByte;
+
+                // Convert each bit to a separate byte
+                rgbValues = BytesToBits(rgbValues).Select(b => b > 0 ? byte.MaxValue : byte.MinValue).ToArray();
+            }
+
             // Unlock the bits.
             bitmap.UnlockBits(bmpData);
 
@@ -325,7 +335,7 @@ namespace Freedom35.ImageProcessing
         /// Converts array of bytes to an array of bits.
         /// </summary>
         /// <param name="byteValues">Array of bytes values</param>
-        /// <returns>Array of bits</returns>
+        /// <returns>Array of 0/1 bit values</returns>
         public static byte[] BytesToBits(byte[] byteValues)
         {
             byte[] bitValues = new byte[byteValues.Length * Constants.BitsPerByte];
