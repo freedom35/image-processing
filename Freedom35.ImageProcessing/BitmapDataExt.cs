@@ -31,7 +31,15 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         public static bool IsColor(this BitmapData bitmapData)
         {
-            return GetPixelDepth(bitmapData) == 3;
+            return IsColorPixelDepth(GetPixelDepth(bitmapData));
+        }
+
+        /// <summary>
+        /// Determines whether pixel depth represents color.
+        /// </summary>
+        public static bool IsColorPixelDepth(int pixelDepth)
+        {
+            return pixelDepth == 3;
         }
     }
 }

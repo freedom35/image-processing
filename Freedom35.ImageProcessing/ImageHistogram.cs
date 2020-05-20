@@ -17,9 +17,17 @@ namespace Freedom35.ImageProcessing
         /// <returns>256 array of histogram values</returns>
         public static int[] GetHistogramValues(Image image)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-            return GetHistogramValues(bitmap);
+            if (image is Bitmap bmp)
+            {
+                return GetHistogramValues(bmp);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    return GetHistogramValues(bitmap);
+                }
+            }
         }
 
         /// <summary>
@@ -29,15 +37,27 @@ namespace Freedom35.ImageProcessing
         /// <returns>256 array of histogram values</returns>
         public static int[] GetHistogramValues(Bitmap bitmap)
         {
-            byte[] rgbValues = ImageBytes.FromBitmap(bitmap, out BitmapData bmpData);
+            byte[] imageBytes = ImageBytes.FromBitmap(bitmap, out BitmapData bmpData);
 
             int pixelDepth = bmpData.GetPixelDepth();
-            bool isColor = bmpData.IsColor();
+
+            return GetHistogramValues(imageBytes, pixelDepth);
+        }
+
+        /// <summary>
+        /// Gets (256) array of histogram values for image.
+        /// </summary>
+        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="pixelDepth">Pixel depth of image</param>
+        /// <returns>256 array of histogram values</returns>
+        public static int[] GetHistogramValues(byte[] imageBytes, int pixelDepth)
+        {
+            bool isColor = BitmapDataExt.IsColorPixelDepth(pixelDepth);
 
             // 0-255
             int[] histogram = new int[byte.MaxValue + 1];
 
-            int limit = (pixelDepth > 1 ? rgbValues.Length - (pixelDepth - 1) : rgbValues.Length);
+            int limit = (pixelDepth > 1 ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length);
             byte avg;
 
             // Find number of pixels at each level.
@@ -45,11 +65,11 @@ namespace Freedom35.ImageProcessing
             {
                 if (isColor)
                 {
-                    avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+                    avg = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
                 }
                 else
                 {
-                    avg = rgbValues[i];
+                    avg = imageBytes[i];
                 }
 
                 // double-check within range.
@@ -70,12 +90,24 @@ namespace Freedom35.ImageProcessing
         /// <returns>Equalized image</returns>
         public static Image HistogramEqualization(Image image)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+            if (image is Bitmap bmp)
+            {
+                return HistogramEqualization(bmp);
+            }
+            else
+            {
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                
+                HistogramEqualizationDirect(ref bitmap);
+                    
+                // Restore original image format
+                Image equalizedImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
 
-            Bitmap equalizedBitmap = HistogramEqualization(bitmap);
+                // Dispose of temp bitmap
+                bitmap.Dispose();
 
-            // Restore original image format
-            return ImageFormatting.ToFormat(equalizedBitmap, image.RawFormat);
+                return equalizedImage;
+            }
         }
 
         /// <summary>
@@ -86,10 +118,45 @@ namespace Freedom35.ImageProcessing
         /// <returns>Equalized image</returns>
         public static Bitmap HistogramEqualization(Bitmap bitmap)
         {
-            int[] histogram = GetHistogramValues(bitmap);
+            // Return new image
+            Bitmap clone = (Bitmap)bitmap.Clone();
+
+            HistogramEqualizationDirect(ref clone);
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Histogram Equalization will enhance general contrast 
+        /// by distributing grey levels wider and more evenly.
+        /// </summary>
+        /// <param name="bitmap">Image to equalize</param>
+        public static void HistogramEqualizationDirect(ref Bitmap bitmap)
+        {
+            // Get image bytes
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            int pixelDepth = bmpData.GetPixelDepth();
+
+            HistogramEqualizationDirect(imageBytes, pixelDepth, bitmap.Width, bitmap.Height);
+
+            ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
+
+        /// <summary>
+        /// Histogram Equalization will enhance general contrast 
+        /// by distributing grey levels wider and more evenly.
+        /// </summary>
+        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="pixelDepth">Pixel depth of image</param>
+        /// <param name="imageWidth">Image width</param>
+        /// <param name="imageHeight">Image height</param>
+        public static void HistogramEqualizationDirect(byte[] imageBytes, int pixelDepth, int imageWidth, int imageHeight)
+        {
+            int[] histogram = GetHistogramValues(imageBytes, pixelDepth);
 
             // HE Frequencies
-            int idealFrequency = (bitmap.Width * bitmap.Height) / histogram.Length;
+            int idealFrequency = (imageWidth * imageHeight) / histogram.Length;
             int cumulativeFrequency = 0;
             int equalizedValue;
 
@@ -104,37 +171,27 @@ namespace Freedom35.ImageProcessing
                 histogram[i] = Math.Max(equalizedValue, 0);
             }
 
-            // Return new image
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            byte[] rgbValues = ImageEdit.Begin(clone, out BitmapData bmpData);
-
-            int pixelDepth = bmpData.GetPixelDepth();
-            bool isColor = bmpData.IsColor();
+            bool isColor = BitmapDataExt.IsColorPixelDepth(pixelDepth);
             byte avg;
 
-            int limit = (pixelDepth > 1 ? rgbValues.Length - (pixelDepth - 1) : rgbValues.Length);
+            int limit = (pixelDepth > 1 ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length);
 
-            // Apply to image
+            // Equalize image
             for (int i = 0; i < limit; i += pixelDepth)
             {
                 if (isColor)
                 {
-                    avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+                    avg = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
 
-                    rgbValues[i] = (byte)histogram[avg];
-                    rgbValues[i + 1] = (byte)histogram[avg];
-                    rgbValues[i + 2] = (byte)histogram[avg];
+                    imageBytes[i] = (byte)histogram[avg];
+                    imageBytes[i + 1] = (byte)histogram[avg];
+                    imageBytes[i + 2] = (byte)histogram[avg];
                 }
                 else
                 {
-                    rgbValues[i] = (byte)histogram[rgbValues[i]];
+                    imageBytes[i] = (byte)histogram[imageBytes[i]];
                 }
             }
-
-            ImageEdit.End(clone, bmpData, rgbValues);
-
-            return clone;
         }
 
         /// <summary>
@@ -145,9 +202,17 @@ namespace Freedom35.ImageProcessing
         /// <returns>Bitmap containing histogram</returns>
         public static Bitmap Create(Image histogramSource, Size histogramSize)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(histogramSource);
-
-            return Create(bitmap, histogramSize, Color.Black, Color.White);
+            if (histogramSource is Bitmap bmp)
+            {
+                return Create(bmp, histogramSize, Color.Black, Color.White);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(histogramSource))
+                {
+                    return Create(bitmap, histogramSize, Color.Black, Color.White);
+                }
+            }
         }
 
         /// <summary>
@@ -171,9 +236,17 @@ namespace Freedom35.ImageProcessing
         /// <returns>Bitmap containing histogram</returns>
         public static Bitmap Create(Image histogramSource, Size histogramSize, Color histogramBackground, Color histogramForeground)
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(histogramSource);
-
-            return Create(bitmap, histogramSize, histogramBackground, histogramForeground);
+            if (histogramSource is Bitmap bmp)
+            {
+                return Create(bmp, histogramSize, histogramBackground, histogramForeground);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(histogramSource))
+                {
+                    return Create(bitmap, histogramSize, histogramBackground, histogramForeground);
+                }
+            }
         }
 
         /// <summary>
