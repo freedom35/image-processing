@@ -73,10 +73,14 @@
             <Button Style="{StaticResource ImageOption}">
                 <Label>Option 2</Label>
             </Button>
-            <Image x:Name="pbThumbnail" Width="120" Height="100" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
-            </Image>
-            <Image x:Name="pbHistogram" Width="120" Height="60" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
-            </Image>
+            <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
+                <Image x:Name="pbThumbnail" Width="120" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
+                </Image>
+            </Border>
+            <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
+                <Image x:Name="pbHistogram" Width="120" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
+                </Image>
+            </Border>
         </StackPanel>
     </Grid>
 </Window>

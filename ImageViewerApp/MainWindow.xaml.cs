@@ -66,8 +66,8 @@ namespace ImageViewerApp
 
                 // Create histogram of image
                 Image histogram = ImageHistogram.Create(originalImage, 
-                    new System.Drawing.Size((int)pbHistogram.DesiredSize.Width, (int)pbHistogram.DesiredSize.Height), 
-                    System.Drawing.Color.Transparent, 
+                    new System.Drawing.Size((int)pbHistogram.DesiredSize.Width - 20, (int)pbHistogram.DesiredSize.Height), 
+                    System.Drawing.Color.DodgerBlue, 
                     System.Drawing.Color.White);
 
                 pbHistogram.Source = ImageConverter.ConvertImageToBitmapSource(histogram);

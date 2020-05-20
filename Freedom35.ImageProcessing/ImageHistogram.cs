@@ -283,24 +283,27 @@ namespace Freedom35.ImageProcessing
                 SolidBrush histogramBrush = new SolidBrush(histogramForeground);
 
                 // Each value should be same width
-                float valueWidth = scaleX;
+                float valueWidth = Math.Max(1.0F, (float)Math.Round(scaleX));
 
                 float x, y, valueHeight;
 
-                // Draw vertical bar for each histgram value
+                // Draw vertical bar for each histogram value
                 for (int i = 0; i < histogramValues.Length; i++)
                 {
-                    // X position of vertical bar
-                    x = i * scaleX;
-
                     // Vertical bar representing number of pixels at value
                     valueHeight = histogramValues[i] * scaleY;
 
-                    // Draw each bar from bottom-up
-                    y = histogramHeight - valueHeight;
+                    if (valueHeight > 0)
+                    {
+                        // X position of vertical bar
+                        x = (int)(i * scaleX);
 
-                    // Draw vertical bar
-                    g.FillRectangle(histogramBrush, x, y, valueWidth, valueHeight);
+                        // Draw each bar from bottom-up
+                        y = histogramHeight - valueHeight;
+
+                        // Draw vertical bar
+                        g.FillRectangle(histogramBrush, x, y, valueWidth, valueHeight);
+                    }
                 }
             }
 
