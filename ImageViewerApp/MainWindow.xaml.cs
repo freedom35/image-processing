@@ -61,8 +61,16 @@ namespace ImageViewerApp
                 tbImageName.Text = filename;
 
                 // Update thumbnail
-                Image thumbnailImage = ImageThumbnail.CreateWithSameAspect(originalImage, (int)pbThumbnail.ActualWidth, (int)pbThumbnail.ActualHeight);
+                Image thumbnailImage = ImageThumbnail.CreateWithSameAspect(originalImage, (int)pbThumbnail.DesiredSize.Width, (int)pbThumbnail.DesiredSize.Height);
                 pbThumbnail.Source = ImageConverter.ConvertImageToBitmapSource(thumbnailImage);
+
+                // Create histogram of image
+                Image histogram = ImageHistogram.Create(originalImage, 
+                    new System.Drawing.Size((int)pbHistogram.DesiredSize.Width, (int)pbHistogram.DesiredSize.Height), 
+                    System.Drawing.Color.Black, 
+                    System.Drawing.Color.Magenta);
+
+                pbHistogram.Source = ImageConverter.ConvertImageToBitmapSource(histogram);
             }
             catch (Exception ex)
             {
