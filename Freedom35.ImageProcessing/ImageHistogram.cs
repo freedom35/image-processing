@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Xml.Schema;
 
 namespace Freedom35.ImageProcessing
 {
@@ -284,10 +285,7 @@ namespace Freedom35.ImageProcessing
                 // Each value should be same width
                 float valueWidth = scaleX;
 
-                // Draw each bar from bottom-up
-                float y = histogramHeight;
-
-                float x, valueHeight;
+                float x, y, valueHeight;
 
                 // Draw vertical bar for each histgram value
                 for (int i = 0; i < histogramValues.Length; i++)
@@ -297,6 +295,9 @@ namespace Freedom35.ImageProcessing
 
                     // Vertical bar representing number of pixels at value
                     valueHeight = histogramValues[i] * scaleY;
+
+                    // Draw each bar from bottom-up
+                    y = histogramHeight - valueHeight;
 
                     // Draw vertical bar
                     g.FillRectangle(histogramBrush, x, y, valueWidth, valueHeight);
