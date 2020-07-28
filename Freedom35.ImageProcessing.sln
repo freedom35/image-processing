@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Freedom35.ImageProcessing", "Freedom35.ImageProcessing\Freedom35.ImageProcessing.csproj", "{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Freedom35.ImageProcessing", "src\Freedom35.ImageProcessing\Freedom35.ImageProcessing.csproj", "{E156A064-95C4-40C4-870E-138F7B787171}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageProcessingTests", "ImageProcessingTests\ImageProcessingTests.csproj", "{A658FF5A-FFFF-4755-9F20-3C588A05E062}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageViewerApp", "src\ImageViewerApp\ImageViewerApp.csproj", "{87998A43-E98A-4341-A36D-658D1143C7F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageViewerApp", "ImageViewerApp\ImageViewerApp.csproj", "{05AFF8E1-69D7-4A5E-B0F9-19D28F8891CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Freedom35.ImageProcessing.Tests", "tests\Freedom35.ImageProcessing.Tests\Freedom35.ImageProcessing.Tests.csproj", "{E6974CA7-DDBE-4404-A4FD-1EB7A1E37D9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4EBAB9FF-CF3D-4B49-914F-9B9D70E6320A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A658FF5A-FFFF-4755-9F20-3C588A05E062}.Release|Any CPU.Build.0 = Release|Any CPU
-		{05AFF8E1-69D7-4A5E-B0F9-19D28F8891CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{05AFF8E1-69D7-4A5E-B0F9-19D28F8891CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{05AFF8E1-69D7-4A5E-B0F9-19D28F8891CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{05AFF8E1-69D7-4A5E-B0F9-19D28F8891CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E156A064-95C4-40C4-870E-138F7B787171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E156A064-95C4-40C4-870E-138F7B787171}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E156A064-95C4-40C4-870E-138F7B787171}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E156A064-95C4-40C4-870E-138F7B787171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87998A43-E98A-4341-A36D-658D1143C7F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87998A43-E98A-4341-A36D-658D1143C7F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87998A43-E98A-4341-A36D-658D1143C7F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87998A43-E98A-4341-A36D-658D1143C7F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6974CA7-DDBE-4404-A4FD-1EB7A1E37D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6974CA7-DDBE-4404-A4FD-1EB7A1E37D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6974CA7-DDBE-4404-A4FD-1EB7A1E37D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6974CA7-DDBE-4404-A4FD-1EB7A1E37D9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

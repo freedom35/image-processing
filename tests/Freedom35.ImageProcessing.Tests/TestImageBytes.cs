@@ -7,10 +7,10 @@ namespace ImageProcessingTests
     [TestClass]
     public class TestImageBytes
     {
-        [DataRow("ImageProcessingTests.Resources.clock.bmp")]
-        [DataRow("ImageProcessingTests.Resources.clock.jpg")]
-        [DataRow("ImageProcessingTests.Resources.clock.png")]
-        [DataRow("ImageProcessingTests.Resources.clock.tif")]
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
         [DataTestMethod]
         public void TestFromStream(string resourcePath)
         {
