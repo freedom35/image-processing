@@ -1,12 +1,25 @@
 # Image Processing Library
 Open source image processing library targeting .NET Standard.  
 Published package availabe for download on [NuGet.org](https://nuget.org)
+<br />
 
 ## Image Bytes
-Methods for returning the bytes of an image.
+Methods for returning the bytes of an image.  
+<br />
+
+## Image Thresholding
+When applying a threshold to an image, values below the threshold are changed to black (0x00), and values above (or equal to) the threshold are changed to white (0xFF, 255 decimal).
+
+### Basic Threshold
+For basic thresholding, a pre-determined value is used for the threshold, typically in the middle of the pixel value range such as 0x7F (127 decimal).  Pixel values are simply determined to be either above/below the threshold. 
+
+### Otsu's Method
+Otsu's method is more complex, but ultimately finds a better threshold value. This method searches for the threshold that minimizes the metric known as intra-class variance by using a histogram of the image to split the values into two groups with the smallest total variance.  
+<br />
 
 ## Image Combine
 Methods for combining multiple images.
+<br />
 
 ## Image Convert
 Methods for converting images to different formats/types.
