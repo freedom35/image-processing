@@ -77,17 +77,7 @@ namespace Freedom35.ImageProcessing
         {
             int[] histValues = ImageHistogram.GetHistogramValues(imageBytes, pixelDepth);
 
-            // Calculate between class variance, separate foreground from background.
-            // (Same result as intra-class variance, but quicker to calculate)
             int histLen = histValues.Length;
-
-            float sumHistValues = 0.0F;
-
-            // Total pixel intensity
-            for (int i = 0; i < histLen; i++)
-            {
-                sumHistValues += i * histValues[i];
-            }
 
             int weightBackground = 0;
             int weightForeground;
@@ -97,30 +87,45 @@ namespace Freedom35.ImageProcessing
             float meanBackground;
             float meanForeground;
             float meanDiff;
+
             float varianceBetween;
             float varianceMax = 0.0F;
 
-            // Otsu's threshold
+            // Otsu's threshold value
             int threshold = 0;
-            
-            // Find position with largest variance
+
+            float sumHistValues = 0.0F;
+
+            // Total variance
             for (int i = 0; i < histLen; i++)
             {
-                // Keep track of values up to this point
+                sumHistValues += i * histValues[i];
+            }
+
+            // Image may be color
+            int pixelCount = imageBytes.Length / pixelDepth;
+
+            // Calculate 'between class variance' to separate foreground from background.
+            // (Same result as intra-class variance, but quicker to calculate)
+            // i.e. Find position with largest variance
+            for (int i = 0; i < histLen; i++)
+            {
+                // Keep track of weights up to this point
                 weightBackground += histValues[i];
 
                 // No point calculating until reached pixel values in image
                 if (weightBackground > 0)
                 {
-                    weightForeground = histLen - weightBackground;
+                    weightForeground = pixelCount - weightBackground;
 
                     if (weightForeground == 0)
                     {
-                        // Quit loop
+                        // Quit loop if no more pixels
                         break;
                     }
 
-                    sumBackground += threshold * histValues[threshold];
+                    // Variance up to this point
+                    sumBackground += i * histValues[i];
 
                     // Calculate mean values
                     meanBackground = sumBackground / weightBackground;
@@ -129,7 +134,7 @@ namespace Freedom35.ImageProcessing
 
                     // Calculate between class variance
                     varianceBetween = meanDiff * meanDiff * weightBackground * weightForeground;
-
+                    
                     // Check for new max variance
                     if (varianceBetween > varianceMax)
                     {

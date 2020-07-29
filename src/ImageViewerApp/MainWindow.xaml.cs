@@ -153,5 +153,13 @@ namespace ImageViewerApp
                 DisplayImage(ImageConvolution.ApplyKernel(currentImage, type));
             }
         }
+
+        private void Button_ApplyThreshold_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
+            }
+        }
     }
 }
