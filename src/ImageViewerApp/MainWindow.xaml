@@ -58,10 +58,12 @@
         </WrapPanel>
         
         <!-- Image Viewer -->
-        <Grid Grid.Column="0" Grid.Row="1" Margin="10" Background="GhostWhite">
-            <Image x:Name="pbImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" >
-            
-            </Image>
+        <Grid Grid.Column="0" Grid.Row="1" Margin="10">
+            <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
+                <Image x:Name="pbImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" >
+
+                </Image>
+            </Border>
         </Grid>
 
         <!-- Options -->
