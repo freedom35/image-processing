@@ -64,13 +64,8 @@ namespace ImageViewerApp
                 Image thumbnailImage = ImageThumbnail.CreateWithSameAspect(originalImage, (int)pbThumbnail.DesiredSize.Width, (int)pbThumbnail.DesiredSize.Height);
                 pbThumbnail.Source = ImageConverter.ConvertImageToBitmapSource(thumbnailImage);
 
-                // Create histogram of image
-                Image histogram = ImageHistogram.Create(originalImage, 
-                    new System.Drawing.Size((int)pbHistogram.DesiredSize.Width - 20, (int)pbHistogram.DesiredSize.Height), 
-                    System.Drawing.Color.DodgerBlue, 
-                    System.Drawing.Color.White);
-
-                pbHistogram.Source = ImageConverter.ConvertImageToBitmapSource(histogram);
+                // Create histogram of original image
+                DisplayHistogram(originalImage, pbHistogramOrig);
             }
             catch (Exception ex)
             {
@@ -79,6 +74,18 @@ namespace ImageViewerApp
 
             // Update buttons
             btRestoreImage.IsEnabled = originalImage != null;
+        }
+
+        private void DisplayHistogram(Image sourceImage, System.Windows.Controls.Image targetPictureBox)
+        {
+            // Create histogram of image
+            Image histogram = ImageHistogram.Create(sourceImage,
+                new System.Drawing.Size((int)targetPictureBox.DesiredSize.Width - 20, (int)targetPictureBox.DesiredSize.Height),
+                System.Drawing.Color.DodgerBlue,
+                System.Drawing.Color.White);
+
+            // Display histogram
+            targetPictureBox.Source = ImageConverter.ConvertImageToBitmapSource(histogram);
         }
 
         private void DisplayImage(Image image)
@@ -108,6 +115,9 @@ namespace ImageViewerApp
 
                 // Convert to WPF image for GUI
                 pbImage.Source = ImageConverter.ConvertImageToBitmapSource(image);
+
+                // Display latest histogram
+                DisplayHistogram(image, pbHistogramCurrent);
 
                 // Enable if previous available
                 btUndoImageChange.IsEnabled = previousImage != null;

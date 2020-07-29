@@ -68,6 +68,22 @@
 
         <!-- Options -->
         <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Vertical" Margin="10">
+            
+            <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
+                <Image x:Name="pbThumbnail" Width="120" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
+                </Image>
+            </Border>
+            <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Image x:Name="pbHistogramOrig" Grid.Row="0" Width="120" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
+                    </Image>
+                    <Label Grid.Row="1" HorizontalContentAlignment="Center" Foreground="White">Original</Label>
+                </Grid>
+            </Border>
             <ComboBox x:Name="cmbConvolution" Height="26" VerticalContentAlignment="Center" ItemsSource="{Binding Source={StaticResource ConvolutionType}, Converter={StaticResource enumConverter}, Mode=OneWay}" SelectedIndex="0" Width="130" Margin="0,5,0,5" />
 
             <Button Style="{StaticResource ImageOption}" Click="Button_ApplyConvolution_Click">
@@ -77,12 +93,15 @@
                 <Label>Apply Threshold</Label>
             </Button>
             <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
-                <Image x:Name="pbThumbnail" Width="120" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
-                </Image>
-            </Border>
-            <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
-                <Image x:Name="pbHistogram" Width="120" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
-                </Image>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Image x:Name="pbHistogramCurrent" Grid.Row="0" Width="120" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,5" >
+                    </Image>
+                    <Label Grid.Row="1" HorizontalContentAlignment="Center" Foreground="White">Current</Label>
+                </Grid>
             </Border>
         </StackPanel>
     </Grid>
