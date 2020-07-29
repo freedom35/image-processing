@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Freedom35.ImageProcessing
@@ -9,10 +10,146 @@ namespace Freedom35.ImageProcessing
     public static class ImageThreshold
     {
         /// <summary>
+        /// Applies thresholding to image using Otsu's Method.
+        /// Returned image will consist of black (0) and white (255) values only.
+        /// </summary>
+        /// <param name="image">Image to process</param>
+        /// <returns>New image with threshold applied</returns>
+        public static Image ApplyOtsuMethod(Image image)
+        {
+            if (image is Bitmap bmp)
+            {
+                return ApplyOtsuMethod(bmp);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    using (Bitmap thresholdBitmap = ApplyOtsuMethod(bitmap))
+                    {
+                        // Restore original image format
+                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies thresholding to image using Otsu's Method.
+        /// Returned image will consist of black (0) and white (255) values only.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <returns>New image with threshold applied</returns>
+        public static Bitmap ApplyOtsuMethod(Bitmap bitmap)
+        {
+            Bitmap clone = (Bitmap)bitmap.Clone();
+
+            ApplyOtsuMethodDirect(ref clone);
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Applies thresholding directly to image using Otsu's Method.
+        /// Returned image will consist of black (0) and white (255) values only.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        public static void ApplyOtsuMethodDirect(ref Bitmap bitmap)
+        {
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            // Determine whether color
+            int pixelDepth = bmpData.GetPixelDepth();
+
+            // Apply threshold value to image.
+            ApplyOtsuMethodDirect(imageBytes, pixelDepth);
+
+            ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
+
+        /// <summary>
         /// Any pixel values below threshold will be changed to 0 (black).
         /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
         /// </summary>
-        /// <param name="bitmap">Image to process</param>
+        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="pixelDepth">Pixel depth</param>
+        public static void ApplyOtsuMethodDirect(byte[] imageBytes, int pixelDepth)
+        {
+            int[] histValues = ImageHistogram.GetHistogramValues(imageBytes, pixelDepth);
+
+            // Calculate between class variance, separate foreground from background.
+            // (Same result as intra-class variance, but quicker to calculate)
+            int histLen = histValues.Length;
+
+            float sumHistValues = 0.0F;
+
+            // Total pixel intensity
+            for (int i = 0; i < histLen; i++)
+            {
+                sumHistValues += i * histValues[i];
+            }
+
+            int weightBackground = 0;
+            int weightForeground;
+
+            float sumBackground = 0.0F;
+
+            float meanBackground;
+            float meanForeground;
+            float meanDiff;
+            float varianceBetween;
+            float varianceMax = 0.0F;
+
+            // Otsu's threshold
+            int threshold = 0;
+            
+            // Find position with largest variance
+            for (int i = 0; i < histLen; i++)
+            {
+                // Keep track of values up to this point
+                weightBackground += histValues[i];
+
+                // No point calculating until reached pixel values in image
+                if (weightBackground > 0)
+                {
+                    weightForeground = histLen - weightBackground;
+
+                    if (weightForeground == 0)
+                    {
+                        // Quit loop
+                        break;
+                    }
+
+                    sumBackground += threshold * histValues[threshold];
+
+                    // Calculate mean values
+                    meanBackground = sumBackground / weightBackground;
+                    meanForeground = (sumHistValues - sumBackground) / weightForeground;
+                    meanDiff = meanBackground - meanForeground;
+
+                    // Calculate between class variance
+                    varianceBetween = meanDiff * meanDiff * weightBackground * weightForeground;
+
+                    // Check for new max variance
+                    if (varianceBetween > varianceMax)
+                    {
+                        varianceMax = varianceBetween;
+
+                        // Histogram position has highest variance
+                        threshold = i;
+                    }
+                }
+            }
+
+            // Apply threshold to image using Otsu's value
+            ApplyDirect(imageBytes, pixelDepth, (byte)threshold);
+        }
+
+        /// <summary>
+        /// Any pixel values below threshold will be changed to 0 (black).
+        /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
+        /// </summary>
+        /// <param name="image">Image to process</param>
         /// <param name="threshold">Threshold value</param>
         /// <returns>New image with threshold applied</returns>
         public static Image Apply(Image image, byte threshold)
