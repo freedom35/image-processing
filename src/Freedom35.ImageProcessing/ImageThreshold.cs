@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace Freedom35.ImageProcessing
 {
@@ -68,16 +69,40 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Any pixel values below threshold will be changed to 0 (black).
-        /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
+        /// Applies thresholding directly to image using Otsu's Method.
+        /// Returned image will consist of black (0) and white (255) values only.
         /// </summary>
         /// <param name="imageBytes">Image bytes</param>
         /// <param name="pixelDepth">Pixel depth</param>
         public static void ApplyOtsuMethodDirect(byte[] imageBytes, int pixelDepth)
         {
+            byte threshold = GetByOtsuMethod(imageBytes, pixelDepth);
+
+            // Apply threshold to image using Otsu's value
+            ApplyDirect(imageBytes, pixelDepth, threshold);
+        }
+
+        /// <summary>
+        /// Obtains threshold value for image using Otsu's Method.
+        /// </summary>
+        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="pixelDepth">Pixel depth</param>
+        /// <returns>Threshold value</returns>
+        public static byte GetByOtsuMethod(byte[] imageBytes, int pixelDepth)
+        {
             int[] histValues = ImageHistogram.GetHistogramValues(imageBytes, pixelDepth);
 
-            int histLen = histValues.Length;
+            return GetByOtsuMethod(histValues);
+        }
+
+        /// <summary>
+        /// Obtains threshold value for histogram using Otsu's Method.
+        /// </summary>
+        /// <param name="histogramValues">Histogram of image</param>
+        /// <returns>Threshold value</returns>
+        public static byte GetByOtsuMethod(int[] histogramValues)
+        {
+            int histLen = histogramValues.Length;
 
             int weightBackground = 0;
             int weightForeground;
@@ -99,11 +124,11 @@ namespace Freedom35.ImageProcessing
             // Total variance
             for (int i = 0; i < histLen; i++)
             {
-                sumHistValues += i * histValues[i];
+                sumHistValues += i * histogramValues[i];
             }
 
             // Image may be color
-            int pixelCount = imageBytes.Length / pixelDepth;
+            int pixelCount = histogramValues.Sum();
 
             // Calculate 'between class variance' to separate foreground from background.
             // (Same result as intra-class variance, but quicker to calculate)
@@ -111,7 +136,7 @@ namespace Freedom35.ImageProcessing
             for (int i = 0; i < histLen; i++)
             {
                 // Keep track of weights up to this point
-                weightBackground += histValues[i];
+                weightBackground += histogramValues[i];
 
                 // No point calculating until reached pixel values in image
                 if (weightBackground > 0)
@@ -125,7 +150,7 @@ namespace Freedom35.ImageProcessing
                     }
 
                     // Variance up to this point
-                    sumBackground += i * histValues[i];
+                    sumBackground += i * histogramValues[i];
 
                     // Calculate mean values
                     meanBackground = sumBackground / weightBackground;
@@ -134,7 +159,7 @@ namespace Freedom35.ImageProcessing
 
                     // Calculate between class variance
                     varianceBetween = meanDiff * meanDiff * weightBackground * weightForeground;
-                    
+
                     // Check for new max variance
                     if (varianceBetween > varianceMax)
                     {
@@ -146,8 +171,7 @@ namespace Freedom35.ImageProcessing
                 }
             }
 
-            // Apply threshold to image using Otsu's value
-            ApplyDirect(imageBytes, pixelDepth, (byte)threshold);
+            return (byte)threshold;
         }
 
         /// <summary>
