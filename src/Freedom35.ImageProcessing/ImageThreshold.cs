@@ -638,33 +638,39 @@ namespace Freedom35.ImageProcessing
             // Determine whether color
             int pixelDepth = bmpData.GetPixelDepth();
 
+            // Use stride to ensure correct row length
+            int stride = bmpData.Stride;
+            
             byte[] zoneBytes;
 
             // Apply Otsu to each zone
             for (int y = 0; y < bmpData.Height; y += verticalPPZ)
             {
+                // Get y positions
+                int yOffset = stride * y;
+                int zoneY1 = y;
+                int zoneY2 = Math.Min(bmpData.Height, y + verticalPPZ);
+                int zoneHeight = zoneY2 - zoneY1;
+
                 for (int x = 0; x < bmpData.Width; x += horizontalPPZ)
                 {
                     // Get current zone position, limit to edge of image
                     int zoneX1 = x;
                     int zoneX2 = Math.Min(bmpData.Width, x + horizontalPPZ);
 
-                    int zoneY1 = y;
-                    int zoneY2 = Math.Min(bmpData.Height, y + verticalPPZ);
-
-                    int zoneWidth = zoneX2 - zoneX1;
-                    int zoneHeight = zoneY2 - zoneY1;
+                    int zoneWidth = zoneX2 - zoneX1;                    
 
                     // Allocate bytes
                     zoneBytes = new byte[zoneWidth * zoneHeight * pixelDepth];
 
+                    // Pixels per row to copy
                     int zoneLength = zoneWidth * pixelDepth;
 
                     // Copy bytes from image to zone array
                     // Copy row by row (zone bytes not consecutive)
                     for (int i = 0; i < zoneHeight; i++)
                     {
-                        int imageOffset = (bmpData.Width * pixelDepth * y) + (bmpData.Width * pixelDepth * i) + zoneX1;
+                        int imageOffset = yOffset + (stride * i) + zoneX1;
                         int zoneOffset = zoneWidth * i;
                         
                         Buffer.BlockCopy(imageBytes, imageOffset, zoneBytes, zoneOffset, zoneLength);
@@ -672,19 +678,17 @@ namespace Freedom35.ImageProcessing
 
                     // Apply Otsu to localized zone
                     ApplyOtsuMethodDirect(zoneBytes, pixelDepth);
-
+                    
                     // Copy threshold bytes back to image
                     for (int i = 0; i < zoneHeight; i++)
                     {
-                        int imageOffset = (bmpData.Width * pixelDepth * y) + (bmpData.Width * pixelDepth * i) + zoneX1;
+                        int imageOffset = yOffset + (stride * i) + zoneX1;
                         int zoneOffset = zoneWidth * i;
 
                         Buffer.BlockCopy(zoneBytes, zoneOffset, imageBytes, imageOffset, zoneLength);
                     }
                 }
             }
-
-            // Needs adjusting - doesn't quite process to lower/right edges
 
             // End edit, write bytes back to image
             ImageEdit.End(bitmap, bmpData, imageBytes);
