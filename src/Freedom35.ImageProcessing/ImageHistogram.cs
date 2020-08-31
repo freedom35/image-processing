@@ -291,7 +291,8 @@ namespace Freedom35.ImageProcessing
                 for (int i = 0; i < histogramValues.Length; i++)
                 {
                     // Vertical bar representing number of pixels at value
-                    valueHeight = histogramValues[i] * scaleY;
+                    // (Round up to ensure at least 1 pixel represented)
+                    valueHeight = (float)Math.Ceiling(histogramValues[i] * scaleY);
 
                     if (valueHeight > 0)
                     {
