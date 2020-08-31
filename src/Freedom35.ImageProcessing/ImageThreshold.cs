@@ -572,5 +572,122 @@ namespace Freedom35.ImageProcessing
                 }
             }
         }
+
+        /// <summary>
+        /// Applies localized zone thresholding to image using Otsu's Method.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
+        /// <param name="verticalZones">Number of veritical zones to apply</param>
+        /// <returns>New image with localized threshold applied</returns>
+        public static Bitmap ApplyOtsuLocalized(Bitmap bitmap, int horizontalZones, int verticalZones)
+        {
+            Bitmap clone = (Bitmap)bitmap.Clone();
+
+            ApplyOtsuLocalizedDirect(ref clone, horizontalZones, verticalZones);
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Applies localized zone thresholding to image using Otsu's Method.
+        /// </summary>
+        /// <param name="image">Image to process</param>
+        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
+        /// <param name="verticalZones">Number of veritical zones to apply</param>
+        /// <returns>New image with localized threshold applied</returns>
+        public static Image ApplyOtsuLocalized(Image image, int horizontalZones, int verticalZones)
+        {
+            if (image is Bitmap bmp)
+            {
+                return ApplyOtsuLocalized(bmp, horizontalZones, verticalZones);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    using (Bitmap thresholdBitmap = ApplyOtsuLocalized(bitmap, horizontalZones, verticalZones))
+                    {
+                        // Restore original image format
+                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies localized zone thresholding to image using Otsu's Method.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
+        /// <param name="verticalZones">Number of vertical zones to apply</param>
+        public static void ApplyOtsuLocalizedDirect(ref Bitmap bitmap, int horizontalZones, int verticalZones)
+        {
+            // Ensure at least 1 zone
+            horizontalZones = Math.Max(1, horizontalZones);
+            verticalZones = Math.Max(1, verticalZones);
+
+            // Get image bytes and info
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            // Get pixels per zone
+            // (Round up to ensure thresholding applied to every pixel)
+            int horizontalPPZ = (int)Math.Ceiling((double)bmpData.Width / horizontalZones);
+            int verticalPPZ = (int)Math.Ceiling((double)bmpData.Height / verticalZones);
+
+            // Determine whether color
+            int pixelDepth = bmpData.GetPixelDepth();
+
+            byte[] zoneBytes;
+
+            // Apply Otsu to each zone
+            for (int y = 0; y < bmpData.Height; y += verticalPPZ)
+            {
+                for (int x = 0; x < bmpData.Width; x += horizontalPPZ)
+                {
+                    // Get current zone position, limit to edge of image
+                    int zoneX1 = x;
+                    int zoneX2 = Math.Min(bmpData.Width, x + horizontalPPZ);
+
+                    int zoneY1 = y;
+                    int zoneY2 = Math.Min(bmpData.Height, y + verticalPPZ);
+
+                    int zoneWidth = zoneX2 - zoneX1;
+                    int zoneHeight = zoneY2 - zoneY1;
+
+                    // Allocate bytes
+                    zoneBytes = new byte[zoneWidth * zoneHeight * pixelDepth];
+
+                    int zoneLength = zoneWidth * pixelDepth;
+
+                    // Copy bytes from image to zone array
+                    // Copy row by row (zone bytes not consecutive)
+                    for (int i = 0; i < zoneHeight; i++)
+                    {
+                        int imageOffset = (bmpData.Width * pixelDepth * y) + (bmpData.Width * pixelDepth * i) + zoneX1;
+                        int zoneOffset = zoneWidth * i;
+                        
+                        Buffer.BlockCopy(imageBytes, imageOffset, zoneBytes, zoneOffset, zoneLength);
+                    }
+
+                    // Apply Otsu to localized zone
+                    ApplyOtsuMethodDirect(zoneBytes, pixelDepth);
+
+                    // Copy threshold bytes back to image
+                    for (int i = 0; i < zoneHeight; i++)
+                    {
+                        int imageOffset = (bmpData.Width * pixelDepth * y) + (bmpData.Width * pixelDepth * i) + zoneX1;
+                        int zoneOffset = zoneWidth * i;
+
+                        Buffer.BlockCopy(zoneBytes, zoneOffset, imageBytes, imageOffset, zoneLength);
+                    }
+                }
+            }
+
+            // Needs adjusting - doesn't quite process to lower/right edges
+
+            // End edit, write bytes back to image
+            ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
     }
 }
