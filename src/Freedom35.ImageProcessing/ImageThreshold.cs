@@ -25,14 +25,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyOtsuMethod(bitmap))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyOtsuMethodDirect(ref bitmap);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -190,14 +193,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = Apply(bitmap, threshold))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyDirect(ref bitmap, threshold);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -297,14 +303,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyMin(bitmap, minValue))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyMinDirect(ref bitmap, minValue);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -389,14 +398,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyMax(bitmap, maxValue))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyMaxDirect(ref bitmap, maxValue);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -481,14 +493,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyMinMax(bitmap, minValue, maxValue))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyMinMaxDirect(ref bitmap, minValue, maxValue);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -625,14 +640,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyChowKanekoMethod(bitmap, horizontalZones, verticalZones))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                
+                ApplyChowKanekoMethodDirect(ref bitmap, horizontalZones, verticalZones);
+                    
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
