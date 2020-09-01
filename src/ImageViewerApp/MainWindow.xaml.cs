@@ -176,7 +176,7 @@ namespace ImageViewerApp
         {
             if (currentImage != null)
             {
-                DisplayImage(ImageColor.ApplyFilterRed(currentImage));
+                DisplayImage(ImageColor.ToRed(currentImage));
             }
         }
     }

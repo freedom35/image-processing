@@ -127,7 +127,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
-        public static Image ApplyFilterRed(Image image)
+        public static Image ToRed(Image image)
         {
             return ApplyFilterRGB(image, 0xFF, 0x00, 0x00);
         }
@@ -137,7 +137,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
-        public static Image ApplyFilterGreen(Image image)
+        public static Image ToGreen(Image image)
         {
             return ApplyFilterRGB(image, 0x00, 0xFF, 0x00);
         }
@@ -147,7 +147,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
-        public static Image ApplyFilterBlue(Image image)
+        public static Image ToBlue(Image image)
         {
             return ApplyFilterRGB(image, 0x00, 0x00, 0xFF);
         }
@@ -213,7 +213,7 @@ namespace Freedom35.ImageProcessing
         /// Applies color filter to image.
         /// </summary>
         /// <param name="imageBytes">Color image bytes to process</param>
-        /// <param name="r">Red component to apply<</param>
+        /// <param name="r">Red component to apply</param>
         /// <param name="g">Green component to apply</param>
         /// <param name="b">Blue component to apply</param>
         public static void ApplyFilterDirectRGB(byte[] imageBytes, byte r, byte g, byte b)
