@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace Freedom35.ImageProcessing
 {
@@ -24,14 +25,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyOtsuMethod(bitmap))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyOtsuMethodDirect(ref bitmap);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -189,14 +193,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = Apply(bitmap, threshold))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyDirect(ref bitmap, threshold);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -296,14 +303,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyMin(bitmap, minValue))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyMinDirect(ref bitmap, minValue);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -388,14 +398,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyMax(bitmap, maxValue))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyMaxDirect(ref bitmap, maxValue);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -480,14 +493,17 @@ namespace Freedom35.ImageProcessing
             }
             else
             {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    using (Bitmap thresholdBitmap = ApplyMinMax(bitmap, minValue, maxValue))
-                    {
-                        // Restore original image format
-                        return ImageFormatting.ToFormat(thresholdBitmap, image.RawFormat);
-                    }
-                }
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyMinMaxDirect(ref bitmap, minValue, maxValue);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
             }
         }
 
@@ -571,6 +587,211 @@ namespace Freedom35.ImageProcessing
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <returns>New image with localized threshold applied</returns>
+        public static Bitmap ApplyChowKanekoMethod(Bitmap bitmap)
+        {
+            return ApplyChowKanekoMethod(bitmap, 3, 3);
+        }
+
+        /// <summary>
+        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
+        /// <param name="verticalZones">Number of veritical zones to apply</param>
+        /// <returns>New image with localized threshold applied</returns>
+        public static Bitmap ApplyChowKanekoMethod(Bitmap bitmap, int horizontalZones, int verticalZones)
+        {
+            Bitmap clone = (Bitmap)bitmap.Clone();
+
+            ApplyChowKanekoMethodDirect(ref clone, horizontalZones, verticalZones);
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// </summary>
+        /// <param name="image">Image to process</param>
+        /// <returns>New image with localized threshold applied<</returns>
+        public static Image ApplyChowKanekoMethod(Image image)
+        {
+            return ApplyChowKanekoMethod(image, 3, 3);
+        }
+
+        /// <summary>
+        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// </summary>
+        /// <param name="image">Image to process</param>
+        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
+        /// <param name="verticalZones">Number of veritical zones to apply</param>
+        /// <returns>New image with localized threshold applied</returns>
+        public static Image ApplyChowKanekoMethod(Image image, int horizontalZones, int verticalZones)
+        {
+            if (image is Bitmap bmp)
+            {
+                return ApplyChowKanekoMethod(bmp, horizontalZones, verticalZones);
+            }
+            else
+            {
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                
+                ApplyChowKanekoMethodDirect(ref bitmap, horizontalZones, verticalZones);
+                    
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
+            }
+        }
+
+        /// <summary>
+        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
+        /// <param name="verticalZones">Number of vertical zones to apply</param>
+        public static void ApplyChowKanekoMethodDirect(ref Bitmap bitmap, int horizontalZones, int verticalZones)
+        {
+            // Ensure at least 1 zone
+            horizontalZones = Math.Max(1, horizontalZones);
+            verticalZones = Math.Max(1, verticalZones);
+
+            // We will use Otsu's method to determine threshold for each zone
+            ZoneData[] zoneThresholds = new ZoneData[horizontalZones * verticalZones];
+
+            // Get image bytes and info
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            // Use stride to ensure correct row length
+            int stride = bmpData.Stride;
+            int imageHeight = bmpData.Height;
+            int imageWidth = bmpData.Width;
+
+            // Get pixels per zone
+            // (Round up to ensure thresholding applied to every pixel)
+            int horizontalPPZ = (int)Math.Ceiling((double)imageWidth / horizontalZones);
+            int verticalPPZ = (int)Math.Ceiling((double)imageHeight / verticalZones);
+
+            // Determine whether color
+            int pixelDepth = bmpData.GetPixelDepth();
+
+            byte[] zoneBytes;
+
+            // Apply Otsu to obtain localized threshold for each zone
+            for (int y = 0; y < verticalZones; y++)
+            {
+                // Get y positions
+                int zoneY1 = y * verticalPPZ;
+                int zoneY2 = Math.Min(imageHeight, zoneY1 + verticalPPZ);
+                int zoneHeight = zoneY2 - zoneY1;
+
+                int yOffset = stride * zoneY1;
+
+                for (int x = 0; x < horizontalZones; x++)
+                {
+                    // Get current zone position, limit to edge of image
+                    int zoneX1 = x * horizontalPPZ * pixelDepth;
+                    int zoneX2 = Math.Min(imageWidth, zoneX1 + horizontalPPZ) * pixelDepth;
+
+                    int zoneWidth = zoneX2 - zoneX1;
+
+                    // Allocate bytes
+                    zoneBytes = new byte[zoneWidth * zoneHeight];
+
+                    // Copy bytes from image to zone array
+                    // Copy row by row (zone bytes not consecutive)
+                    for (int i = 0; i < zoneHeight; i++)
+                    {
+                        int imageOffset = yOffset + (stride * i) + zoneX1;
+                        int zoneOffset = zoneWidth * i;
+                        
+                        Buffer.BlockCopy(imageBytes, imageOffset, zoneBytes, zoneOffset, zoneWidth);
+                    }
+
+                    ZoneData zd = new ZoneData()
+                    {
+                        X = x,
+                        Y = y,
+                        CenterX = zoneX1 + (zoneWidth / 2),
+                        CenterY = (y * zoneHeight) + (zoneHeight / 2)
+                    };
+                                        
+                    // Apply Otsu to localized zone
+                    zd.Threshold = GetByOtsuMethod(zoneBytes, pixelDepth);
+
+                    zoneThresholds[(y * horizontalZones) + x] = zd;
+                }
+            }
+
+            int pixelSum;
+            bool belowThreshold;
+            byte threshold;
+            double totalDistance;
+            ZoneData[] nearestZones;
+
+            const int NumberOfZones = 4;
+
+            for (int py = 0; py < imageHeight; py++)
+            {
+                for (int px = 0; px < imageWidth; px++)
+                {
+                    // Calculate distances from pixel to each zone
+                    for (int n = 0; n < zoneThresholds.Length; n++)
+                    {
+                        zoneThresholds[n].CalculateDistance(px, py);
+                    }
+
+                    // Find nearest 4, then get thresholds
+                    // Nearest zone will be zone currently in (should have strongest weight)
+                    nearestZones = zoneThresholds.OrderBy(zd => zd.Distance).Take(NumberOfZones).ToArray();
+                    
+                    // Sum all distances
+                    totalDistance = nearestZones.Sum(zd => zd.Distance);
+
+                    // Weight threshold of each zone based on proximity
+                    // (Shorter distance has higher weight)
+                    if (nearestZones.Length > 1)
+                    {
+                        threshold = (byte)nearestZones.Sum(zd => ((1 - (zd.Distance / totalDistance)) / (nearestZones.Length - 1)) * zd.Threshold);
+                    }
+                    else
+                    {
+                        threshold = nearestZones.First().Threshold;
+                    }
+
+                    // Get pixel index within image bytes
+                    int i = (px * pixelDepth) + (py * stride);
+                    pixelSum = 0;
+
+                    // Sum each pixel component for color images
+                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    {
+                        pixelSum += imageBytes[i + j];
+                    }
+
+                    // Compare average to threshold
+                    belowThreshold = (pixelSum / pixelDepth) < threshold;
+
+                    // Apply threshold
+                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    {
+                        imageBytes[i + j] = belowThreshold ? byte.MinValue : byte.MaxValue;
+                    }
+                }
+            }
+
+            // End edit, write bytes back to image
+            ImageEdit.End(bitmap, bmpData, imageBytes);
         }
     }
 }

@@ -168,7 +168,9 @@ namespace ImageViewerApp
         {
             if (currentImage != null)
             {
-                DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
+                //DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
+
+                DisplayImage(ImageThreshold.ApplyChowKanekoMethod(currentImage));
             }
         }
     }
