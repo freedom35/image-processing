@@ -655,16 +655,13 @@ namespace Freedom35.ImageProcessing
                 for (int x = 0; x < bmpData.Width; x += horizontalPPZ)
                 {
                     // Get current zone position, limit to edge of image
-                    int zoneX1 = x;
-                    int zoneX2 = Math.Min(bmpData.Width, x + horizontalPPZ);
+                    int zoneX1 = x * pixelDepth;
+                    int zoneX2 = Math.Min(bmpData.Width, x + horizontalPPZ) * pixelDepth;
 
-                    int zoneWidth = zoneX2 - zoneX1;                    
+                    int zoneWidth = zoneX2 - zoneX1;
 
                     // Allocate bytes
-                    zoneBytes = new byte[zoneWidth * zoneHeight * pixelDepth];
-
-                    // Pixels per row to copy
-                    int zoneLength = zoneWidth * pixelDepth;
+                    zoneBytes = new byte[zoneWidth * zoneHeight];
 
                     // Copy bytes from image to zone array
                     // Copy row by row (zone bytes not consecutive)
@@ -673,7 +670,7 @@ namespace Freedom35.ImageProcessing
                         int imageOffset = yOffset + (stride * i) + zoneX1;
                         int zoneOffset = zoneWidth * i;
                         
-                        Buffer.BlockCopy(imageBytes, imageOffset, zoneBytes, zoneOffset, zoneLength);
+                        Buffer.BlockCopy(imageBytes, imageOffset, zoneBytes, zoneOffset, zoneWidth);
                     }
 
                     // Apply Otsu to localized zone
@@ -685,7 +682,7 @@ namespace Freedom35.ImageProcessing
                         int imageOffset = yOffset + (stride * i) + zoneX1;
                         int zoneOffset = zoneWidth * i;
 
-                        Buffer.BlockCopy(zoneBytes, zoneOffset, imageBytes, imageOffset, zoneLength);
+                        Buffer.BlockCopy(zoneBytes, zoneOffset, imageBytes, imageOffset, zoneWidth);
                     }
                 }
             }
