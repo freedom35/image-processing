@@ -168,9 +168,15 @@ namespace ImageViewerApp
         {
             if (currentImage != null)
             {
-                //DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
+                DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
+            }
+        }
 
-                DisplayImage(ImageThreshold.ApplyChowKanekoMethod(currentImage));
+        private void Button_ApplyRedFilter_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                DisplayImage(ImageColor.ApplyFilterRed(currentImage));
             }
         }
     }

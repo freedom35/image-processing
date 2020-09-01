@@ -121,5 +121,115 @@ namespace Freedom35.ImageProcessing
                 imageBytes[i] = (byte)~imageBytes[i];
             }
         }
+
+        /// <summary>
+        /// Applies red color filter to image.
+        /// </summary>
+        /// <param name="image">Image to process</param>
+        /// <returns>New image with filter applied</returns>
+        public static Image ApplyFilterRed(Image image)
+        {
+            return ApplyFilterRGB(image, 0xFF, 0x00, 0x00);
+        }
+
+        /// <summary>
+        /// Applies green color filter to image.
+        /// </summary>
+        /// <param name="image">Image to process</param>
+        /// <returns>New image with filter applied</returns>
+        public static Image ApplyFilterGreen(Image image)
+        {
+            return ApplyFilterRGB(image, 0x00, 0xFF, 0x00);
+        }
+
+        /// <summary>
+        /// Applies blue color filter to image.
+        /// </summary>
+        /// <param name="image">Image to process</param>
+        /// <returns>New image with filter applied</returns>
+        public static Image ApplyFilterBlue(Image image)
+        {
+            return ApplyFilterRGB(image, 0x00, 0x00, 0xFF);
+        }
+
+        /// <summary>
+        /// Applies color filter to image.
+        /// </summary>
+        /// <param name="image">Image to process</param>
+        /// <param name="r">Red component to apply</param>
+        /// <param name="g">Green component to apply</param>
+        /// <param name="b">Blue component to apply</param>
+        /// <returns>New image with filter applied</returns>
+        public static Image ApplyFilterRGB(Image image, byte r, byte g, byte b)
+        {
+            if (image is Bitmap bmp)
+            {
+                // Return new image
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                ApplyFilterDirectRGB(ref clone, r, g, b);
+
+                return clone;
+            }
+            else
+            {
+                // Create new bitmap from image
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+                ApplyFilterDirectRGB(ref bitmap, r, g, b);
+
+                // Restore original image format
+                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+
+                // Dispose of temp image
+                bitmap.Dispose();
+
+                return thresholdImage;
+            }
+        }
+
+        /// <summary>
+        /// Applies color filter to image.
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        /// <param name="r">Red component to apply</param>
+        /// <param name="g">Green component to apply</param>
+        /// <param name="b">Blue component to apply</param>
+        public static void ApplyFilterDirectRGB(ref Bitmap bitmap, byte r, byte g, byte b)
+        {
+            // Get image bytes and info
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            // Can only apply color filter to a color image
+            if (bmpData.IsColor())
+            {
+                ApplyFilterDirectRGB(imageBytes, r, g, b);
+            }
+
+            ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
+
+        /// <summary>
+        /// Applies color filter to image.
+        /// </summary>
+        /// <param name="imageBytes">Color image bytes to process</param>
+        /// <param name="r">Red component to apply<</param>
+        /// <param name="g">Green component to apply</param>
+        /// <param name="b">Blue component to apply</param>
+        public static void ApplyFilterDirectRGB(byte[] imageBytes, byte r, byte g, byte b)
+        {
+            // Apply mask for each color
+            for (int i = 0; i < imageBytes.Length - 2; i += 3)
+            {
+                // Red (LSB)
+                imageBytes[i + 2] &= r;
+
+                // Green
+                imageBytes[i + 1] &= g;
+
+                // Blue (MSB)
+                imageBytes[i] &= b;
+            }
+        }
     }
 }
