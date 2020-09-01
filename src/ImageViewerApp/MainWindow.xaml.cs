@@ -170,7 +170,7 @@ namespace ImageViewerApp
             {
                 //DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
 
-                DisplayImage(ImageThreshold.ApplyOtsuLocalized(currentImage, 3, 3));
+                DisplayImage(ImageThreshold.ApplyChowKanekoMethod(currentImage));
             }
         }
     }
