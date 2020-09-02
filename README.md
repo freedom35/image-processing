@@ -1,7 +1,44 @@
 # Image Processing Library
 Open source image processing library targeting .NET Standard.  
-Published package available for download on [NuGet.org](https://nuget.org)
+Published package available for download on [NuGet.org](https://nuget.org)  
+
+You are welcome to use/update this software under the terms of the **MIT license**.  
 <br />
+
+## Usage
+Below are the steps involved in using the Image Processing Library in your own projects.  
+The repository also contains an **ImageViewerApp** (WPF) project to demonstrate usage of the Image Processing Library.
+
+Note: Examples are in C#, but the library may also be used in other .NET language projects.
+
+1. Add the **Image Processing Library** NuGet package to your .NET project.  
+
+2. Include the namespace for the Image Processing Library at the top of your code file.  
+```csharp
+using Freedom35.ImageProcessing;
+```
+
+3. Most methods within the library are static, they can be called directly - they do not require instantiating a class. Make the appropriate call to the method associated with the image processing you wish to perform.  
+Example:
+```csharp
+Image newImage = ImageColor.ToNegative(currentImage);
+```  
+
+4. If you're only making a single call and do not necessarily want to include the namespace at the top of your code file, methods may also be called by explicitly including the namespace before the method name.  
+Example:
+```csharp
+Image newImage = Freedom35.ImageProcessing.ImageColor.ToNegative(currentImage);
+```  
+Most methods have a standard method that will return a new image (leaving the original intact), and also a direct method which will alter the original image directly. The **direct methods require using a Bitmap** encoded image. The standard methods will automatically convert the image to a Bitmap (if required) for processing, and return the processed image in the original format.  
+Example:
+```csharp
+// Will apply threshold and return a new image
+Image newImage = ImageThreshold.ApplyOtsuMethod(currentImage);
+```  
+```csharp
+// Will apply threshold directly to current image
+ImageThreshold.ApplyOtsuMethodDirect(ref currentImage);
+``` 
 
 ## Image Bytes
 Methods for returning the bytes of an image.  
