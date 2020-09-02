@@ -127,7 +127,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
-        public static Image ToRed(Image image)
+        public static T ToRed<T>(T image) where T : Image
         {
             return ApplyFilterRGB(image, 0xFF, 0x00, 0x00);
         }
@@ -137,7 +137,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
-        public static Image ToGreen(Image image)
+        public static T ToGreen<T>(T image) where T : Image
         {
             return ApplyFilterRGB(image, 0x00, 0xFF, 0x00);
         }
@@ -147,7 +147,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
-        public static Image ToBlue(Image image)
+        public static T ToBlue<T>(T image) where T : Image
         {
             return ApplyFilterRGB(image, 0x00, 0x00, 0xFF);
         }
@@ -160,7 +160,7 @@ namespace Freedom35.ImageProcessing
         /// <param name="g">Green component to apply</param>
         /// <param name="b">Blue component to apply</param>
         /// <returns>New image with filter applied</returns>
-        public static Image ApplyFilterRGB(Image image, byte r, byte g, byte b)
+        public static T ApplyFilterRGB<T>(T image, byte r, byte g, byte b) where T : Image
         {
             if (image is Bitmap bmp)
             {
@@ -169,7 +169,7 @@ namespace Freedom35.ImageProcessing
 
                 ApplyFilterDirectRGB(ref clone, r, g, b);
 
-                return clone;
+                return (T)(Image)clone;
             }
             else
             {
@@ -184,7 +184,7 @@ namespace Freedom35.ImageProcessing
                 // Dispose of temp image
                 bitmap.Dispose();
 
-                return thresholdImage;
+                return (T)thresholdImage;
             }
         }
 
