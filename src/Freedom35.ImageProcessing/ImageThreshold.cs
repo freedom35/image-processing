@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Xml.Serialization;
 
 namespace Freedom35.ImageProcessing
 {
