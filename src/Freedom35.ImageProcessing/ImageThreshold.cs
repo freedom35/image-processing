@@ -590,7 +590,7 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
         /// </summary>
         /// <param name="bitmap">Image to process</param>
         /// <returns>New image with localized threshold applied</returns>
@@ -600,49 +600,49 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
         /// </summary>
         /// <param name="bitmap">Image to process</param>
-        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
-        /// <param name="verticalZones">Number of veritical zones to apply</param>
+        /// <param name="horizontalRegions">Number of horizonal regions to apply</param>
+        /// <param name="verticalRegions">Number of veritical regions to apply</param>
         /// <returns>New image with localized threshold applied</returns>
-        public static Bitmap ApplyChowKanekoMethod(Bitmap bitmap, int horizontalZones, int verticalZones)
+        public static Bitmap ApplyChowKanekoMethod(Bitmap bitmap, int horizontalRegions, int verticalRegions)
         {
             Bitmap clone = (Bitmap)bitmap.Clone();
 
-            ApplyChowKanekoMethodDirect(ref clone, horizontalZones, verticalZones);
+            ApplyChowKanekoMethodDirect(ref clone, horizontalRegions, verticalRegions);
 
             return clone;
         }
 
         /// <summary>
-        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
         /// </summary>
         /// <param name="image">Image to process</param>
-        /// <returns>New image with localized threshold applied<</returns>
+        /// <returns>New image with localized threshold applied</returns>
         public static Image ApplyChowKanekoMethod(Image image)
         {
             return ApplyChowKanekoMethod(image, 3, 3);
         }
 
         /// <summary>
-        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
         /// </summary>
         /// <param name="image">Image to process</param>
-        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
-        /// <param name="verticalZones">Number of veritical zones to apply</param>
+        /// <param name="horizontalRegions">Number of horizonal regions to apply</param>
+        /// <param name="verticalRegions">Number of veritical regions to apply</param>
         /// <returns>New image with localized threshold applied</returns>
-        public static Image ApplyChowKanekoMethod(Image image, int horizontalZones, int verticalZones)
+        public static Image ApplyChowKanekoMethod(Image image, int horizontalRegions, int verticalRegions)
         {
             if (image is Bitmap bmp)
             {
-                return ApplyChowKanekoMethod(bmp, horizontalZones, verticalZones);
+                return ApplyChowKanekoMethod(bmp, horizontalRegions, verticalRegions);
             }
             else
             {
                 Bitmap bitmap = ImageFormatting.ToBitmap(image);
                 
-                ApplyChowKanekoMethodDirect(ref bitmap, horizontalZones, verticalZones);
+                ApplyChowKanekoMethodDirect(ref bitmap, horizontalRegions, verticalRegions);
                     
                 // Restore original image format
                 Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
@@ -655,19 +655,21 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Applies localized/adaptive zone thresholding to image using Chow & Kaneko method.
+        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
         /// </summary>
         /// <param name="bitmap">Image to process</param>
-        /// <param name="horizontalZones">Number of horizonal zones to apply</param>
-        /// <param name="verticalZones">Number of vertical zones to apply</param>
-        public static void ApplyChowKanekoMethodDirect(ref Bitmap bitmap, int horizontalZones, int verticalZones)
+        /// <param name="horizontalRegions">Number of horizonal regions to apply</param>
+        /// <param name="verticalRegions">Number of vertical regions to apply</param>
+        public static void ApplyChowKanekoMethodDirect(ref Bitmap bitmap, int horizontalRegions, int verticalRegions)
         {
-            // Ensure at least 1 zone
-            horizontalZones = Math.Max(1, horizontalZones);
-            verticalZones = Math.Max(1, verticalZones);
+            // Ensure at least 1 region
+            if (horizontalRegions < 1 || verticalRegions < 1)
+            {
+                throw new ArgumentOutOfRangeException("Chow & Kaneko requires at least one region.");
+            }
 
-            // We will use Otsu's method to determine threshold for each zone
-            ZoneData[] zoneThresholds = new ZoneData[horizontalZones * verticalZones];
+            // We will use Otsu's method to determine threshold for each region
+            ThresholdRegionData[] regionThresholds = new ThresholdRegionData[horizontalRegions * verticalRegions];
 
             // Get image bytes and info
             byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
@@ -677,59 +679,59 @@ namespace Freedom35.ImageProcessing
             int imageHeight = bmpData.Height;
             int imageWidth = bmpData.Width;
 
-            // Get pixels per zone
+            // Get pixels per region
             // (Round up to ensure thresholding applied to every pixel)
-            int horizontalPPZ = (int)Math.Ceiling((double)imageWidth / horizontalZones);
-            int verticalPPZ = (int)Math.Ceiling((double)imageHeight / verticalZones);
+            int horizontalPPZ = (int)Math.Ceiling((double)imageWidth / horizontalRegions);
+            int verticalPPZ = (int)Math.Ceiling((double)imageHeight / verticalRegions);
 
             // Determine whether color
             int pixelDepth = bmpData.GetPixelDepth();
 
-            byte[] zoneBytes;
+            byte[] regionBytes;
 
-            // Apply Otsu to obtain localized threshold for each zone
-            for (int y = 0; y < verticalZones; y++)
+            // Apply Otsu to obtain localized threshold for each region
+            for (int y = 0; y < verticalRegions; y++)
             {
                 // Get y positions
-                int zoneY1 = y * verticalPPZ;
-                int zoneY2 = Math.Min(imageHeight, zoneY1 + verticalPPZ);
-                int zoneHeight = zoneY2 - zoneY1;
+                int regionY1 = y * verticalPPZ;
+                int regionY2 = Math.Min(imageHeight, regionY1 + verticalPPZ);
+                int regionHeight = regionY2 - regionY1;
 
-                int yOffset = stride * zoneY1;
+                int yOffset = stride * regionY1;
 
-                for (int x = 0; x < horizontalZones; x++)
+                for (int x = 0; x < horizontalRegions; x++)
                 {
-                    // Get current zone position, limit to edge of image
-                    int zoneX1 = x * horizontalPPZ * pixelDepth;
-                    int zoneX2 = Math.Min(imageWidth, zoneX1 + horizontalPPZ) * pixelDepth;
+                    // Get current region position, limit to edge of image
+                    int regionX1 = x * horizontalPPZ * pixelDepth;
+                    int regionX2 = Math.Min(imageWidth, regionX1 + horizontalPPZ) * pixelDepth;
 
-                    int zoneWidth = zoneX2 - zoneX1;
+                    int regionWidth = regionX2 - regionX1;
 
                     // Allocate bytes
-                    zoneBytes = new byte[zoneWidth * zoneHeight];
+                    regionBytes = new byte[regionWidth * regionHeight];
 
-                    // Copy bytes from image to zone array
-                    // Copy row by row (zone bytes not consecutive)
-                    for (int i = 0; i < zoneHeight; i++)
+                    // Copy bytes from image to region array
+                    // Copy row by row (region bytes not consecutive)
+                    for (int i = 0; i < regionHeight; i++)
                     {
-                        int imageOffset = yOffset + (stride * i) + zoneX1;
-                        int zoneOffset = zoneWidth * i;
+                        int imageOffset = yOffset + (stride * i) + regionX1;
+                        int regionOffset = regionWidth * i;
                         
-                        Buffer.BlockCopy(imageBytes, imageOffset, zoneBytes, zoneOffset, zoneWidth);
+                        Buffer.BlockCopy(imageBytes, imageOffset, regionBytes, regionOffset, regionWidth);
                     }
 
-                    ZoneData zd = new ZoneData()
+                    ThresholdRegionData rd = new ThresholdRegionData()
                     {
                         X = x,
                         Y = y,
-                        CenterX = zoneX1 + (zoneWidth / 2),
-                        CenterY = (y * zoneHeight) + (zoneHeight / 2)
+                        CenterX = regionX1 + (regionWidth / 2),
+                        CenterY = (y * regionHeight) + (regionHeight / 2)
                     };
                                         
-                    // Apply Otsu to localized zone
-                    zd.Threshold = GetByOtsuMethod(zoneBytes, pixelDepth);
+                    // Apply Otsu to localized region
+                    rd.Threshold = GetByOtsuMethod(regionBytes, pixelDepth);
 
-                    zoneThresholds[(y * horizontalZones) + x] = zd;
+                    regionThresholds[(y * horizontalRegions) + x] = rd;
                 }
             }
 
@@ -737,36 +739,36 @@ namespace Freedom35.ImageProcessing
             bool belowThreshold;
             byte threshold;
             double totalDistance;
-            ZoneData[] nearestZones;
+            ThresholdRegionData[] nearestRegions;
 
-            const int NumberOfZones = 4;
+            const int NumberOfRegions = 4;
 
             for (int py = 0; py < imageHeight; py++)
             {
                 for (int px = 0; px < imageWidth; px++)
                 {
-                    // Calculate distances from pixel to each zone
-                    for (int n = 0; n < zoneThresholds.Length; n++)
+                    // Calculate distances from pixel to each region
+                    for (int n = 0; n < regionThresholds.Length; n++)
                     {
-                        zoneThresholds[n].CalculateDistance(px, py);
+                        regionThresholds[n].CalculateDistance(px, py);
                     }
 
                     // Find nearest 4, then get thresholds
-                    // Nearest zone will be zone currently in (should have strongest weight)
-                    nearestZones = zoneThresholds.OrderBy(zd => zd.Distance).Take(NumberOfZones).ToArray();
+                    // Nearest region will be region currently in (should have strongest weight)
+                    nearestRegions = regionThresholds.OrderBy(r => r.Distance).Take(NumberOfRegions).ToArray();
                     
                     // Sum all distances
-                    totalDistance = nearestZones.Sum(zd => zd.Distance);
+                    totalDistance = nearestRegions.Sum(r => r.Distance);
 
-                    // Weight threshold of each zone based on proximity
+                    // Weight threshold of each region based on proximity
                     // (Shorter distance has higher weight)
-                    if (nearestZones.Length > 1)
+                    if (nearestRegions.Length > 1)
                     {
-                        threshold = (byte)nearestZones.Sum(zd => ((1 - (zd.Distance / totalDistance)) / (nearestZones.Length - 1)) * zd.Threshold);
+                        threshold = (byte)nearestRegions.Sum(r => ((1 - (r.Distance / totalDistance)) / (nearestRegions.Length - 1)) * r.Threshold);
                     }
                     else
                     {
-                        threshold = nearestZones.First().Threshold;
+                        threshold = nearestRegions.First().Threshold;
                     }
 
                     // Get pixel index within image bytes

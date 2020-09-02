@@ -2,7 +2,10 @@
 
 namespace Freedom35.ImageProcessing
 {
-    internal struct ZoneData
+    /// <summary>
+    /// Region data for Chow & Kaneko thresholding.
+    /// </summary>
+    internal struct ThresholdRegionData
     {
         public double Distance
         {
