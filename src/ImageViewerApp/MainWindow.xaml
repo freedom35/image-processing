@@ -52,9 +52,14 @@
                     <TextBlock Text="Undo" TextAlignment="Center" Margin="5" />
                 </Label>
             </Button>
-            <Label Margin="5" VerticalAlignment="Center">
-                <TextBlock x:Name="tbImageName" Text="" TextWrapping="WrapWithOverflow" Foreground="Snow" />
-            </Label>
+            <StackPanel Orientation="Vertical">
+                <Label Margin="0" VerticalAlignment="Center">
+                    <TextBlock x:Name="tbImageName" Text="" TextWrapping="WrapWithOverflow" Foreground="Snow" />
+                </Label>
+                <Label Margin="0" VerticalAlignment="Center">
+                    <TextBlock x:Name="tbErrorInfo" Text="" TextWrapping="WrapWithOverflow" Foreground="Yellow" />
+                </Label>
+            </StackPanel>
         </WrapPanel>
         
         <!-- Image Viewer -->
@@ -67,7 +72,7 @@
         </Grid>
 
         <!-- Options -->
-        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Vertical" Margin="10">
+        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10">
             
             <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
                 <Image x:Name="pbThumbnail" Width="120" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >

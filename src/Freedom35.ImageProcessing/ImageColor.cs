@@ -200,13 +200,22 @@ namespace Freedom35.ImageProcessing
             // Get image bytes and info
             byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
-            // Can only apply color filter to a color image
-            if (bmpData.IsColor())
+            try
             {
-                ApplyFilterDirectRGB(imageBytes, r, g, b);
+                // Can only apply color filter to a color image
+                if (bmpData.IsColor())
+                {
+                    ApplyFilterDirectRGB(imageBytes, r, g, b);
+                }
+                else
+                {
+                    throw new ArgumentException("Image is not color, RGB filter cannot be applied.");
+                }
             }
-
-            ImageEdit.End(bitmap, bmpData, imageBytes);
+            finally
+            {
+                ImageEdit.End(bitmap, bmpData, imageBytes);
+            }
         }
 
         /// <summary>

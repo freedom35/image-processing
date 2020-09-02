@@ -121,6 +121,9 @@ namespace ImageViewerApp
 
                 // Enable if previous available
                 btUndoImageChange.IsEnabled = previousImage != null;
+
+                // Clear any previous error
+                ClearError();
             }
             else
             {
@@ -159,8 +162,15 @@ namespace ImageViewerApp
                 string strValue = cmbConvolution.SelectedItem as string;
 
                 ConvolutionType type = EnumConverter.GetValueFromDescription<ConvolutionType>(strValue);
-                
-                DisplayImage(ImageConvolution.ApplyKernel(currentImage, type));
+
+                try
+                {
+                    DisplayImage(ImageConvolution.ApplyKernel(currentImage, type));
+                }
+                catch (Exception ex)
+                {
+                    ReportException(ex);
+                }
             }
         }
 
@@ -168,7 +178,14 @@ namespace ImageViewerApp
         {
             if (currentImage != null)
             {
-                DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
+                try
+                {
+                    DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
+                }
+                catch (Exception ex)
+                {
+                    ReportException(ex);
+                }
             }
         }
 
@@ -176,7 +193,36 @@ namespace ImageViewerApp
         {
             if (currentImage != null)
             {
-                DisplayImage(ImageColor.ToRed(currentImage));
+                try
+                {
+                    DisplayImage(ImageColor.ToRed(currentImage));
+                }
+                catch (Exception ex)
+                {
+                    ReportException(ex);
+                }
+            }
+        }
+
+        private void ReportException(Exception ex)
+        {
+            DisplayError(ex.Message);
+        }
+
+        private void ClearError()
+        {
+            DisplayError("");
+        }
+
+        private void DisplayError(string errorText)
+        {
+            if (tbErrorInfo.CheckAccess())
+            {
+                tbErrorInfo.Text = errorText;
+            }
+            else
+            {
+                tbErrorInfo.Dispatcher.BeginInvoke((Action)delegate () { DisplayError(errorText); });
             }
         }
     }
