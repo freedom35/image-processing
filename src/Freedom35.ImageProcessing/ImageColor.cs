@@ -79,34 +79,42 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to convert</param>
         /// <returns>Negative image</returns>
-        public static Image ToNegative(Image image)
+        public static T ToNegative<T>(T image) where T : Image
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+            if (image is Bitmap bmp)
+            {
+                // Return new image
+                Bitmap clone = (Bitmap)bmp.Clone();
 
-            Bitmap negativeBitmap = ToNegative(bitmap);
+                // Edit clone
+                ToNegativeDirect(ref clone);
 
-            // Restore original image format
-            return ImageFormatting.ToFormat(negativeBitmap, image.RawFormat);
+                return (T)(Image)clone;
+            }
+            else
+            {
+                // Creates new image
+                Bitmap clone = ImageFormatting.ToBitmap(image);
+
+                // Edit clone
+                ToNegativeDirect(ref clone);
+
+                // Restore original image format
+                return (T)ImageFormatting.ToFormat(clone, image.RawFormat);
+            }
         }
 
         /// <summary>
-        /// Inverts image to negative.
+        /// Inverts image to negative directly.
         /// </summary>
-        /// <param name="bitmap">Image to convert</param>
-        /// <returns>Negative image</returns>
-        public static Bitmap ToNegative(Bitmap bitmap)
+        /// <param name="bitmap">Image to process</param>
+        public static void ToNegativeDirect(ref Bitmap bitmap)
         {
-            // Return new image
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            // Edit clone
-            byte[] imageBytes = ImageEdit.Begin(clone, out BitmapData bmpData);
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
             ToNegative(imageBytes);
 
-            ImageEdit.End(clone, bmpData, imageBytes);
-
-            return clone;
+            ImageEdit.End(bitmap, bmpData, imageBytes);
         }
 
         /// <summary>

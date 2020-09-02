@@ -100,6 +100,9 @@
             <Button Style="{StaticResource ImageOption}" Click="Button_ApplyRedFilter_Click">
                 <Label>Apply Red Filter</Label>
             </Button>
+            <Button Style="{StaticResource ImageOption}" Click="Button_ToNegative_Click">
+                <Label>To Negative</Label>
+            </Button>
             <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
                 <Grid>
                     <Grid.RowDefinitions>

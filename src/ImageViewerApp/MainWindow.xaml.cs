@@ -204,6 +204,21 @@ namespace ImageViewerApp
             }
         }
 
+        private void Button_ToNegative_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                try
+                {
+                    DisplayImage(ImageColor.ToNegative(currentImage));
+                }
+                catch (Exception ex)
+                {
+                    ReportException(ex);
+                }
+            }
+        }
+
         private void ReportException(Exception ex)
         {
             DisplayError(ex.Message);
