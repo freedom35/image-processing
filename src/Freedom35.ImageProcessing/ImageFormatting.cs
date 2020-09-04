@@ -11,16 +11,28 @@ namespace Freedom35.ImageProcessing
     {
         /// <summary>
         /// Converts system image to bitmap.
-        /// (Image processing performed on bytes in bitmap format)
         /// </summary>
+        /// <param name="image">Image to convert</param>
+        /// <returns>New/Cloned bitmap</returns>
         public static Bitmap ToBitmap(Image image)
         {
-            return (Bitmap)ToFormat(image, ImageFormat.Bmp);
+            // Check if already a bitmap
+            if (image is Bitmap bmp)
+            {
+                return (Bitmap)bmp.Clone();
+            }
+            else
+            {
+                return (Bitmap)ToFormat(image, ImageFormat.Bmp);
+            }
         }
 
         /// <summary>
         /// Converts system image format.
         /// </summary>
+        /// <param name="image">Image to convert</param>
+        /// <param name="targetFormat">Target image format</param>
+        /// <returns>New image in target format</returns>
         public static Image ToFormat(Image image, ImageFormat targetFormat)
         {
             // Returning new image
@@ -29,8 +41,8 @@ namespace Freedom35.ImageProcessing
             // Check not already a correct format
             if (!image.RawFormat.Equals(targetFormat))
             {
-                // Do not dispose of stream, 
-                // or will cause issues for future image processing calls
+                // ** Do not dispose of stream **
+                // (Or will cause issues for future image processing calls)
                 MemoryStream ms = new MemoryStream();
                 image.Save(ms, targetFormat);
 
