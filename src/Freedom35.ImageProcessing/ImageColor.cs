@@ -94,13 +94,18 @@ namespace Freedom35.ImageProcessing
             else
             {
                 // Creates new image
-                Bitmap clone = ImageFormatting.ToBitmap(image);
+                Bitmap tmpImage = ImageFormatting.ToBitmap(image);
 
                 // Edit clone
-                ToNegativeDirect(ref clone);
+                ToNegativeDirect(ref tmpImage);
 
                 // Restore original image format
-                return (T)ImageFormatting.ToFormat(clone, image.RawFormat);
+                Image origFormatImage = ImageFormatting.ToFormat(tmpImage, image.RawFormat);
+
+                // Dispose of temp image
+                tmpImage.Dispose();
+
+                return (T)origFormatImage;
             }
         }
 

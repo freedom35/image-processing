@@ -16,11 +16,15 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>New image with threshold applied</returns>
-        public static Image ApplyOtsuMethod(Image image)
+        public static T ApplyOtsuMethod<T>(T image) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return ApplyOtsuMethod(bmp);
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                ApplyOtsuMethodDirect(ref clone);
+
+                return (T)(Image)clone;
             }
             else
             {
@@ -29,28 +33,13 @@ namespace Freedom35.ImageProcessing
                 ApplyOtsuMethodDirect(ref bitmap);
 
                 // Restore original image format
-                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
 
                 // Dispose of temp image
                 bitmap.Dispose();
 
-                return thresholdImage;
+                return (T)origFormatImage;
             }
-        }
-
-        /// <summary>
-        /// Applies thresholding to image using Otsu's Method.
-        /// Returned image will consist of black (0) and white (255) values only.
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <returns>New image with threshold applied</returns>
-        public static Bitmap ApplyOtsuMethod(Bitmap bitmap)
-        {
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            ApplyOtsuMethodDirect(ref clone);
-
-            return clone;
         }
 
         /// <summary>
@@ -184,11 +173,15 @@ namespace Freedom35.ImageProcessing
         /// <param name="image">Image to process</param>
         /// <param name="threshold">Threshold value</param>
         /// <returns>New image with threshold applied</returns>
-        public static Image Apply(Image image, byte threshold)
+        public static T Apply<T>(T image, byte threshold) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return Apply(bmp, threshold);
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                ApplyDirect(ref clone, threshold);
+
+                return (T)(Image)clone;
             }
             else
             {
@@ -197,29 +190,13 @@ namespace Freedom35.ImageProcessing
                 ApplyDirect(ref bitmap, threshold);
 
                 // Restore original image format
-                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
 
                 // Dispose of temp image
                 bitmap.Dispose();
 
-                return thresholdImage;
+                return (T)origFormatImage;
             }
-        }
-
-        /// <summary>
-        /// Any pixel values below threshold will be changed to 0 (black).
-        /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <param name="threshold">Threshold value</param>
-        /// <returns>New image with threshold applied</returns>
-        public static Bitmap Apply(Bitmap bitmap, byte threshold)
-        {
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            ApplyDirect(ref clone, threshold);
-
-            return clone;
         }
 
         /// <summary>
@@ -291,14 +268,18 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values below threshold will be changed to min value.
         /// (High-pass filter)
         /// </summary>
-        /// <param name="bitmap">Image to process</param>
+        /// <param name="image">Image to process</param>
         /// <param name="minValue">Min value to retain</param>
         /// <returns>New image with threshold applied</returns>
-        public static Image ApplyMin(Image image, byte minValue)
+        public static T ApplyMin<T>(T image, byte minValue) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return ApplyMin(bmp, minValue);
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                ApplyMinDirect(ref clone, minValue);
+
+                return (T)(Image)clone;
             }
             else
             {
@@ -307,29 +288,13 @@ namespace Freedom35.ImageProcessing
                 ApplyMinDirect(ref bitmap, minValue);
 
                 // Restore original image format
-                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
 
                 // Dispose of temp image
                 bitmap.Dispose();
 
-                return thresholdImage;
+                return (T)origFormatImage;
             }
-        }
-
-        /// <summary>
-        /// Any pixel values below threshold will be changed to min value.
-        /// (High-pass filter)
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <param name="minValue">Min value to retain</param>
-        /// <returns>New image with threshold applied</returns>
-        public static Bitmap ApplyMin(Bitmap bitmap, byte minValue)
-        {
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            ApplyMinDirect(ref bitmap, minValue);
-
-            return clone;
         }
 
         /// <summary>
@@ -386,14 +351,18 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values above threshold will be changed to max value.
         /// (Low-pass filter)
         /// </summary>
-        /// <param name="bitmap">Image to process</param>
+        /// <param name="image">Image to process</param>
         /// <param name="maxValue">Max value to retain</param>
         /// <returns>New image with threshold applied</returns>
-        public static Image ApplyMax(Image image, byte maxValue)
+        public static T ApplyMax<T>(T image, byte maxValue) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return ApplyMax(bmp, maxValue);
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                ApplyMaxDirect(ref clone, maxValue);
+
+                return (T)(Image)clone;
             }
             else
             {
@@ -402,29 +371,13 @@ namespace Freedom35.ImageProcessing
                 ApplyMaxDirect(ref bitmap, maxValue);
 
                 // Restore original image format
-                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
 
                 // Dispose of temp image
                 bitmap.Dispose();
 
-                return thresholdImage;
+                return (T)origFormatImage;
             }
-        }
-
-        /// <summary>
-        /// Any pixel values above threshold will be changed to max value.
-        /// (Low-pass filter)
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <param name="maxValue">Max value to retain</param>
-        /// <returns>New image with threshold applied</returns>
-        public static Bitmap ApplyMax(Bitmap bitmap, byte maxValue)
-        {
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            ApplyMaxDirect(ref clone, maxValue);
-
-            return clone;
         }
 
         /// <summary>
@@ -484,11 +437,16 @@ namespace Freedom35.ImageProcessing
         /// <param name="minValue">Minimum threshold value</param>
         /// <param name="maxValue">Maximum threshold value</param>
         /// <returns>New image with threshold applied</returns>
-        public static Image ApplyMinMax(Image image, byte minValue, byte maxValue)
+        public static T ApplyMinMax<T>(T image, byte minValue, byte maxValue) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return ApplyMinMax(bmp, minValue, maxValue);
+                // Return new image
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                ApplyMinMaxDirect(ref clone, minValue, maxValue);
+
+                return (T)(Image)clone;
             }
             else
             {
@@ -497,30 +455,13 @@ namespace Freedom35.ImageProcessing
                 ApplyMinMaxDirect(ref bitmap, minValue, maxValue);
 
                 // Restore original image format
-                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
 
                 // Dispose of temp image
                 bitmap.Dispose();
 
-                return thresholdImage;
+                return (T)origFormatImage;
             }
-        }
-
-        /// <summary>
-        /// Any pixel values outside the threshold will be changed to min/max.
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <param name="minValue">Minimum threshold value</param>
-        /// <param name="maxValue">Maximum threshold value</param>
-        /// <returns>New image with threshold applied</returns>
-        public static Bitmap ApplyMinMax(Bitmap bitmap, byte minValue, byte maxValue)
-        {
-            // Return new image
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            ApplyMinMaxDirect(ref bitmap, minValue, maxValue);
-
-            return clone;
         }
 
         /// <summary>
@@ -591,35 +532,9 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
         /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <returns>New image with localized threshold applied</returns>
-        public static Bitmap ApplyChowKanekoMethod(Bitmap bitmap)
-        {
-            return ApplyChowKanekoMethod(bitmap, 3, 3);
-        }
-
-        /// <summary>
-        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <param name="horizontalRegions">Number of horizonal regions to apply</param>
-        /// <param name="verticalRegions">Number of veritical regions to apply</param>
-        /// <returns>New image with localized threshold applied</returns>
-        public static Bitmap ApplyChowKanekoMethod(Bitmap bitmap, int horizontalRegions, int verticalRegions)
-        {
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            ApplyChowKanekoMethodDirect(ref clone, horizontalRegions, verticalRegions);
-
-            return clone;
-        }
-
-        /// <summary>
-        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
-        /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>New image with localized threshold applied</returns>
-        public static Image ApplyChowKanekoMethod(Image image)
+        public static T ApplyChowKanekoMethod<T>(T image) where T : Image
         {
             return ApplyChowKanekoMethod(image, 3, 3);
         }
@@ -631,11 +546,15 @@ namespace Freedom35.ImageProcessing
         /// <param name="horizontalRegions">Number of horizonal regions to apply</param>
         /// <param name="verticalRegions">Number of veritical regions to apply</param>
         /// <returns>New image with localized threshold applied</returns>
-        public static Image ApplyChowKanekoMethod(Image image, int horizontalRegions, int verticalRegions)
+        public static T ApplyChowKanekoMethod<T>(T image, int horizontalRegions, int verticalRegions) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return ApplyChowKanekoMethod(bmp, horizontalRegions, verticalRegions);
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                ApplyChowKanekoMethodDirect(ref clone, horizontalRegions, verticalRegions);
+
+                return (T)(Image)clone;
             }
             else
             {
@@ -644,12 +563,12 @@ namespace Freedom35.ImageProcessing
                 ApplyChowKanekoMethodDirect(ref bitmap, horizontalRegions, verticalRegions);
                     
                 // Restore original image format
-                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
+                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
 
                 // Dispose of temp image
                 bitmap.Dispose();
 
-                return thresholdImage;
+                return (T)origFormatImage;
             }
         }
 
