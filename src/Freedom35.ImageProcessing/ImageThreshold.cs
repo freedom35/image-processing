@@ -605,40 +605,48 @@ namespace Freedom35.ImageProcessing
             // Determine whether color
             int pixelDepth = bmpData.GetPixelDepth();
 
+            // Variables for region loop
             byte[] regionBytes;
+            int regionY1, regionY2, regionHeight;
+            int regionX1, regionX2, regionWidth;
+            int yOffset;
+            int imageOffset, regionOffset;
+            int y, x, i;
+            ThresholdRegionData rd;
 
             // Apply Otsu to obtain localized threshold for each region
-            for (int y = 0; y < verticalRegions; y++)
+            for (y = 0; y < verticalRegions; y++)
             {
                 // Get y positions
-                int regionY1 = y * verticalPPZ;
-                int regionY2 = Math.Min(imageHeight, regionY1 + verticalPPZ);
-                int regionHeight = regionY2 - regionY1;
+                regionY1 = y * verticalPPZ;
+                regionY2 = Math.Min(imageHeight, regionY1 + verticalPPZ);
+                regionHeight = regionY2 - regionY1;
 
-                int yOffset = stride * regionY1;
+                yOffset = stride * regionY1;
 
-                for (int x = 0; x < horizontalRegions; x++)
+                for (x = 0; x < horizontalRegions; x++)
                 {
                     // Get current region position, limit to edge of image
-                    int regionX1 = x * horizontalPPZ * pixelDepth;
-                    int regionX2 = Math.Min(imageWidth, regionX1 + horizontalPPZ) * pixelDepth;
+                    regionX1 = x * horizontalPPZ * pixelDepth;
+                    regionX2 = Math.Min(imageWidth, regionX1 + horizontalPPZ) * pixelDepth;
 
-                    int regionWidth = regionX2 - regionX1;
+                    regionWidth = regionX2 - regionX1;
 
                     // Allocate bytes
                     regionBytes = new byte[regionWidth * regionHeight];
 
                     // Copy bytes from image to region array
                     // Copy row by row (region bytes not consecutive)
-                    for (int i = 0; i < regionHeight; i++)
+                    for (i = 0; i < regionHeight; i++)
                     {
-                        int imageOffset = yOffset + (stride * i) + regionX1;
-                        int regionOffset = regionWidth * i;
+                        imageOffset = yOffset + (stride * i) + regionX1;
+                        regionOffset = regionWidth * i;
                         
                         Buffer.BlockCopy(imageBytes, imageOffset, regionBytes, regionOffset, regionWidth);
                     }
 
-                    ThresholdRegionData rd = new ThresholdRegionData()
+                    // Create struct with threshold data
+                    rd = new ThresholdRegionData()
                     {
                         X = x,
                         Y = y,
@@ -649,37 +657,41 @@ namespace Freedom35.ImageProcessing
                     // Apply Otsu to localized region
                     rd.Threshold = GetByOtsuMethod(regionBytes, pixelDepth);
 
+                    // Assign threshold data to region
                     regionThresholds[(y * horizontalRegions) + x] = rd;
                 }
             }
 
+            // Variables for pixel loop
             int pixelSum;
             bool belowThreshold;
             byte threshold;
             double totalDistance;
             ThresholdRegionData[] nearestRegions;
+            int py, px, n, j;
 
             const int NumberOfRegions = 4;
 
-            for (int py = 0; py < imageHeight; py++)
+            // Go through each pixel calculating threshold
+            for (py = 0; py < imageHeight; py++)
             {
-                for (int px = 0; px < imageWidth; px++)
+                for (px = 0; px < imageWidth; px++)
                 {
                     // Calculate distances from pixel to each region
-                    for (int n = 0; n < regionThresholds.Length; n++)
+                    for (n = 0; n < regionThresholds.Length; n++)
                     {
                         regionThresholds[n].CalculateDistance(px, py);
                     }
 
-                    // Find nearest 4, then get thresholds
-                    // Nearest region will be region currently in (should have strongest weight)
+                    // Find the nearest 4 regions to pixel, then get their thresholds
                     nearestRegions = regionThresholds.OrderBy(r => r.Distance).Take(NumberOfRegions).ToArray();
                     
-                    // Sum all distances
+                    // Sum all distances so we have reference for each relative distance
                     totalDistance = nearestRegions.Sum(r => r.Distance);
 
-                    // Weight threshold of each region based on proximity
-                    // (Shorter distance has higher weight)
+                    // Weight bias the threshold of each nearest region based on proximity to pixel
+                    // (Shorter distance has higher weight bias)
+                    // Sum of each weight bias should add up to 1.
                     if (nearestRegions.Length > 1)
                     {
                         threshold = (byte)nearestRegions.Sum(r => ((1 - (r.Distance / totalDistance)) / (nearestRegions.Length - 1)) * r.Threshold);
@@ -690,11 +702,11 @@ namespace Freedom35.ImageProcessing
                     }
 
                     // Get pixel index within image bytes
-                    int i = (px * pixelDepth) + (py * stride);
+                    i = (px * pixelDepth) + (py * stride);
                     pixelSum = 0;
 
                     // Sum each pixel component for color images
-                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    for (j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
                     {
                         pixelSum += imageBytes[i + j];
                     }
@@ -703,7 +715,7 @@ namespace Freedom35.ImageProcessing
                     belowThreshold = (pixelSum / pixelDepth) < threshold;
 
                     // Apply threshold
-                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    for (j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
                     {
                         imageBytes[i + j] = belowThreshold ? byte.MinValue : byte.MaxValue;
                     }
