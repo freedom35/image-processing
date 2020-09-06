@@ -1,5 +1,5 @@
 # Image Processing Library
-Open source image processing library targeting .NET Standard.  
+Open source image processing library targeting **.NET Standard v2.0**.  
 Published package available for download on [NuGet.org](https://nuget.org).  
 
 This library may be used as an educational tool on how such image processing methods can be implemented, or used within your own projects that require some form of image processing.
