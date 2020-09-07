@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Xml.Schema;
 
 namespace Freedom35.ImageProcessing
 {
@@ -16,29 +15,9 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>256 array of histogram values</returns>
-        public static int[] GetHistogramValues(Image image)
+        public static int[] GetHistogramValues<T>(T image) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                return GetHistogramValues(bmp);
-            }
-            else
-            {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    return GetHistogramValues(bitmap);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets (256) array of histogram values for image.
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <returns>256 array of histogram values</returns>
-        public static int[] GetHistogramValues(Bitmap bitmap)
-        {
-            byte[] imageBytes = ImageBytes.FromBitmap(bitmap, out BitmapData bmpData);
+            byte[] imageBytes = ImageBytes.FromImage(image, out BitmapData bmpData);
 
             int pixelDepth = bmpData.GetPixelDepth();
 
@@ -89,11 +68,16 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to equalize</param>
         /// <returns>Equalized image</returns>
-        public static Image HistogramEqualization(Image image)
+        public static T HistogramEqualization<T>(T image) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return HistogramEqualization(bmp);
+                // Return new image
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                HistogramEqualizationDirect(ref clone);
+
+                return (T)(Image)clone;
             }
             else
             {
@@ -107,24 +91,8 @@ namespace Freedom35.ImageProcessing
                 // Dispose of temp bitmap
                 bitmap.Dispose();
 
-                return equalizedImage;
+                return (T)equalizedImage;
             }
-        }
-
-        /// <summary>
-        /// Histogram Equalization will enhance general contrast 
-        /// by distributing grey levels wider and more evenly.
-        /// </summary>
-        /// <param name="bitmap">Image to equalize</param>
-        /// <returns>Equalized image</returns>
-        public static Bitmap HistogramEqualization(Bitmap bitmap)
-        {
-            // Return new image
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            HistogramEqualizationDirect(ref clone);
-
-            return clone;
         }
 
         /// <summary>
@@ -201,28 +169,7 @@ namespace Freedom35.ImageProcessing
         /// <param name="histogramSource">Image histogram is based on</param>
         /// <param name="histogramSize">Size of histogram to create</param>
         /// <returns>Bitmap containing histogram</returns>
-        public static Bitmap Create(Image histogramSource, Size histogramSize)
-        {
-            if (histogramSource is Bitmap bmp)
-            {
-                return Create(bmp, histogramSize, Color.Black, Color.White);
-            }
-            else
-            {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(histogramSource))
-                {
-                    return Create(bitmap, histogramSize, Color.Black, Color.White);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates a black & white histogram.
-        /// </summary>
-        /// <param name="histogramSource">Bitmap histogram is based on</param>
-        /// <param name="histogramSize">Size of histogram to create</param>
-        /// <returns>Bitmap containing histogram</returns>
-        public static Bitmap Create(Bitmap histogramSource, Size histogramSize)
+        public static Bitmap Create<T>(T histogramSource, Size histogramSize) where T : Image
         {
             return Create(histogramSource, histogramSize, Color.Black, Color.White);
         }
@@ -235,30 +182,7 @@ namespace Freedom35.ImageProcessing
         /// <param name="histogramBackground">Background color of histogram to create</param>
         /// <param name="histogramForeground">Foreground color of histogram to create</param>
         /// <returns>Bitmap containing histogram</returns>
-        public static Bitmap Create(Image histogramSource, Size histogramSize, Color histogramBackground, Color histogramForeground)
-        {
-            if (histogramSource is Bitmap bmp)
-            {
-                return Create(bmp, histogramSize, histogramBackground, histogramForeground);
-            }
-            else
-            {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(histogramSource))
-                {
-                    return Create(bitmap, histogramSize, histogramBackground, histogramForeground);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates a histogram image.
-        /// </summary>
-        /// <param name="histogramSource">Bitmap histogram is based on</param>
-        /// <param name="histogramSize">Size of histogram to create</param>
-        /// <param name="histogramBackground">Background color of histogram to create</param>
-        /// <param name="histogramForeground">Foreground color of histogram to create</param>
-        /// <returns>Bitmap containing histogram</returns>
-        public static Bitmap Create(Bitmap histogramSource, Size histogramSize, Color histogramBackground, Color histogramForeground)
+        public static Bitmap Create<T>(T histogramSource, Size histogramSize, Color histogramBackground, Color histogramForeground) where T : Image
         {
             // Get histogram values for source bitmap
             int[] histogramValues = GetHistogramValues(histogramSource);

@@ -64,7 +64,17 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image bytes</returns>
         public static byte[] FromImage(Image image, out BitmapData bmpData)
         {
-            return FromBitmap(ImageFormatting.ToBitmap(image), out bmpData);
+            if (image is Bitmap bmp)
+            {
+                return FromBitmap(bmp, out bmpData);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    return FromBitmap(bitmap, out bmpData);
+                }
+            }
         }
 
         /// <summary>
