@@ -10,20 +10,20 @@ namespace Freedom35.ImageProcessing
     internal static class BitmapDataExt
     {
         /// <summary>
-        /// Gets pixel depth for image.
-        /// </summary>
-        public static int GetPixelDepth(this BitmapData bitmapData)
-        {
-            return Math.Max(1, Math.Abs(bitmapData.Stride) / bitmapData.Width);
-        }
-
-        /// <summary>
         /// Gets the number of bytes in an image.
         /// (Excluding encoding bytes)
         /// </summary>
         public static int GetByteCount(this BitmapData bitmapData)
         {
             return Math.Abs(bitmapData.Stride) * bitmapData.Height;
+        }
+
+        /// <summary>
+        /// Gets pixel depth for image.
+        /// </summary>
+        public static int GetPixelDepth(this BitmapData bitmapData)
+        {
+            return Math.Max(1, Math.Abs(bitmapData.Stride) / bitmapData.Width);
         }
 
         /// <summary>
