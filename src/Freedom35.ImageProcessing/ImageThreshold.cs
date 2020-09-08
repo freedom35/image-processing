@@ -593,7 +593,7 @@ namespace Freedom35.ImageProcessing
             byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
             // Use stride to ensure correct row length
-            int stride = bmpData.Stride;
+            int stride = Math.Abs(bmpData.Stride);
             int imageHeight = bmpData.Height;
             int imageWidth = bmpData.Width;
 
