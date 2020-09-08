@@ -16,7 +16,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="images">Images to combine</param>
         /// <returns>New combined image</returns>
-        public static Bitmap All(IEnumerable<Bitmap> images)
+        public static Bitmap All<T>(IEnumerable<T> images) where T : Image
         {
             // Check have at least 1 image
             if (images.Count() == 0)
@@ -25,7 +25,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Use first image as starting point
-            Bitmap combinedImage = (Bitmap)images.ElementAt(0).Clone();
+            Bitmap combinedImage = ImageFormatting.ToBitmap(images.ElementAt(0));
 
             // Get bytes for image
             byte[] rgbValues1 = ImageEdit.Begin(combinedImage, out BitmapData bmpData1);
@@ -33,10 +33,10 @@ namespace Freedom35.ImageProcessing
             int pixelDepth = bmpData1.GetPixelDepth();
 
             // Add additional images to first
-            foreach (Bitmap bitmap in images.Skip(1))
+            foreach (Image image in images.Skip(1))
             {
                 // Only reading this image
-                byte[] rgbValues2 = ImageBytes.FromImageAsBitmap(bitmap);
+                byte[] rgbValues2 = ImageBytes.FromImageAsBitmap(image);
 
                 // Combine images
                 for (int i = 0; i < rgbValues1.Length; i += pixelDepth)
