@@ -55,15 +55,5 @@ namespace Freedom35.ImageProcessing
 
             return clone;
         }
-
-        ///// <summary>
-        ///// Compares image formats.
-        ///// </summary>
-        //private static bool AreSameFormat(ImageFormat format1, ImageFormat format2)
-        //{
-        //    return format1.Equals(format2)
-        //        || format1.Equals(ImageFormat.Bmp) && format2.Equals(ImageFormat.MemoryBmp)
-        //        || format1.Equals(ImageFormat.MemoryBmp) && format2.Equals(ImageFormat.Bmp);
-        //}
     }
 }

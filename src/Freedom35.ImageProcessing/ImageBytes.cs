@@ -40,22 +40,6 @@ namespace Freedom35.ImageProcessing
             }
         }
 
-        ///// <summary>
-        ///// Gets the image bytes from a bitmap image.
-        ///// </summary>
-        ///// <param name="bitmap">Bitmap to get bytes from</param>
-        ///// <returns>Image bytes</returns>
-        //public static byte[] FromBitmap(Bitmap bitmap)
-        //{
-        //    using (MemoryStream stream = new MemoryStream())
-        //    {
-        //        bitmap.Save(stream, ImageFormat.Bmp);
-        //        return stream.ToArray();
-        //    }
-
-        //    //return FromBitmap(bitmap, out BitmapData _);
-        //}
-
         /// <summary>
         /// Converts the image to a bitmap, and gets the bytes.
         /// </summary>
