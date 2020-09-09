@@ -1,4 +1,9 @@
-﻿namespace Freedom35.ImageProcessing
+﻿//------------------------------------------------
+// GitHub:  freedom35
+// License: MIT
+//------------------------------------------------
+
+namespace Freedom35.ImageProcessing
 {
     /// <summary>
     /// Internal image constants

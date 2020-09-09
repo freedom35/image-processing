@@ -10,7 +10,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/freedom35/image-processing</PackageProjectUrl>
-    <PackageTags>image processing, bitmap</PackageTags>
+    <PackageTags>Image, Image Processing, Bitmap</PackageTags>
     <PackageLicenseFile></PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

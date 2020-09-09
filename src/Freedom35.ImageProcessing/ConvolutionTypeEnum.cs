@@ -1,4 +1,8 @@
-﻿using System;
+﻿//------------------------------------------------
+// GitHub:  freedom35
+// License: MIT
+//------------------------------------------------
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;

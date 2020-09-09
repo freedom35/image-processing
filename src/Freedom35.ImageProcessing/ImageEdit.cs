@@ -1,4 +1,8 @@
-﻿using System.Drawing;
+﻿//------------------------------------------------
+// GitHub:  freedom35
+// License: MIT
+//------------------------------------------------
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 

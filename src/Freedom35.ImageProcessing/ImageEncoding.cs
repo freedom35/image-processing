@@ -1,4 +1,8 @@
-﻿using System;
+﻿//------------------------------------------------
+// GitHub:  freedom35
+// License: MIT
+//------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,20 +13,13 @@ namespace Freedom35.ImageProcessing
     /// </summary>
     public static class ImageEncoding
     {
-        //private static ImageType[] GetEncodingDefinitions()
-        //{
-        //    return Enum.GetValues(typeof(ImageType)).OfType<ImageType>().Where(t => t != ImageType.Unknown).ToArray();
-        //}
-
-        //private static readonly ImageType[] imageTypes = Enum.GetValues(typeof(ImageType)).Cast<ImageType>().Where(t => t != ImageType.Unknown).ToArray();
-
         /// <summary>
-        /// 
+        /// Determines image type based on header bytes.
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="imageType"></param>
-        /// <returns></returns>
-        public static bool TryGetImageType(byte[] buffer, out ImageType imageType)
+        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="imageType">Type of image determined</param>
+        /// <returns>True if image type could be determined</returns>
+        public static bool TryGetImageType(byte[] imageBytes, out ImageType imageType)
         {
             imageType = ImageType.Unknown;
 
@@ -34,7 +31,7 @@ namespace Freedom35.ImageProcessing
             {
                 byte[] encodingBytes = type.GetEncodingBytes();
 
-                if (IsImageType(buffer, encodingBytes))
+                if (IsImageType(imageBytes, encodingBytes))
                 {
                     imageType = type;
                     break;
@@ -45,19 +42,19 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// 
+        /// Determines if image matches the encoding type.
         /// </summary>
-        /// <param name="imageBuffer"></param>
-        /// <param name="encodingBytes"></param>
-        /// <returns></returns>
-        public static bool IsImageType(byte[] imageBuffer, byte[] encodingBytes)
+        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="encodingBytes">Encoding bytes for comparison</param>
+        /// <returns>True if image header matches encoding bytes</returns>
+        public static bool IsImageType(byte[] imageBytes, byte[] encodingBytes)
         {
             int i;
 
             // Compare image bytes to encoding
-            for (i = 0; i < encodingBytes.Length && i < imageBuffer.Length; i++)
+            for (i = 0; i < encodingBytes.Length && i < imageBytes.Length; i++)
             {
-                if (imageBuffer[i] != encodingBytes[i])
+                if (imageBytes[i] != encodingBytes[i])
                 {
                     break;
                 }

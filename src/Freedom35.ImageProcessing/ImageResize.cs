@@ -1,4 +1,8 @@
-﻿using System;
+﻿//------------------------------------------------
+// GitHub:  freedom35
+// License: MIT
+//------------------------------------------------
+using System;
 using System.Drawing;
 
 namespace Freedom35.ImageProcessing
