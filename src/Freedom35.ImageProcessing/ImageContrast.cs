@@ -2,7 +2,6 @@
 // GitHub:  freedom35
 // License: MIT
 //------------------------------------------------
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -19,34 +18,28 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>Contrast-stretched image</returns>
-        public static Image Stretch(Image image)
+        public static T Stretch<T>(T image) where T: Image
         {
             return Stretch(image, byte.MinValue, byte.MaxValue);
         }
 
         /// <summary>
-        /// Stretches image contrast to get maximum contrast.
-        /// If image has unused lower/upper range, values can be stretched to use all available range, improving image contrast.
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <returns>Contrast-stretched image</returns>
-        public static Bitmap Stretch(Bitmap bitmap)
-        {
-            return Stretch(bitmap, byte.MinValue, byte.MaxValue);
-        }
-
-        /// <summary>
         /// Stretches image contrast to specified min/max values.
         /// </summary>
-        /// <param name="bitmap">Image to process</param>
+        /// <param name="image">Image to process</param>
         /// <param name="min">Minimum contrast value</param>
         /// <param name="max">Maximum contrast value</param>
         /// <returns>Contrast-stretched image</returns>
-        public static Image Stretch(Image image, byte min, byte max)
+        public static T Stretch<T>(T image, byte min, byte max) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return Stretch(bmp, min, max);
+                // Return new image
+                Bitmap clone = (Bitmap)bmp.Clone();
+
+                StretchDirect(ref clone, min, max);
+
+                return (T)(Image)clone;
             }
             else
             {
@@ -61,25 +54,8 @@ namespace Freedom35.ImageProcessing
                 // Dispose of temp bitmap
                 bitmap.Dispose();
 
-                return stretchedImage;
+                return (T)stretchedImage;
             }
-        }
-
-        /// <summary>
-        /// Stretches image contrast to specified min/max values.
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <param name="min">Minimum contrast value</param>
-        /// <param name="max">Maximum contrast value</param>
-        /// <returns>Contrast-stretched image</returns>
-        public static Bitmap Stretch(Bitmap bitmap, byte min, byte max)
-        {
-            // Return new image
-            Bitmap clone = (Bitmap)bitmap.Clone();
-
-            StretchDirect(ref clone, min, max);
-
-            return clone;
         }
 
         /// <summary>
