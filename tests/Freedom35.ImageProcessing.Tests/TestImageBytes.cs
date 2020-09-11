@@ -12,7 +12,7 @@ namespace ImageProcessingTests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
         [DataTestMethod]
-        public void TestFromStream(string resourcePath)
+        public void TestFromResource(string resourcePath)
         {
             byte[] imageBytes = ImageBytes.FromResource(resourcePath);
 

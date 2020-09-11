@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\clock-otsu.bmp" />
     <None Remove="Resources\clock.bmp" />
     <None Remove="Resources\clock.jpg" />
     <None Remove="Resources\clock.png" />
@@ -24,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\clock-otsu.bmp" />
     <EmbeddedResource Include="Resources\clock.bmp" />
     <EmbeddedResource Include="Resources\clock.jpg" />
     <EmbeddedResource Include="Resources\clock.png" />

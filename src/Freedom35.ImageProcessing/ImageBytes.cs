@@ -48,6 +48,16 @@ namespace Freedom35.ImageProcessing
         /// Converts the image to a bitmap, and gets the bytes.
         /// </summary>
         /// <param name="image">Image to get bytes from</param>
+        /// <returns>Image bytes</returns>
+        public static byte[] FromImage(Image image)
+        {
+            return FromImage(image, out BitmapData _);
+        }
+
+        /// <summary>
+        /// Converts the image to a bitmap, and gets the bytes.
+        /// </summary>
+        /// <param name="image">Image to get bytes from</param>
         /// <param name="bmpData">Data relating to bitmap</param>
         /// <returns>Image bytes</returns>
         public static byte[] FromImage(Image image, out BitmapData bmpData)
@@ -63,6 +73,16 @@ namespace Freedom35.ImageProcessing
                     return FromBitmap(bitmap, out bmpData);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the bytes from a bitmap image.
+        /// </summary>
+        /// <param name="image">Bitmap to get bytes from</param>
+        /// <returns>Image bytes</returns>
+        public static byte[] FromBitmap(Bitmap bitmap)
+        {
+            return FromBitmap(bitmap, out BitmapData _);
         }
 
         /// <summary>
