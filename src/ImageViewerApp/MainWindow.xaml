@@ -42,6 +42,11 @@
                     <TextBlock Text="Open Image..." TextAlignment="Center" Margin="5" />
                 </Label>
             </Button>
+            <Button x:Name="btSaveImage" Click="Button_SaveImage_Click" Margin="5,0,0,0" IsEnabled="False">
+                <Label>
+                    <TextBlock Text="Save Image..." TextAlignment="Center" Margin="5" />
+                </Label>
+            </Button>
             <Button x:Name="btRestoreImage" Click="Button_RestoreImage_Click" Margin="5,0,0,0" IsEnabled="False">
                 <Label>
                     <TextBlock Text="Restore Image" TextAlignment="Center" Margin="5" />

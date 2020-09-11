@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Drawing.Imaging;
+using System.Linq;
 
 namespace ImageViewerApp
 {
@@ -22,6 +24,8 @@ namespace ImageViewerApp
         private Image originalImage = null;
         private Image currentImage = null;
         private Image previousImage= null;
+
+        private const string SaveFileFilter = "Bitmap|*.bmp|JPEG|*.jpg|PNG|*.png|TIFF|*.tif";
 
         #endregion
 
@@ -44,10 +48,75 @@ namespace ImageViewerApp
             }
         }
 
+        private void Button_SaveImage_Click(object sender, RoutedEventArgs e)
+        {
+            string fileName = tbImageName.Text;
+            string ext = System.IO.Path.GetExtension(fileName);
+
+            // Configure file dialog box
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "Save image as...",
+                FileName = fileName,
+                DefaultExt = ext,
+                Filter = SaveFileFilter,
+                FilterIndex = GetFilterIndex(SaveFileFilter, ext),
+                AddExtension = true,
+                CheckFileExists = false
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                // Update filename
+                tbImageName.Text = saveFileDialog.FileName;
+
+                SaveCurrentImage(saveFileDialog.FileName);
+            }
+        }
+
+        private int GetFilterIndex(string filter, string searchExt)
+        {
+            // Extract ext types
+            char[] types = filter.Split('|').Where(t => t.StartsWith('*')).Select(t => t.TrimStart('*', '.').First()).ToArray();
+
+            // Get first char of ext
+            char search = searchExt.ToLower().TrimStart('.').FirstOrDefault();
+
+            // Default to zero if not found in array
+            // +1 as index for filter is 1-based
+            return Math.Max(0, Array.IndexOf(types, search)) + 1;
+        }
+
+        private void SaveCurrentImage(string fileName)
+        {
+            if (currentImage != null)
+            {
+                try
+                {
+                    string ext = System.IO.Path.GetExtension(fileName).Trim('.').ToLower();
+                    ImageFormat saveFormat = ext switch
+                    {
+                        "jpg" => ImageFormat.Jpeg,
+                        "png" => ImageFormat.Png,
+                        "tif" => ImageFormat.Tiff,
+                        _ => ImageFormat.Bmp,
+                    };
+
+                    // Save in target image format
+                    currentImage.Save(fileName, saveFormat);
+                }
+                catch (Exception ex)
+                {
+                    ReportException(ex);
+                }
+            }
+        }
+
         private void OpenImage(string filename)
         {
             // Dispose of previously loaded image
             originalImage?.Dispose();
+            originalImage = null;
 
             try
             {
@@ -72,8 +141,12 @@ namespace ImageViewerApp
                 tbImageName.Text = $"{filename}\n{ex.Message}";
             }
 
+            // Check loaded
+            bool enable = originalImage != null;
+            
             // Update buttons
-            btRestoreImage.IsEnabled = originalImage != null;
+            btSaveImage.IsEnabled = enable;
+            btRestoreImage.IsEnabled = enable;
         }
 
         private void DisplayHistogram(Image sourceImage, System.Windows.Controls.Image targetPictureBox)
