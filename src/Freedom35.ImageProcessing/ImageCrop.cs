@@ -4,7 +4,6 @@
 //------------------------------------------------
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace Freedom35.ImageProcessing
 {
@@ -16,32 +15,45 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Crops an image based on the crop region.
         /// </summary>
-        /// <param name="bitmap">Image to crop</param>
+        /// <param name="image">Image to crop</param>
         /// <param name="cropRegion">Region within image to crop</param>
         /// <returns>Cropped image</returns>
-        public static Image ByRegion(Image image, Rectangle cropRegion)
+        public static T ByRegion<T>(T image, Rectangle cropRegion) where T : Image
         {
-            // Remember original image type
-            ImageFormat originalFormat = image.RawFormat;
+            // Check if already a bitmap
+            if (image is Bitmap bmp)
+            {
+                return (T)(Image)CropBitmap(bmp, cropRegion);
+            }
+            else
+            {
+                // Convert to bitmap
+                Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-            // Convert to bitmap
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                // Crop as bitmap
+                Image croppedBitmap = CropBitmap(bitmap, cropRegion);
 
-            // Crop as bitmap
-            Image croppedImage = ByRegion(bitmap, cropRegion);
+                // Restore original image format
+                Image origFormatImage = ImageFormatting.ToFormat(croppedBitmap, image.RawFormat);
 
-            // Covert processed image to original format
-            return ImageFormatting.ToFormat(croppedImage, originalFormat);
+                // Dispose of full-size bitmap
+                bitmap.Dispose();
+
+                // Dispose of cropped bitmap
+                croppedBitmap.Dispose();
+
+                // Return cropped image in original format
+                return (T)origFormatImage;
+            }
         }
 
-
         /// <summary>
-        /// Crops an image based on the crop region.
+        /// Crops bitmap based on the crop region.
         /// </summary>
         /// <param name="bitmap">Image to crop</param>
         /// <param name="cropRegion">Region within image to crop</param>
         /// <returns>Cropped image</returns>
-        public static Bitmap ByRegion(Bitmap bitmap, Rectangle cropRegion)
+        private static Bitmap CropBitmap(Bitmap bitmap, Rectangle cropRegion)
         {
             //////////////////////////////////////
             // Trim region if overlaps edges
