@@ -83,6 +83,34 @@ Obviously, this method is more processing intensive than strict Otsu's method (s
 The Chow & Kaneko method is also known as local or adaptive thresholding.  
 <br />
 
+## Image Contrast
+Methods for improving the contrast of images.  
+
+### Contrast Stretch
+Contrast stretching improves the contrast of an image by utilizing unused areas of the upper and lower pixel values. However, if an image already contains pixels at the extreme upper and lower values, then contrast stretching will not provide any improvement as there is no room to 'stretch' into.  
+
+For example, if an image is predominantly dark whereby all the values are in the lower pixel range (possibly due to poor lighting), the values can be 'stretched' into the upper range to use the full pixel range, thereby increasing the value difference between each pixel value and therefore improve the image contrast.  
+
+When an image is contrast stretched, the proportions between each pixel value of the original image are maintained.  
+I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), the first pixel (p1) may become brighter or darker than the original image (depending on the stretch direction) but will still end up twice as bright as the value of the second pixel (p2).
+
+***Histogram Before:***  
+ 
+
+***Histogram After:***
+
+<br />
+
+### Histogram Equalization
+Histogram equalization improves the general contrast of an image by re-distributing the pixel value levels within an image so that the difference in brightness between each pixel value is even.  
+This can be useful when the image contains both light and dark areas but is not necessarily using all the available range.  
+
+For example, there may be no pixel values used in the mid-range or extreme light/dark ranges. Pixel values will be re-distributed to use the full range, widening the value difference and thereby improving the contrast.  
+
+When an image is equalized, the proportions between each pixel value of the original image are **not** necessarily maintained.  
+I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), which is only slightly brighter than another pixel (p3), the brightness of all three pixels may change, but the delta brightness between p1 and p2 will become the same as the delta between p2 and p3 (after equalization).
+<br />
+
 ## Image Combine
 Methods for combining multiple images.  
 <br />
