@@ -2,6 +2,8 @@
 Open source image processing library targeting **.NET Standard v2.0**.  
 Published package available for download on [NuGet.org](https://nuget.org).  
 
+**.NET Standard** libraries can be used in both **.NET Full Framework** and **.NET Core** projects.
+
 This library may be used as an educational tool on how such image processing methods can be implemented, or used within your own projects that require some form of image processing.
 
 You are welcome to use/update this software under the terms of the **MIT license**.  
