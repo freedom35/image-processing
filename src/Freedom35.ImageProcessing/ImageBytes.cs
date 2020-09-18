@@ -17,29 +17,26 @@ namespace Freedom35.ImageProcessing
     public static class ImageBytes
     {
         /// <summary>
-        /// Gets the image bytes, retaining original format.
+        /// Gets the image bytes including header info.
         /// </summary>
         /// <param name="image">Image to get bytes from</param>
-        /// <returns>Image bytes</returns>
-        public static byte[] FromImageAsRaw(Image image)
+        /// <returns>Image bytes (including header info)</returns>
+        public static byte[] FromImageWithHeaderInfo(Image image)
         {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                image.Save(stream, image.RawFormat);
-                return stream.ToArray();
-            }
+            return FromImageWithHeaderInfo(image, image.RawFormat);
         }
 
         /// <summary>
-        /// Gets the image bytes in bitmap format.
+        /// Gets the image bytes including header info.
         /// </summary>
         /// <param name="image">Image to get bytes from</param>
-        /// <returns>Image bytes</returns>
-        public static byte[] FromImageAsBitmap(Image image)
+        /// <param name="format">Format of bytes</param>
+        /// <returns>Image bytes (including header info)</returns>
+        public static byte[] FromImageWithHeaderInfo(Image image, ImageFormat format)
         {
             using (MemoryStream stream = new MemoryStream())
             {
-                image.Save(stream, ImageFormat.Bmp);
+                image.Save(stream, format);
                 return stream.ToArray();
             }
         }
@@ -48,8 +45,8 @@ namespace Freedom35.ImageProcessing
         /// Converts the image to a bitmap, and gets the bytes.
         /// </summary>
         /// <param name="image">Image to get bytes from</param>
-        /// <returns>Image bytes</returns>
-        public static byte[] FromImage(Image image)
+        /// <returns>Image bytes (without header info)</returns>
+        public static byte[] FromImage<T>(T image) where T : Image
         {
             return FromImage(image, out BitmapData _);
         }
@@ -59,39 +56,29 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to get bytes from</param>
         /// <param name="bmpData">Data relating to bitmap</param>
-        /// <returns>Image bytes</returns>
-        public static byte[] FromImage(Image image, out BitmapData bmpData)
+        /// <returns>Image bytes (without header info)</returns>
+        public static byte[] FromImage<T>(T image, out BitmapData bmpData) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return FromBitmap(bmp, out bmpData);
+                return GetBitmapBytes(bmp, out bmpData);
             }
             else
             {
                 using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
                 {
-                    return FromBitmap(bitmap, out bmpData);
+                    return GetBitmapBytes(bitmap, out bmpData);
                 }
             }
         }
 
         /// <summary>
-        /// Gets the bytes from a bitmap image.
-        /// </summary>
-        /// <param name="image">Bitmap to get bytes from</param>
-        /// <returns>Image bytes</returns>
-        public static byte[] FromBitmap(Bitmap bitmap)
-        {
-            return FromBitmap(bitmap, out BitmapData _);
-        }
-
-        /// <summary>
-        /// Gets the bytes from a bitmap image.
+        /// Gets the bytes from a bitmap image (image portion only).
         /// </summary>
         /// <param name="bitmap">Bitmap to get bytes from</param>
         /// <param name="bmpData">Data relating to bitmap</param>
         /// <returns>Image bytes</returns>
-        public static byte[] FromBitmap(Bitmap bitmap, out BitmapData bmpData)
+        private static byte[] GetBitmapBytes(Bitmap bitmap, out BitmapData bmpData)
         {
             // Lock full image
             Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
@@ -130,7 +117,7 @@ namespace Freedom35.ImageProcessing
         {
             using (Image image = Image.FromFile(path))
             {
-                return FromImageAsBitmap(image);
+                return FromImage(image);
             }
         }
 
@@ -143,7 +130,7 @@ namespace Freedom35.ImageProcessing
         {
             using (Image image = Image.FromStream(stream))
             {
-                return FromImageAsBitmap(image);
+                return FromImage(image);
             }
         }
 
@@ -166,9 +153,19 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to search</param>
         /// <returns>Minimum pixel value</returns>
-        public static byte GetMinValue(Image image)
+        public static byte GetMinValue<T>(T image) where T : Image
         {
-            return GetMinValue(ImageFormatting.ToBitmap(image));
+            if (image is Bitmap bmp)
+            {
+                return GetMinBitmapValue(bmp);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    return GetMinBitmapValue(bitmap);
+                }
+            }
         }
 
         /// <summary>
@@ -177,12 +174,12 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="bitmap">Image to search</param>
         /// <returns>Minimum pixel value</returns>
-        public static byte GetMinValue(Bitmap bitmap)
+        private static byte GetMinBitmapValue(Bitmap bitmap)
         {
             // Start with highest value
             byte min = byte.MaxValue;
 
-            byte[] rgbValues = FromBitmap(bitmap, out BitmapData bmpData);
+            byte[] rgbValues = GetBitmapBytes(bitmap, out BitmapData bmpData);
 
             int pixelDepth = bmpData.GetPixelDepth();
             bool isColor = bmpData.IsColor();
@@ -216,9 +213,19 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to search</param>
         /// <returns>Maximum pixel value</returns>
-        public static byte GetMaxValue(Image image)
+        public static byte GetMaxValue<T>(T image) where T : Image
         {
-            return GetMaxValue(ImageFormatting.ToBitmap(image));
+            if (image is Bitmap bmp)
+            {
+                return GetMaxBitmapValue(bmp);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    return GetMaxBitmapValue(bitmap);
+                }
+            }
         }
 
         /// <summary>
@@ -227,12 +234,12 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="bitmap">Image to search</param>
         /// <returns>Maximum pixel value</returns>
-        public static byte GetMaxValue(Bitmap bitmap)
+        private static byte GetMaxBitmapValue(Bitmap bitmap)
         {
             // Start with lowest value
             byte max = byte.MinValue;
 
-            byte[] rgbValues = FromBitmap(bitmap, out BitmapData bmpData);
+            byte[] rgbValues = GetBitmapBytes(bitmap, out BitmapData bmpData);
 
             int pixelDepth = bmpData.GetPixelDepth();
             bool isColor = bmpData.IsColor();
@@ -265,21 +272,9 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="image">Image to process</param>
         /// <returns>Average pixel intensity</returns>
-        public static byte GetAverageValue(Image image)
+        public static byte GetAverageValue<T>(T image) where T : Image
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-            return GetAverageValue(bitmap);
-        }
-
-        /// <summary>
-        /// Get the average pixel value between 0-255.
-        /// </summary>
-        /// <param name="bitmap">Image to process</param>
-        /// <returns>Average pixel intensity</returns>
-        public static byte GetAverageValue(Bitmap bitmap)
-        {
-            return GetAverageValue(bitmap, byte.MinValue, byte.MaxValue);
+            return GetAverageValue(image, byte.MinValue, byte.MaxValue);
         }
 
         /// <summary>
@@ -289,11 +284,19 @@ namespace Freedom35.ImageProcessing
         /// <param name="min">Minimum byte value</param>
         /// <param name="max">Maximum byte value</param>
         /// <returns>Average pixel intensity</returns>
-        public static byte GetAverageValue(Image image, byte min, byte max)
+        public static byte GetAverageValue<T>(T image, byte min, byte max) where T : Image
         {
-            Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-            return GetAverageValue(bitmap, min, max);
+            if (image is Bitmap bmp)
+            {
+                return GetAverageBitmapValue(bmp, min, max);
+            }
+            else
+            {
+                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
+                {
+                    return GetAverageBitmapValue(bitmap, min, max);
+                }
+            }
         }
 
         /// <summary>
@@ -303,7 +306,7 @@ namespace Freedom35.ImageProcessing
         /// <param name="min">Minimum byte value</param>
         /// <param name="max">Maximum byte value</param>
         /// <returns>Average pixel intensity</returns>
-        public static byte GetAverageValue(Bitmap bitmap, byte min, byte max)
+        private static byte GetAverageBitmapValue(Bitmap bitmap, byte min, byte max)
         {
             // Get range of values
             int valueRange = (max - min) + 1;
@@ -315,7 +318,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Get image bytes
-            byte[] rgbValues = FromBitmap(bitmap, out BitmapData bmpData);
+            byte[] rgbValues = GetBitmapBytes(bitmap, out BitmapData bmpData);
 
             int pixelDepth = bmpData.GetPixelDepth();
             bool isColor = bmpData.IsColor();
