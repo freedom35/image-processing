@@ -26,8 +26,23 @@ namespace ImageViewerApp
         private Image previousImage= null;
 
         private const string SaveFileFilter = "Bitmap|*.bmp|JPEG|*.jpg|PNG|*.png|TIFF|*.tif";
-
+        
         #endregion
+
+        private void Window_Loaded(object sender, EventArgs e)
+        {
+            // Check command line args for any 'Open With...' images.
+            // (First arg will be app path)
+            string imageName = Environment.GetCommandLineArgs().Skip(1).FirstOrDefault();
+
+            string[] SupportedImageTypes = { "bmp", "jpg", "png", "tif" };
+
+            // Open image if valid file type
+            if (!string.IsNullOrEmpty(imageName) && SupportedImageTypes.Any(t => imageName.EndsWith(t, StringComparison.OrdinalIgnoreCase)))
+            {
+                OpenImage(imageName);
+            }
+        }
 
         private void Button_OpenImage_Click(object sender, RoutedEventArgs e)
         {
