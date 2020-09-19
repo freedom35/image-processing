@@ -123,7 +123,7 @@ namespace Freedom35.ImageProcessing
                 sumHistValues += i * histogramValues[i];
             }
 
-            // Image may be color
+            // Get total number of pixels
             int pixelCount = histogramValues.Sum();
 
             // Calculate 'between class variance' to separate foreground from background.
