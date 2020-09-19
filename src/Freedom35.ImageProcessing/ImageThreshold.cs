@@ -131,40 +131,36 @@ namespace Freedom35.ImageProcessing
             // i.e. Find position with largest variance
             for (int i = 0; i < histLen; i++)
             {
-                // Keep track of weights up to this point
-                weightBackground += histogramValues[i];
+                weightForeground = pixelCount - weightBackground;
 
-                // No point calculating until reached pixel values in image
-                if (weightBackground > 0)
+                if (weightForeground == 0)
                 {
-                    weightForeground = pixelCount - weightBackground;
-
-                    if (weightForeground == 0)
-                    {
-                        // Quit loop if no more pixels
-                        break;
-                    }
-
-                    // Variance up to this point
-                    sumBackground += i * histogramValues[i];
-
-                    // Calculate mean values
-                    meanBackground = sumBackground / weightBackground;
-                    meanForeground = (sumHistValues - sumBackground) / weightForeground;
-                    meanDiff = meanBackground - meanForeground;
-
-                    // Calculate between class variance
-                    varianceBetween = meanDiff * meanDiff * weightBackground * weightForeground;
-
-                    // Check for new max variance
-                    if (varianceBetween > varianceMax)
-                    {
-                        varianceMax = varianceBetween;
-
-                        // Histogram position has highest variance
-                        threshold = i;
-                    }
+                    // Quit loop if no more pixels
+                    break;
                 }
+
+                // Variance up to this point
+                sumBackground += i * histogramValues[i];
+
+                // Calculate mean values
+                meanBackground = sumBackground / weightBackground;
+                meanForeground = (sumHistValues - sumBackground) / weightForeground;
+                meanDiff = meanBackground - meanForeground;
+
+                // Calculate between class variance
+                varianceBetween = meanDiff * meanDiff * weightBackground * weightForeground;
+
+                // Check for new max variance
+                if (varianceBetween > varianceMax)
+                {
+                    varianceMax = varianceBetween;
+
+                    // Histogram position has highest variance
+                    threshold = i;
+                }
+
+                // Keep sum of weights up to this point
+                weightBackground += histogramValues[i];
             }
 
             return (byte)threshold;
