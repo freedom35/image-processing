@@ -15,6 +15,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Crops an image based on the crop region.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to crop</param>
         /// <param name="cropRegion">Region within image to crop</param>
         /// <returns>Cropped image</returns>
