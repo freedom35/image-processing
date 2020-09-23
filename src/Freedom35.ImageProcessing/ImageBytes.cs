@@ -44,6 +44,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Converts the image to a bitmap, and gets the bytes.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to get bytes from</param>
         /// <returns>Image bytes (without header info)</returns>
         public static byte[] FromImage<T>(T image) where T : Image
@@ -54,20 +55,21 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Converts the image to a bitmap, and gets the bytes.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to get bytes from</param>
-        /// <param name="bmpData">Data relating to bitmap</param>
+        /// <param name="bitmapData">Data relating to bitmap</param>
         /// <returns>Image bytes (without header info)</returns>
-        public static byte[] FromImage<T>(T image, out BitmapData bmpData) where T : Image
+        public static byte[] FromImage<T>(T image, out BitmapData bitmapData) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return GetBitmapBytes(bmp, out bmpData);
+                return GetBitmapBytes(bmp, out bitmapData);
             }
             else
             {
                 using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
                 {
-                    return GetBitmapBytes(bitmap, out bmpData);
+                    return GetBitmapBytes(bitmap, out bitmapData);
                 }
             }
         }
@@ -151,6 +153,7 @@ namespace Freedom35.ImageProcessing
         /// Gets the minimum pixel value within an image.
         /// (For color images, min pixel avg returned)
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to search</param>
         /// <returns>Minimum pixel value</returns>
         public static byte GetMinValue<T>(T image) where T : Image
@@ -211,6 +214,7 @@ namespace Freedom35.ImageProcessing
         /// Gets the maximum pixel value within an image.
         /// (For color images, max pixel avg is returned)
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to search</param>
         /// <returns>Maximum pixel value</returns>
         public static byte GetMaxValue<T>(T image) where T : Image
@@ -270,6 +274,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Get the average pixel value between 0-255.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>Average pixel intensity</returns>
         public static byte GetAverageValue<T>(T image) where T : Image
@@ -280,6 +285,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Get the average pixel value between min and max.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="min">Minimum byte value</param>
         /// <param name="max">Maximum byte value</param>
