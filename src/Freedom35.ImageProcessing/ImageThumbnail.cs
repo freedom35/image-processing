@@ -16,10 +16,11 @@ namespace Freedom35.ImageProcessing
         /// Creates a thumbnail image based on the original image.
         /// Note: For larger thumbnail images, resize methods will produce a higher quality image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to base thumbnail on</param>
         /// <param name="thumbnailSize">Size of thumbnail image</param>
         /// <returns>Thumbnail image</returns>
-        public static Image Create(Image image, Size thumbnailSize)
+        public static T Create<T>(T image, Size thumbnailSize) where T : Image
         {
             return Create(image, thumbnailSize.Width, thumbnailSize.Height);
         }
@@ -28,11 +29,12 @@ namespace Freedom35.ImageProcessing
         /// Creates a thumbnail image based on the original image.
         /// Note: For larger thumbnail images, resize methods will produce a higher quality image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to base thumbnail on</param>
         /// <param name="thumbnailWidth">Width of thumbnail image</param>
         /// <param name="thumbnailHeight">Height of thumbnail image</param>
         /// <returns>Thumbnail image</returns>
-        public static Image Create(Image image, int thumbnailWidth, int thumbnailHeight)
+        public static T Create<T>(T image, int thumbnailWidth, int thumbnailHeight) where T : Image
         {
             // Get aspect ratios for image
             double widthAspect = (double)image.Width / thumbnailWidth;
@@ -49,20 +51,21 @@ namespace Freedom35.ImageProcessing
             }
 
             // Create callback for thumbnail method
-            Image.GetThumbnailImageAbort thumbCallback = new Image.GetThumbnailImageAbort(AbortThumbnailCallback);
+            var thumbCallback = new Image.GetThumbnailImageAbort(AbortThumbnailCallback);
 
-            return image.GetThumbnailImage(thumbnailWidth, thumbnailHeight, thumbCallback, IntPtr.Zero);
+            return (T)image.GetThumbnailImage(thumbnailWidth, thumbnailHeight, thumbCallback, IntPtr.Zero);
         }
 
         /// <summary>
         /// Creates a thumbnail image based on the original image.
         /// Note: For larger thumbnail images, resize methods will produce a higher quality image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to base thumbnail on</param>
         /// <param name="maxThumbnailWidth">Max width of thumbnail image</param>
         /// <param name="maxThumbnailHeight">Max height of thumbnail image</param>
         /// <returns>Thumbnail image</returns>
-        public static Image CreateWithSameAspect(Image image, int maxThumbnailWidth, int maxThumbnailHeight)
+        public static T CreateWithSameAspect<T>(T image, int maxThumbnailWidth, int maxThumbnailHeight) where T : Image
         {
             // Get aspect ratios for image
             double widthAspect = (double)image.Width / maxThumbnailWidth;
