@@ -17,6 +17,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Gets (256) array of histogram values for image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>256 array of histogram values</returns>
         public static int[] GetHistogramValues<T>(T image) where T : Image
