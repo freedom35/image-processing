@@ -15,9 +15,22 @@ namespace Freedom35.ImageProcessing
     public static class ImageThreshold
     {
         /// <summary>
+        /// Applies thresholding to image using the default method.
+        /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
+        /// <param name="image">Image to process</param>
+        /// <returns>New image with threshold applied</returns>
+        public static T Apply<T>(T image) where T : Image
+        {
+            // Otsu: optimum balance between quality and performance
+            return ApplyOtsuMethod(image);
+        }
+
+        /// <summary>
         /// Applies thresholding to image using Otsu's Method.
         /// Returned image will consist of black (0) and white (255) values only.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>New image with threshold applied</returns>
         public static T ApplyOtsuMethod<T>(T image) where T : Image
@@ -170,6 +183,7 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values below threshold will be changed to 0 (black).
         /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="threshold">Threshold value</param>
         /// <returns>New image with threshold applied</returns>
@@ -268,6 +282,7 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values below threshold will be changed to min value.
         /// (High-pass filter)
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="minValue">Min value to retain</param>
         /// <returns>New image with threshold applied</returns>
@@ -351,6 +366,7 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values above threshold will be changed to max value.
         /// (Low-pass filter)
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="maxValue">Max value to retain</param>
         /// <returns>New image with threshold applied</returns>
@@ -433,6 +449,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Any pixel values outside the threshold will be changed to min/max.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="minValue">Minimum threshold value</param>
         /// <param name="maxValue">Maximum threshold value</param>
@@ -532,6 +549,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>New image with localized threshold applied</returns>
         public static T ApplyChowKanekoMethod<T>(T image) where T : Image
@@ -542,6 +560,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="horizontalRegions">Number of horizonal regions to apply</param>
         /// <param name="verticalRegions">Number of veritical regions to apply</param>

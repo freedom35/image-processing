@@ -268,7 +268,7 @@ namespace ImageViewerApp
             {
                 try
                 {
-                    DisplayImage(ImageThreshold.ApplyOtsuMethod(currentImage));
+                    DisplayImage(ImageThreshold.Apply(currentImage));
                 }
                 catch (Exception ex)
                 {
