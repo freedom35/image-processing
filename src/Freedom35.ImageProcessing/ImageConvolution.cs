@@ -17,27 +17,25 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies multiple convolution kernels in sequence to image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to apply kernel to</param>
         /// <param name="convolutionTypes">Convolutions to apply</param>
         /// <returns>Image with all kernels applied in sequence</returns>
-        public static Image ApplyKernelsInSequence(Image image, params ConvolutionType[] convolutionTypes)
+        public static T ApplyKernelsInSequence<T>(T image, params ConvolutionType[] convolutionTypes) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return ApplyKernelsInSequence(bmp, convolutionTypes);
+                return (T)(Image)ApplyKernelsInSequence(bmp, convolutionTypes);
             }
             else
             {
-                // Remember original image type
-                ImageFormat originalFormat = image.RawFormat;
-
                 // Convert to bitmap for image processing
                 using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
                 {
                     using (Bitmap combinedBitmap = ApplyKernelsInSequence(bitmap, convolutionTypes))
                     {
                         // Return processed image to original format
-                        return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+                        return (T)ImageFormatting.ToFormat(combinedBitmap, image.RawFormat);
                     }
                 }
             }
@@ -76,27 +74,25 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies multiple convolution kernels to source image, then combines the results.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to apply kernel to</param>
         /// <param name="convolutionTypes">Convolutions to apply</param>
         /// <returns>Image with all kernels combined</returns>
-        public static Image ApplyKernelsThenCombine(Image image, params ConvolutionType[] convolutionTypes)
+        public static T ApplyKernelsThenCombine<T>(T image, params ConvolutionType[] convolutionTypes) where T : Image
         {
             if (image is Bitmap bmp)
             {
-                return ApplyKernelsThenCombine(bmp, convolutionTypes);
+                return (T)(Image)ApplyKernelsThenCombine(bmp, convolutionTypes);
             }
             else
             {
-                // Remember original image type
-                ImageFormat originalFormat = image.RawFormat;
-
                 // Convert to bitmap for image processing
                 using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
                 {
                     using (Bitmap combinedBitmap = ApplyKernelsThenCombine(bitmap, convolutionTypes))
                     {
                         // Return processed image to original format
-                        return ImageFormatting.ToFormat(combinedBitmap, originalFormat);
+                        return (T)ImageFormatting.ToFormat(combinedBitmap, image.RawFormat);
                     }
                 }
             }
@@ -133,10 +129,11 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies convolution matrix/kernel to image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to apply kernel to</param>
         /// <param name="convolutionType">Type of convolution</param>
         /// <returns>Image with kernel applied</returns>
-        public static Image ApplyKernel(Image image, ConvolutionType convolutionType)
+        public static T ApplyKernel<T>(T image, ConvolutionType convolutionType) where T : Image
         {
             return ApplyKernel(image, convolutionType.GetConvolutionMatrix());
         }
@@ -144,21 +141,19 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies convolution matrix/kernel to image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to apply kernel to</param>
         /// <param name="kernelMatrix">Kernel matrix</param>
         /// <returns>Image with kernel applied</returns>
-        public static Image ApplyKernel(Image image, int[,] kernelMatrix)
+        public static T ApplyKernel<T>(T image, int[,] kernelMatrix) where T : Image
         {
             // Skip conversion
             if (image is Bitmap bmp)
             {
-                return ApplyKernel(bmp, kernelMatrix);
+                return (T)(Image)ApplyKernel(bmp, kernelMatrix);
             }
             else
             {
-                // Remember original image type
-                ImageFormat originalFormat = image.RawFormat;
-
                 // Convert to bitmap for image processing
                 using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
                 {
@@ -166,7 +161,7 @@ namespace Freedom35.ImageProcessing
                     using (Bitmap bitmapWithFilter = ApplyKernel(bitmap, kernelMatrix))
                     {
                         // Covert processed image to original format
-                        return ImageFormatting.ToFormat(bitmapWithFilter, originalFormat);
+                        return (T)ImageFormatting.ToFormat(bitmapWithFilter, image.RawFormat);
                     }
                 }
             }
