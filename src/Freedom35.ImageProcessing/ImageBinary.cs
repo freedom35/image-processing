@@ -21,9 +21,10 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Image will be converted to binary, 0's and 1's.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>New image as binary</returns>
-        public static Image AsImage(Image image)
+        public static T AsImage<T>(T image) where T : Image
         {
             return AsImage(image, MidThreshold);
         }
@@ -32,15 +33,16 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values below threshold will be changed to 0.
         /// Any pixel values above (or equal to) threshold will be changed to 1.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="threshold">Binary threshold</param>
         /// <returns>New image as binary</returns>
-        public static Image AsImage(Image image, byte threshold)
+        public static T AsImage<T>(T image, byte threshold) where T : Image
         {
             Bitmap binaryBitmap = AsBitmap(image, threshold);
 
             // Convert to original format
-            return ImageFormatting.ToFormat(binaryBitmap, image.RawFormat);
+            return (T)ImageFormatting.ToFormat(binaryBitmap, image.RawFormat);
         }
 
         /// <summary>
