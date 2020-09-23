@@ -81,6 +81,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Inverts image to negative.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to convert</param>
         /// <returns>Negative image</returns>
         public static T ToNegative<T>(T image) where T : Image
@@ -142,6 +143,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies red color filter to image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
         public static T ToRed<T>(T image) where T : Image
@@ -152,6 +154,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies green color filter to image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
         public static T ToGreen<T>(T image) where T : Image
@@ -162,6 +165,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies blue color filter to image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>New image with filter applied</returns>
         public static T ToBlue<T>(T image) where T : Image
@@ -172,6 +176,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Applies color filter to image.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="r">Red component to apply</param>
         /// <param name="g">Green component to apply</param>
