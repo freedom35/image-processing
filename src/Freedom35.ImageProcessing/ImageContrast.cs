@@ -17,6 +17,7 @@ namespace Freedom35.ImageProcessing
         /// Stretches image contrast to get maximum contrast.
         /// If image has unused lower/upper range, values can be stretched to use all available range, improving image contrast.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>Contrast-stretched image</returns>
         public static T Stretch<T>(T image) where T: Image
@@ -27,6 +28,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Stretches image contrast to specified min/max values.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="min">Minimum contrast value</param>
         /// <param name="max">Maximum contrast value</param>
@@ -150,6 +152,7 @@ namespace Freedom35.ImageProcessing
         /// Histogram Equalization will enhance general contrast 
         /// by distributing grey levels wider and more evenly.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to equalize</param>
         /// <returns>Equalized image</returns>
         public static T HistogramEqualization<T>(T image) where T : Image
