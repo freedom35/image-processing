@@ -11,6 +11,29 @@ namespace ImageProcessingTests
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp", "Freedom35.ImageProcessing.Tests.Resources.clock-otsu.bmp")]
         [DataTestMethod]
+        public void TestApplyThreshold(string sourceResourcePath, string resultResourcePath)
+        {
+            // Load source image
+            using Image sourceImage = TestImage.FromResource(sourceResourcePath);
+
+            Assert.IsNotNull(sourceImage);
+
+            // Apply Thresholding - currently uses Otsu as default
+            using Image thresholdImage = ImageThreshold.Apply(sourceImage);
+
+            Assert.IsNotNull(thresholdImage);
+
+            // Load correct result image
+            using Image resultImage = TestImage.FromResource(resultResourcePath);
+
+            Assert.IsNotNull(resultImage);
+
+            // Compare images
+            Assert.IsTrue(TestImage.Compare(thresholdImage, resultImage));
+        }
+
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp", "Freedom35.ImageProcessing.Tests.Resources.clock-otsu.bmp")]
+        [DataTestMethod]
         public void TestOtsuThreshold(string sourceResourcePath, string resultResourcePath)
         {
             // Load source image
