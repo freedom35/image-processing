@@ -1,17 +1,25 @@
 # Image Processing Library
-Open source image processing library targeting **.NET Standard v2.0**.  
-Published package available for download on [NuGet.org](https://nuget.org).  
+This image processing library is a lightweight open source library targeting **.NET Standard v2.0**.  
 
-**.NET Standard** libraries can be used in both **.NET Full Framework** and **.NET Core** projects.
+Note: **.NET Standard** libraries can be used in both **.NET Full Framework** and **.NET Core** projects.
 
-This library may be used as an educational tool on how such image processing methods can be implemented, or used within your own projects that require some form of image processing.
+This library may be used as an educational tool on how such image processing methods can be implemented, or used within your own projects that require some form of image processing.  
+
+See the appropriate section for details on each image processing class and their methods available.  
 
 You are welcome to use/update this software under the terms of the **MIT license**.  
-
-See the appropriate section for details on each image processing class and their methods available.
 <br />
 
-## Usage of Library
+## Latest Releases
+A published package is available for download on [NuGet.org](https://nuget.org).  
+|Version|Notes|
+|:---:|-----|
+|1.0.0|Initial release.|
+
+<br />
+<br />
+
+# Usage of Library
 Below are the steps involved in using the Image Processing Library in your own projects.  
 The repository also contains an **ImageViewerApp** (WPF) project to demonstrate usage of the Image Processing Library.  
 
@@ -19,8 +27,9 @@ Methods support image types found in the **System.Drawing** namespace.
 
 The **Image** class used is **System.Drawing.Image** (base class).  
 The **Bitmap** class used is **System.Drawing.Bitmap**.  
+<br />
 
-### Usage in Projects
+## Usage in Projects
 Note: Examples are in C#, but the library may also be used in other .NET language projects.
 
 1. Add the **Image Processing Library** NuGet package to your .NET project.  
@@ -35,8 +44,9 @@ Example:
 ```csharp
 Image newImage = ImageColor.ToNegative(currentImage);
 ```  
+<br />
 
-### Notes on Usage
+## Notes on Usage
 If you're only making a single call and do not necessarily want to include the namespace at the top of your code file, methods may also be called by explicitly including the namespace before the method name.  
 Example:
 ```csharp
@@ -65,28 +75,31 @@ ImageSource wpfImage = ImageConverter.ConvertImageToBitmapSource(image);
 ```
 
 <br />
-
-## Image Bytes
-Methods for returning the bytes of an image.  
 <br />
 
-## Image Thresholding
-When applying a threshold to an image, values below the threshold are changed to black (0x00), and values above (or equal to) the threshold are changed to white (0xFF, 255 decimal).
-
-### Basic Threshold
-For basic thresholding, a pre-determined value is used for the threshold, typically in the middle of the pixel value range such as 0x7F (127 decimal).  Pixel values are simply determined to be either above/below the threshold. 
-
-### Otsu's Method
-Otsu's method is more complex, but ultimately finds a better threshold value. This method searches for the threshold that minimizes the metric known as intra-class variance by using a histogram of the image to split the values into two groups (ideally foreground and background) with the smallest total variance.  
-
-### Chow & Kaneko Method
-The Chow & Kaneko method builds on Otsu's method in that it first divides an image into individual regions (typically 9), applies Otsu's method to each individual region, and then uses a weighted threshold based on the nearest 4 regions to each pixel. Regions closer to a pixel will carry more weight.  
-Obviously, this method is more processing intensive than strict Otsu's method (so may not be ideal for real-time applications), but will produce a better overall result when light intensity varies across an image.  
-The Chow & Kaneko method is also known as local or adaptive thresholding.  
+# Image Processing Classes
+The section below summarizes the classes available within the image processing library.  
 <br />
 
-## Image Contrast
-Methods for improving the contrast of images.  
+## Image Binary Class
+Class for converting an image to binary/monochrome (0's and 1's).  
+<br />
+
+## Image Bytes Class
+Class for returning the bytes of an image.  
+<br />
+
+## Image Color Class
+Class for manipulating and filtering image colors.  
+<br />
+
+## Image Combine Class
+Class for combining multiple images into a single image.  
+<br />
+
+## Image Contrast Class
+Class for improving the contrast of images.  
+<br />
 
 ### Contrast Stretch
 Contrast stretching improves the contrast of an image by utilizing unused areas of the upper and lower pixel values. However, if an image already contains pixels at the extreme upper and lower values, then contrast stretching will not provide any improvement as there is no room to 'stretch' into.  
@@ -94,12 +107,7 @@ Contrast stretching improves the contrast of an image by utilizing unused areas 
 For example, if an image is predominantly dark whereby all the values are in the lower pixel range (possibly due to poor lighting), the values can be 'stretched' into the upper range to use the full pixel range, thereby increasing the value difference between each pixel value and therefore improve the image contrast.  
 
 When an image is contrast stretched, the proportions between each pixel value of the original image are maintained.  
-I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), the first pixel (p1) may become brighter or darker than the original image (depending on the stretch direction) but will still end up twice as bright as the value of the second pixel (p2).
-
-***Histogram Before:***  
- 
-
-***Histogram After:***
+I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), the first pixel (p1) may become brighter or darker than the original image (depending on the stretch direction) but will still end up twice as bright as the value of the second pixel (p2).  
 
 <br />
 
@@ -110,50 +118,102 @@ This can be useful when the image contains both light and dark areas but is not 
 For example, there may be no pixel values used in the mid-range or extreme light/dark ranges. Pixel values will be re-distributed to use the full range, widening the value difference and thereby improving the contrast.  
 
 When an image is equalized, the proportions between each pixel value of the original image are **not** necessarily maintained.  
-I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), which is only slightly brighter than another pixel (p3), the brightness of all three pixels may change, but the delta brightness between p1 and p2 will become the same as the delta between p2 and p3 (after equalization).
+I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), which is only slightly brighter than another pixel (p3), the brightness of all three pixels may change, but the delta brightness between p1 and p2 will become the same as the delta between p2 and p3 (after equalization).  
 <br />
 
-## Image Combine
-Methods for combining multiple images.  
-<br />
 
-## Image Convert
+## Image Convert Class
 Methods for converting images to different formats/types.  
 <br />
 
-## Image Color
-Methods for manipulating and filtering image colors.  
+
+## Image Convolution Class
+An image can be manipulated to enhance or isolate features etc. This is a fundamental of image processing and often used as a pre-processing step in machine vision applications.  
 <br />
 
-## Image Convolution
-An image can be manipulated to enhance or isolate features etc. This is a fundamental of image processing and often used as a pre-processing step in machine vision applications.
-
 ### Convolution Filters
-Types of filters to apply to an image.
+The tables below list the types of filters that can be applied to an image using this library.  
+<br />
 
-#### Edge
-Filter to detect the edges within an image, either horizontal, vertical, or both.
+#### *Edge Filters:*
 
-#### Smoothing
+|Name|Description|
+|-----|-----|
+|Edge|Default filter to detect the edges within an image, both horizontally and vertically.|
+|Sharpen|Sharpens edges/lines of an image.|
+|Edge Laplacian (With Peak 4)|Laplacian A edge/high-pass filter.  (Convolution matrix with peak of 4)|
+|Edge Laplacian (With Peak 8)|Laplacian B edge/high-pass filter.  (Convolution matrix with diagonals and peak of 8)|
+|Edge Laplacian of Gaussian|Applies Gaussian smoothing and Laplacian edge. Less sensitive to noise than Laplacian with peak, Gaussian σ = 1.4|
+|Edge Sobel Vertical|Sobel vertical edge/high-pass filter.|
+|Edge Sobel Horizontal|Sobel horizontal edge/high-pass filter.|
 
-#### Noise Reduction
+<br />
 
-#### Sharpen
+#### *Smoothing Filters:*
 
-#### Mexican Hat
+|Name|Description|
+|-----|-----|
+|Smoothing|Default smoothing/blur (low-pass) filter, smooths out sudden changes. Can be useful for a 'snowy' image.|
+|Smoothing With High Peak|Alternate smoothing (high-pass) filter. Aims to remove gradual changes and enhance sudden changes.|
+|Noise Reduction|Reduces image noise (by smoothing).|
+|Smoothing Mexican Hat|Smoothing/Low-pass filter.  (Less blurring than normal smoothing.)|
 
-#### Laplacian A
+<br />
 
-#### Laplacian B
+#### *Special Effect Filters:*
 
-#### Sobel Horizontal
+|Name|Description|
+|-----|-----|
+|Emboss|Creates an embossing effect.|  
+<br />
+<br />
 
-#### Sobel Vertical
+## Image Copy Class
+Class for copying image bytes from one **bitmap** to another.  
+<br />
 
-#### Emboss
+## Image Crop Class
+Class for cropping an image based on a region.  
+<br />
 
-## Image Copy
+## Image Edit Class
+Class to begin/end the editing of **bitmap** image bytes.  
+<br />
 
-## Image Edit
+## Image Encoding Class
+Class for determining the type of image that bytes are encoded with, such as **bitmap**, **JPEG** etc.  
+<br />
 
-## Image Encoding
+## Image Formatting Class
+Class for changing the format/type of image, such as from **JPEG** to **bitmap** etc.  
+<br />
+
+## Image Histogram Class
+Class for determining the histogram values for an image (as an array). Also supports creating a histogram image for a source image.   
+<br />
+
+## Image Resize Class
+Class for resizing an image.   
+<br />
+
+## Image Thresholding Class
+When applying a threshold to an image, values below the threshold are changed to black (0x00), and values above (or equal to) the threshold are changed to white (0xFF, 255 decimal).  
+<br />
+
+### Basic Threshold
+For basic thresholding, a pre-determined value is used for the threshold, typically in the middle of the pixel value range such as 0x7F (127 decimal).  Pixel values are simply determined to be either above/below the threshold.  
+<br />
+
+### Otsu's Method
+Otsu's method is more complex, but ultimately finds a better threshold value. This method searches for the threshold that minimizes the metric known as intra-class variance by using a histogram of the image to split the values into two groups (ideally foreground and background) with the smallest total variance.  
+<br />
+
+### Chow & Kaneko Method
+The Chow & Kaneko method builds on Otsu's method in that it first divides an image into individual regions (typically 9), applies Otsu's method to each individual region, and then uses a weighted threshold based on the nearest 4 regions to each pixel. Regions closer to a pixel will carry more weight.  
+Obviously, this method is more processing intensive than strict Otsu's method (so may not be ideal for real-time applications), but will produce a better overall result when light intensity varies across an image.  
+The Chow & Kaneko method is also known as local or adaptive thresholding.  
+<br />
+
+## Image Thumbnail Class
+Class for creating a thumbnail size image for a source image.   
+<br />
