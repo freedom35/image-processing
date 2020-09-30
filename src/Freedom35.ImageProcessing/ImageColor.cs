@@ -122,13 +122,21 @@ namespace Freedom35.ImageProcessing
         {
             byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
-            ToNegative(imageBytes);
+            // Check if monochrome
+            if (bmpData.PixelFormat == PixelFormat.Format1bppIndexed)
+            {
+                MonochromeToNegative(imageBytes);
+            }
+            else
+            {
+                ToNegative(imageBytes);
+            }
 
             ImageEdit.End(bitmap, bmpData, imageBytes);
         }
 
         /// <summary>
-        /// Inverts image to negative.
+        /// Inverts image bytes to negative.
         /// </summary>
         /// <param name="imageBytes">Image bytes to convert</param>
         public static void ToNegative(byte[] imageBytes)
@@ -137,6 +145,19 @@ namespace Freedom35.ImageProcessing
             for (int i = 0; i < imageBytes.Length; i++)
             {
                 imageBytes[i] = (byte)~imageBytes[i];
+            }
+        }
+
+        /// <summary>
+        /// Inverts monochrome image bytes (0's and 1's) to negative.
+        /// </summary>
+        /// <param name="monochromeBytes">Monochrome image bytes to convert</param>
+        public static void MonochromeToNegative(byte[] monochromeBytes)
+        {
+            // Invert least significant bit on each byte
+            for (int i = 0; i < monochromeBytes.Length; i++)
+            {
+                monochromeBytes[i] ^= 1;
             }
         }
 
