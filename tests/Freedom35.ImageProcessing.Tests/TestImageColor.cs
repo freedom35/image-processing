@@ -60,5 +60,35 @@ namespace ImageProcessingTests
 
             Assert.IsTrue(convertedImage.All(b => b == 0 || b == 255));
         }
+
+        [TestMethod]
+        public void TestConvertToNegative()
+        {
+            byte[] imageBytes = {
+                0x01,
+                0xf0,
+                0x3c
+            };
+
+            ImageColor.ToNegative(imageBytes);
+
+            Assert.AreEqual(0xfe, imageBytes[0]);
+            Assert.AreEqual(0x0f, imageBytes[1]);
+            Assert.AreEqual(0xc3, imageBytes[2]);
+        }
+
+        [TestMethod]
+        public void TestConvertMonochromeToNegative()
+        {
+            byte[] imageBytes = {
+                1,
+                0
+            };
+
+            ImageColor.MonochromeToNegative(imageBytes);
+
+            Assert.AreEqual(0, imageBytes[0]);
+            Assert.AreEqual(1, imageBytes[1]);
+        }
     }
 }
