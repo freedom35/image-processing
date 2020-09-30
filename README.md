@@ -86,7 +86,7 @@ Class for converting an image to binary/monochrome (0's and 1's).
 <br />
 
 ## Image Bytes Class
-Class for returning the bytes of an image.  
+Class for returning the bytes of an image, or information on them, such as determining the type of image that bytes are encoded with (**bitmap**, **JPEG** etc).  
 <br />
 
 ## Image Color Class
@@ -178,10 +178,6 @@ Class for cropping an image based on a region.
 
 ## Image Edit Class
 Class to begin/end the editing of **bitmap** image bytes.  
-<br />
-
-## Image Encoding Class
-Class for determining the type of image that bytes are encoded with, such as **bitmap**, **JPEG** etc.  
 <br />
 
 ## Image Formatting Class
