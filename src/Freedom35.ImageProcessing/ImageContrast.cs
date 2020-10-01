@@ -98,11 +98,15 @@ namespace Freedom35.ImageProcessing
                 {
                     lowest = val;
                 }
-                else if (val > highest)
+                
+                if (val > highest)
                 {
                     highest = val;
                 }
             }
+
+            // Constant for loop
+            double maxMinusMin = max - min;
 
             //////////////////////////////////////
             // Now contrast stretch image
@@ -112,7 +116,7 @@ namespace Freedom35.ImageProcessing
                 for (int j = 0; j < pixelDepth; j++)
                 {
                     // Contrast-stretch value
-                    val = (byte)((imageBytes[i + j] - lowest) * (max / (highest - lowest)));
+                    val = (byte)(((imageBytes[i + j] - lowest) * (maxMinusMin / (highest - lowest))) + min);
 
                     // Check limits
                     if (val < lowest)
@@ -210,6 +214,31 @@ namespace Freedom35.ImageProcessing
                 {
                     imageBytes[i] = (byte)histogram[imageBytes[i]];
                 }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        public static T Enhance<T>(T image) where T : Image
+        {
+            Tuple<byte, byte> minMax = ImageBytes.GetMinMaxValue(image);
+
+            double percentRoomToStretch = (double)(minMax.Item1 + (byte.MaxValue - minMax.Item2)) / byte.MaxValue;
+
+            // If space in light/dark areas, then stretch to fill
+            // (Retains contrast levels)
+            if (percentRoomToStretch > 0.2F)
+            {
+                return Stretch(image);
+            }
+            else
+            {
+                // Otherwise equalize whole image
+                return HistogramEqualization(image);
             }
         }
     }
