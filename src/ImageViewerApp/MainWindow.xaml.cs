@@ -139,17 +139,19 @@ namespace ImageViewerApp
                 originalImage = Image.FromFile(filename);
 
                 // Clone as do not want original modified
-                DisplayImage((Image)originalImage.Clone());
+                Image clone = (Image)originalImage.Clone();
+
+                DisplayImage(clone);
 
                 // Update filename
                 tbImageName.Text = filename;
 
                 // Update thumbnail
-                Image thumbnailImage = ImageThumbnail.CreateWithSameAspect(originalImage, (int)pbThumbnail.DesiredSize.Width, (int)pbThumbnail.DesiredSize.Height);
+                Image thumbnailImage = ImageThumbnail.CreateWithSameAspect(clone, (int)pbThumbnail.DesiredSize.Width, (int)pbThumbnail.DesiredSize.Height);
                 pbThumbnail.Source = ImageConverter.ConvertImageToBitmapSource(thumbnailImage);
 
                 // Create histogram of original image
-                DisplayHistogram(originalImage, pbHistogramOrig);
+                DisplayHistogram(clone, pbHistogramOrig);
             }
             catch (Exception ex)
             {
