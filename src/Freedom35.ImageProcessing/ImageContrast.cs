@@ -35,30 +35,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>Contrast-stretched image</returns>
         public static T Stretch<T>(T image, byte min, byte max) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                // Return new image
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                StretchDirect(ref clone, min, max);
+            StretchDirect(ref bitmap, min, max);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                // Convert to bitmap format to perform stretch
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-                
-                StretchDirect(ref bitmap, min, max);
-
-                // Restore original image format
-                Image stretchedImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp bitmap
-                bitmap.Dispose();
-
-                return (T)stretchedImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>
@@ -157,29 +138,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>Equalized image</returns>
         public static T HistogramEqualization<T>(T image) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                // Return new image
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                HistogramEqualizationDirect(ref clone);
+            HistogramEqualizationDirect(ref bitmap);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                HistogramEqualizationDirect(ref bitmap);
-
-                // Restore original image format
-                Image equalizedImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp bitmap
-                bitmap.Dispose();
-
-                return (T)equalizedImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>

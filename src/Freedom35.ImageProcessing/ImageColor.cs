@@ -86,32 +86,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>Negative image</returns>
         public static T ToNegative<T>(T image) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                // Return new image
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                // Edit clone
-                ToNegativeDirect(ref clone);
+            ToNegativeDirect(ref bitmap);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                // Creates new image
-                Bitmap tmpImage = ImageFormatting.ToBitmap(image);
-
-                // Edit clone
-                ToNegativeDirect(ref tmpImage);
-
-                // Restore original image format
-                Image origFormatImage = ImageFormatting.ToFormat(tmpImage, image.RawFormat);
-
-                // Dispose of temp image
-                tmpImage.Dispose();
-
-                return (T)origFormatImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>
@@ -205,30 +184,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with filter applied</returns>
         public static T ApplyFilterRGB<T>(T image, byte r, byte g, byte b) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                // Return new image
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                ApplyFilterDirectRGB(ref clone, r, g, b);
+            ApplyFilterDirectRGB(ref bitmap, r, g, b);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                // Create new bitmap from image
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                ApplyFilterDirectRGB(ref bitmap, r, g, b);
-
-                // Restore original image format
-                Image thresholdImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp image
-                bitmap.Dispose();
-
-                return (T)thresholdImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>

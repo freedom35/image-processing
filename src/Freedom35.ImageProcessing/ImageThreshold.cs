@@ -35,28 +35,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static T ApplyOtsuMethod<T>(T image) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                ApplyOtsuMethodDirect(ref clone);
+            ApplyOtsuMethodDirect(ref bitmap);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                ApplyOtsuMethodDirect(ref bitmap);
-
-                // Restore original image format
-                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp image
-                bitmap.Dispose();
-
-                return (T)origFormatImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>
@@ -189,28 +172,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static T Apply<T>(T image, byte threshold) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                ApplyDirect(ref clone, threshold);
+            ApplyDirect(ref bitmap, threshold);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                ApplyDirect(ref bitmap, threshold);
-
-                // Restore original image format
-                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp image
-                bitmap.Dispose();
-
-                return (T)origFormatImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>
@@ -288,28 +254,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static T ApplyMin<T>(T image, byte minValue) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                ApplyMinDirect(ref clone, minValue);
+            ApplyMinDirect(ref bitmap, minValue);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                ApplyMinDirect(ref bitmap, minValue);
-
-                // Restore original image format
-                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp image
-                bitmap.Dispose();
-
-                return (T)origFormatImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>
@@ -372,28 +321,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static T ApplyMax<T>(T image, byte maxValue) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                ApplyMaxDirect(ref clone, maxValue);
+            ApplyMaxDirect(ref bitmap, maxValue);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                ApplyMaxDirect(ref bitmap, maxValue);
-
-                // Restore original image format
-                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp image
-                bitmap.Dispose();
-
-                return (T)origFormatImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>
@@ -456,29 +388,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with threshold applied</returns>
         public static T ApplyMinMax<T>(T image, byte minValue, byte maxValue) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                // Return new image
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                ApplyMinMaxDirect(ref clone, minValue, maxValue);
+            ApplyMinMaxDirect(ref bitmap, minValue, maxValue);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-
-                ApplyMinMaxDirect(ref bitmap, minValue, maxValue);
-
-                // Restore original image format
-                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp image
-                bitmap.Dispose();
-
-                return (T)origFormatImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>
@@ -567,28 +481,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>New image with localized threshold applied</returns>
         public static T ApplyChowKanekoMethod<T>(T image, int horizontalRegions, int verticalRegions) where T : Image
         {
-            if (image is Bitmap bmp)
-            {
-                Bitmap clone = (Bitmap)bmp.Clone();
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
 
-                ApplyChowKanekoMethodDirect(ref clone, horizontalRegions, verticalRegions);
+            ApplyChowKanekoMethodDirect(ref bitmap, horizontalRegions, verticalRegions);
 
-                return (T)(Image)clone;
-            }
-            else
-            {
-                Bitmap bitmap = ImageFormatting.ToBitmap(image);
-                
-                ApplyChowKanekoMethodDirect(ref bitmap, horizontalRegions, verticalRegions);
-                    
-                // Restore original image format
-                Image origFormatImage = ImageFormatting.ToFormat(bitmap, image.RawFormat);
-
-                // Dispose of temp image
-                bitmap.Dispose();
-
-                return (T)origFormatImage;
-            }
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
         }
 
         /// <summary>
