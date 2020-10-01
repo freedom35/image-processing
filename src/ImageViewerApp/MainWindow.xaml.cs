@@ -29,6 +29,18 @@ namespace ImageViewerApp
         
         #endregion
 
+        private void DisposeOfImages()
+        {
+            originalImage?.Dispose();
+            originalImage = null;
+
+            currentImage?.Dispose();
+            currentImage = null;
+
+            previousImage?.Dispose();
+            previousImage = null;
+        }
+
         private void Window_Loaded(object sender, EventArgs e)
         {
             // Check command line args for any 'Open With...' images.
@@ -129,9 +141,8 @@ namespace ImageViewerApp
 
         private void OpenImage(string filename)
         {
-            // Dispose of previously loaded image
-            originalImage?.Dispose();
-            originalImage = null;
+            // Dispose of previously loaded images
+            DisposeOfImages();
 
             try
             {
@@ -182,22 +193,22 @@ namespace ImageViewerApp
         {
             if (pbImage.CheckAccess())
             {
-                // Check if displaying new image
-                if (image != previousImage)
+                // Check if displaying previous image (undo)
+                if (image == previousImage)
+                {
+                    // No longer need current image
+                    currentImage?.Dispose();
+
+                    // Previous no longer available
+                    previousImage = null;
+                }
+                else
                 {
                     // No longer needed
                     previousImage?.Dispose();
 
                     // Keep reference for undo
                     previousImage = currentImage;
-                }
-                else
-                {
-                    // Undo, no longer need current image
-                    currentImage?.Dispose();
-
-                    // Previous no longer available
-                    previousImage = null;
                 }
 
                 // Keep reference for image processing
