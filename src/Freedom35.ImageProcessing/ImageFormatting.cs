@@ -52,7 +52,7 @@ namespace Freedom35.ImageProcessing
                 MemoryStream ms = new MemoryStream();
                 sourceImage.Save(ms, targetFormat);
 
-                clone = Image.FromStream(ms, true);
+                clone = Image.FromStream(ms);
             }
             else
             {
