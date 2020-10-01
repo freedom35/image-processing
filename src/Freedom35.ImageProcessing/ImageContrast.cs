@@ -202,13 +202,11 @@ namespace Freedom35.ImageProcessing
             // Apply distribution to image to equalize
             if (isColor)
             {
-                int j;
-
-                for (int i = 0; i < limit; i += pixelDepth)
+                for (int i = 0, j; i < limit; i += pixelDepth)
                 {
                     for (j = 0; j < pixelDepth; j++)
                     {
-                        imageBytes[i + j] = (byte)histogram[i + j];
+                        imageBytes[i + j] = (byte)histogram[imageBytes[i + j]];
                     }
                 }
             }
