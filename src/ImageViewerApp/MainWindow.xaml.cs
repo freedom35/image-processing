@@ -277,6 +277,21 @@ namespace ImageViewerApp
             }
         }
 
+        private void Button_EnhanceContrast_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                try
+                {
+                    DisplayImage(ImageContrast.Enhance(currentImage));
+                }
+                catch (Exception ex)
+                {
+                    ReportException(ex);
+                }
+            }
+        }
+
         private void Button_ApplyRedFilter_Click(object sender, RoutedEventArgs e)
         {
             if (currentImage != null)

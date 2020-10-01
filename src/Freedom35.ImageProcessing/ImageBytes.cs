@@ -45,10 +45,9 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Converts the image to a bitmap, and gets the bytes.
         /// </summary>
-        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to get bytes from</param>
         /// <returns>Image bytes (without header info)</returns>
-        public static byte[] FromImage<T>(T image) where T : Image
+        public static byte[] FromImage(Image image)
         {
             return FromImage(image, out BitmapData _);
         }
@@ -56,11 +55,10 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Converts the image to a bitmap, and gets the bytes.
         /// </summary>
-        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to get bytes from</param>
         /// <param name="bitmapData">Data relating to bitmap</param>
         /// <returns>Image bytes (without header info)</returns>
-        public static byte[] FromImage<T>(T image, out BitmapData bitmapData) where T : Image
+        public static byte[] FromImage(Image image, out BitmapData bitmapData)
         {
             if (image is Bitmap bmp)
             {
@@ -152,133 +150,126 @@ namespace Freedom35.ImageProcessing
 
         /// <summary>
         /// Gets the minimum pixel value within an image.
-        /// (For color images, min pixel avg returned)
+        /// For color images, min pixel avg returned.
         /// </summary>
-        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to search</param>
         /// <returns>Minimum pixel value</returns>
-        public static byte GetMinValue<T>(T image) where T : Image
+        public static byte GetMinValue(Image image)
+        {
+            return GetMinMaxValue(image, true, false).Item1;
+        }
+
+        /// <summary>
+        /// Gets the maximum pixel value within an image.
+        /// (For color images, max pixel avg is returned)
+        /// </summary>
+        /// <param name="image">Image to search</param>
+        /// <returns>Maximum pixel value</returns>
+        public static byte GetMaxValue(Image image)
+        {
+            return GetMinMaxValue(image, false, true).Item2;
+        }
+
+        /// <summary>
+        /// Gets the minimum & maximum pixel value within an image.
+        /// For color images, min/max pixel avg is returned.
+        /// </summary>
+        /// <param name="image">Image to search</param>
+        /// <returns>min, max bytes</returns>
+        public static Tuple<byte, byte> GetMinMaxValue(Image image)
+        {
+            return GetMinMaxValue(image, true, true);
+        }
+
+        /// <summary>
+        /// Gets the minimum & maximum pixel value within an image.
+        /// For color images, min/max pixel avg is returned.
+        /// </summary>
+        /// <param name="image">Image to search</param>
+        /// <param name="findMin">Determines whether to return min value</param>
+        /// <param name="findMax">Determines whether to return max value</param>
+        /// <returns>min, max bytes</returns>
+        private static Tuple<byte, byte> GetMinMaxValue(Image image, bool findMin, bool findMax)
         {
             if (image is Bitmap bmp)
             {
-                return GetMinBitmapValue(bmp);
+                return GetMinMaxBitmapValue(bmp, findMin, findMax);
             }
             else
             {
                 using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
                 {
-                    return GetMinBitmapValue(bitmap);
+                    return GetMinMaxBitmapValue(bitmap, findMin, findMax);
                 }
             }
         }
 
         /// <summary>
-        /// Gets the minimum pixel value within an image.
-        /// (For color images, min pixel avg returned)
+        /// Gets the minimum & maximum pixel value within a bitmap.
+        /// For color images, min/max pixel avg is returned.
         /// </summary>
         /// <param name="bitmap">Image to search</param>
-        /// <returns>Minimum pixel value</returns>
-        private static byte GetMinBitmapValue(Bitmap bitmap)
+        /// <param name="findMin">Determines whether to return min value</param>
+        /// <param name="findMax">Determines whether to return max value</param>
+        /// <returns>min, max bytes</returns>
+        private static Tuple<byte, byte> GetMinMaxBitmapValue(Bitmap bitmap, bool findMin, bool findMax)
         {
-            // Start with highest value
-            byte min = byte.MaxValue;
+            // Start with opposite value
+            byte min = findMin ? byte.MaxValue : byte.MinValue;
+            byte max = findMax ? byte.MinValue : byte.MaxValue;
 
+            // Get bytes for image
             byte[] rgbValues = GetBitmapBytes(bitmap, out BitmapData bmpData);
 
             int pixelDepth = bmpData.GetPixelDepth();
             bool isColor = bmpData.IsColor();
             byte avg;
 
-            // Find minimum value
-            // (Zero is lowest possible, so stop looking once found)
-            for (int i = 0; i < rgbValues.Length && min > byte.MinValue; i += pixelDepth)
+            // Find minimum/maximum value
+            // (Zero is lowest min, 255 is highest max - stop looking once both found)
+            for (int i = 0; i < rgbValues.Length && (min > byte.MinValue || max < byte.MaxValue); i += pixelDepth)
             {
                 if (isColor)
                 {
                     avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
 
+                    // Check for min
                     if (avg < min)
                     {
                         min = avg;
                     }
-                }
-                else if (rgbValues[i] < min)
-                {
-                    min = rgbValues[i];
-                }
-            }
 
-            return min;
-        }
-
-        /// <summary>
-        /// Gets the maximum pixel value within an image.
-        /// (For color images, max pixel avg is returned)
-        /// </summary>
-        /// <typeparam name="T">Image type to process and return</typeparam>
-        /// <param name="image">Image to search</param>
-        /// <returns>Maximum pixel value</returns>
-        public static byte GetMaxValue<T>(T image) where T : Image
-        {
-            if (image is Bitmap bmp)
-            {
-                return GetMaxBitmapValue(bmp);
-            }
-            else
-            {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    return GetMaxBitmapValue(bitmap);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the maximum pixel value within an image.
-        /// (For color images, max pixel avg is returned)
-        /// </summary>
-        /// <param name="bitmap">Image to search</param>
-        /// <returns>Maximum pixel value</returns>
-        private static byte GetMaxBitmapValue(Bitmap bitmap)
-        {
-            // Start with lowest value
-            byte max = byte.MinValue;
-
-            byte[] rgbValues = GetBitmapBytes(bitmap, out BitmapData bmpData);
-
-            int pixelDepth = bmpData.GetPixelDepth();
-            bool isColor = bmpData.IsColor();
-            byte avg;
-
-            // Find maximum value
-            // (255 is highest possible, so stop looking once found)
-            for (int i = 0; i < rgbValues.Length && max < byte.MaxValue; i += pixelDepth)
-            {
-                if (isColor)
-                {
-                    avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
-
+                    // Check for max
                     if (avg > max)
                     {
                         max = avg;
                     }
                 }
-                else if (rgbValues[i] > max)
+                else
                 {
-                    max = rgbValues[i];
+                    // Check for min
+                    if (rgbValues[i] < min)
+                    {
+                        min = rgbValues[i];
+                    }
+
+                    // Check for max
+                    if (rgbValues[i] > max)
+                    {
+                        max = rgbValues[i];
+                    }
                 }
             }
-
-            return max;
+            
+            return Tuple.Create(min, max);
         }
 
         /// <summary>
         /// Get the average pixel value between 0-255.
         /// </summary>
-        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <returns>Average pixel intensity</returns>
-        public static byte GetAverageValue<T>(T image) where T : Image
+        public static byte GetAverageValue(Image image)
         {
             return GetAverageValue(image, byte.MinValue, byte.MaxValue);
         }
@@ -286,12 +277,11 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Get the average pixel value between min and max.
         /// </summary>
-        /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
         /// <param name="min">Minimum byte value</param>
         /// <param name="max">Maximum byte value</param>
         /// <returns>Average pixel intensity</returns>
-        public static byte GetAverageValue<T>(T image, byte min, byte max) where T : Image
+        public static byte GetAverageValue(Image image, byte min, byte max)
         {
             if (image is Bitmap bmp)
             {

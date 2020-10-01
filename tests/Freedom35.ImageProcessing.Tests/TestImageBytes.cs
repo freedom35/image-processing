@@ -1,5 +1,8 @@
 using Freedom35.ImageProcessing;
+using Freedom35.ImageProcessing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Drawing;
 using System.Linq;
 
 namespace ImageProcessingTests
@@ -77,6 +80,40 @@ namespace ImageProcessingTests
             {
                 Assert.AreEqual(expectedByteValues[i], byteValues[i]);
             }
+        }
+
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
+        [DataTestMethod]
+        public void TestBytesGetMinValue(string resourcePath)
+        {
+            using Image image = TestImage.FromResource(resourcePath);
+
+            byte min = ImageBytes.GetMinValue(image);
+
+            Assert.AreEqual(0x00, min);
+        }
+
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
+        [DataTestMethod]
+        public void TestBytesGetMaxValue(string resourcePath)
+        {
+            using Image image = TestImage.FromResource(resourcePath);
+            
+            byte max = ImageBytes.GetMaxValue(image);
+
+            Assert.AreEqual(0xff, max);
+        }
+
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
+        [DataTestMethod]
+        public void TestBytesGetMinMaxValue(string resourcePath)
+        {
+            using Image image = TestImage.FromResource(resourcePath);
+
+            Tuple<byte, byte> minMax = ImageBytes.GetMinMaxValue(image);
+
+            Assert.AreEqual(0x00, minMax.Item1);
+            Assert.AreEqual(0xff, minMax.Item2);
         }
     }
 }
