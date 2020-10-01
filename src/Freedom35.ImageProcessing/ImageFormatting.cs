@@ -2,9 +2,11 @@
 // GitHub:  freedom35
 // License: MIT
 //------------------------------------------------
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 
 namespace Freedom35.ImageProcessing
 {
@@ -85,6 +87,43 @@ namespace Freedom35.ImageProcessing
                 // Correct format, just return
                 return sourceImage;
             }
+        }
+
+        /// <summary>
+        /// Converts image to a JPEG.
+        /// </summary>
+        /// <param name="image">Image to convert</param>
+        /// <param name="compressionLevel">Level of compression: 0-100 (0 - max compression, lowest quality, 100 - minimal compression, max quality)</param>
+        /// <returns>Compressed image (JPEG)</returns>
+        public static Image ToJPEG(Image image, long compressionLevel)
+        {
+            // Check compression limits
+            if (compressionLevel < 0 || compressionLevel > 100)
+            {
+                throw new ArgumentOutOfRangeException(nameof(compressionLevel), $"Invalid JPEG compression level ({compressionLevel}), value should be within 0 to 100.");
+            }
+
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+
+            // Find JPEG codec
+            ImageCodecInfo jpegEncoder = codecs.FirstOrDefault(c => c.FormatID == ImageFormat.Jpeg.Guid);
+
+            if (jpegEncoder == null)
+            {
+                throw new Exception("JPEG image encoder not found.");
+            }
+
+            // Create compression parameters
+            EncoderParameters encParams = new EncoderParameters(1);
+            encParams.Param[0] = new EncoderParameter(Encoder.Quality, compressionLevel);
+
+            // Leave stream open so image can be saved
+            MemoryStream ms = new MemoryStream();
+            
+            // Create JPEG in stream
+            image.Save(ms, jpegEncoder, encParams);
+
+            return Image.FromStream(ms);
         }
     }
 }
