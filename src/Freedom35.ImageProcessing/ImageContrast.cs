@@ -5,6 +5,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace Freedom35.ImageProcessing
 {
@@ -178,39 +179,42 @@ namespace Freedom35.ImageProcessing
         {
             int[] histogram = ImageHistogram.GetHistogramValues(imageBytes, pixelDepth);
 
-            // HE Frequencies
-            int idealFrequency = (imageWidth * imageHeight) / histogram.Length;
+            double numberOfPixels = (imageWidth * imageHeight);
+            double numberOfLevels = histogram.Length;
             int cumulativeFrequency = 0;
             int equalizedValue;
 
-            // Perform histogram equalization for each level
+            // Calculate cumulative distribution for histogram
             for (int i = 0; i < histogram.Length; i++)
             {
                 cumulativeFrequency += histogram[i];
 
-                equalizedValue = (int)Math.Round((double)((cumulativeFrequency / idealFrequency) - 1));
+                // Calculate equalized value
+                equalizedValue = (int)Math.Round((numberOfLevels * cumulativeFrequency) / numberOfPixels) - 1;
 
-                // Ensure +ve
-                histogram[i] = Math.Max(equalizedValue, 0);
+                // Ensure +ve value
+                histogram[i] = Math.Max(0, equalizedValue);
             }
 
             bool isColor = BitmapDataExt.IsColorPixelDepth(pixelDepth);
-            byte avg;
-
             int limit = (pixelDepth > 1 ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length);
 
-            // Equalize image
-            for (int i = 0; i < limit; i += pixelDepth)
+            // Apply distribution to image to equalize
+            if (isColor)
             {
-                if (isColor)
-                {
-                    avg = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
+                int j;
 
-                    imageBytes[i] = (byte)histogram[avg];
-                    imageBytes[i + 1] = (byte)histogram[avg];
-                    imageBytes[i + 2] = (byte)histogram[avg];
+                for (int i = 0; i < limit; i += pixelDepth)
+                {
+                    for (j = 0; j < pixelDepth; j++)
+                    {
+                        imageBytes[i + j] = (byte)histogram[i + j];
+                    }
                 }
-                else
+            }
+            else
+            {
+                for (int i = 0; i < limit; i++)
                 {
                     imageBytes[i] = (byte)histogram[imageBytes[i]];
                 }
@@ -218,11 +222,11 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// 
+        /// Improves contrast by stretching or equalization (decision based on current image values).
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="image"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Image type to process and return</typeparam>
+        /// <param name="image">Image to enhance</param>
+        /// <returns>Image with enhanced contrast</returns>
         public static T Enhance<T>(T image) where T : Image
         {
             Tuple<byte, byte> minMax = ImageBytes.GetMinMaxValue(image);
