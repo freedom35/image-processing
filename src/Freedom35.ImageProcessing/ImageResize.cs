@@ -36,7 +36,7 @@ namespace Freedom35.ImageProcessing
             Bitmap resizedBitmap = new Bitmap(image, width, height);
 
             // Dispose of original image
-            resizedBitmap.Dispose();
+            image.Dispose();
 
             // Assign to original ref
             image = resizedBitmap;
