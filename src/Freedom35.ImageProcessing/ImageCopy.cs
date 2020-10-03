@@ -2,9 +2,9 @@
 // GitHub:  freedom35
 // License: MIT
 //------------------------------------------------
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 
 namespace Freedom35.ImageProcessing
 {
@@ -18,23 +18,19 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         public static void FromSourceToDestination(Bitmap imageSource, Bitmap imageDestination)
         {
+            // Get bytes to copy
+            byte[] sourceBytes = ImageBytes.FromImage(imageSource);
+
             // Lock destination during copy/write
-            byte[] rgbValuesDest = ImageEdit.Begin(imageDestination, out BitmapData bmpDataDest);
+            byte[] destinationBytes = ImageEdit.Begin(imageDestination, out BitmapData bmpDataDest);
 
-            // Copy entire image
-            Rectangle rect = new Rectangle(0, 0, imageSource.Width, imageSource.Height);
+            // Copy as many bytes of the image as possible
+            int limit = Math.Min(sourceBytes.Length, destinationBytes.Length);
 
-            // Lock source during copy/read
-            BitmapData bmpDataSource = imageSource.LockBits(rect, ImageLockMode.ReadOnly, imageSource.PixelFormat);
-
-            // Copy the RGB values into the array.
-            Marshal.Copy(bmpDataSource.Scan0, rgbValuesDest, 0, rgbValuesDest.Length);
-
-            // Release source image
-            imageSource.UnlockBits(bmpDataSource);
+            Array.Copy(sourceBytes, destinationBytes, limit);
 
             // Release lock on destination
-            ImageEdit.End(imageDestination, bmpDataDest, rgbValuesDest);
+            ImageEdit.End(imageDestination, bmpDataDest, destinationBytes);
         }
     }
 }
