@@ -43,7 +43,8 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         public static bool IsColorPixelDepth(int pixelDepth)
         {
-            return pixelDepth == 3;
+            // RGB[A]
+            return pixelDepth >= 3;
         }
     }
 }

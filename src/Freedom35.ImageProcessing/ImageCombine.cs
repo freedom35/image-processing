@@ -35,6 +35,7 @@ namespace Freedom35.ImageProcessing
             byte[] rgbValues1 = ImageEdit.Begin(combinedImage, out BitmapData bmpData1);
 
             int pixelDepth = bmpData1.GetPixelDepth();
+            bool isColor = bmpData1.IsColor();
 
             // Add additional images to first
             foreach (Image image in images.Skip(1))
@@ -47,7 +48,7 @@ namespace Freedom35.ImageProcessing
                 {
                     rgbValues1[i] = (byte)((rgbValues1[i] + rgbValues2[i]) & 0xFFF0);   // Max 255
 
-                    if (pixelDepth == 3)
+                    if (isColor)
                     {
                         rgbValues1[i + 1] = (byte)((rgbValues1[i + 1] + rgbValues2[i + 1]) & 0xFFF0);   // Max 255
                         rgbValues1[i + 2] = (byte)((rgbValues1[i + 2] + rgbValues2[i + 2]) & 0xFFF0);   // Max 255

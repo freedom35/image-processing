@@ -288,6 +288,8 @@ namespace Freedom35.ImageProcessing
         /// <param name="minValue">Min value to retain</param>
         public static void ApplyMinDirect(byte[] imageBytes, int pixelDepth, byte minValue)
         {
+            bool isColor = BitmapDataExt.IsColorPixelDepth(pixelDepth);
+
             // Apply threshold value to image.
             for (int i = 0; i < imageBytes.Length; i += pixelDepth)
             {
@@ -296,7 +298,7 @@ namespace Freedom35.ImageProcessing
                     imageBytes[i] = minValue;
                 }
 
-                if (pixelDepth == 3 && i < imageBytes.Length - 2)
+                if (isColor && i < imageBytes.Length - 2)
                 {
                     if (imageBytes[i + 1] < minValue)
                     {
@@ -355,6 +357,8 @@ namespace Freedom35.ImageProcessing
         /// <param name="maxValue">Max value to retain</param>
         public static void ApplyMaxDirect(byte[] imageBytes, int pixelDepth, byte maxValue)
         {
+            bool isColor = BitmapDataExt.IsColorPixelDepth(pixelDepth);
+
             // Apply threshold value to image.
             for (int i = 0; i < imageBytes.Length; i += pixelDepth)
             {
@@ -363,7 +367,7 @@ namespace Freedom35.ImageProcessing
                     imageBytes[i] = maxValue;
                 }
 
-                if (pixelDepth == 3 && i < imageBytes.Length - 2)
+                if (isColor && i < imageBytes.Length - 2)
                 {
                     if (imageBytes[i + 1] > maxValue)
                     {
@@ -405,7 +409,7 @@ namespace Freedom35.ImageProcessing
         {
             byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
-            ApplyMinMaxDirect(imageBytes, bmpData, minValue, maxValue);
+            ApplyMinMaxDirect(imageBytes, bmpData.GetPixelDepth(), minValue, maxValue);
 
             ImageEdit.End(bitmap, bmpData, imageBytes);
         }
@@ -414,12 +418,12 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values outside the threshold will be changed to min/max.
         /// </summary>
         /// <param name="imageBytes">Image bytes (Grayscale/RGB)</param>
-        /// <param name="bmpData">Info on image properties</param>
+        /// <param name="pixelDepth">Depth of pixels (typically 1 for grayscale, 3 for color)</param>
         /// <param name="minValue">Minimum threshold value</param>
         /// <param name="maxValue">Maximum threshold value</param>
-        public static void ApplyMinMaxDirect(byte[] imageBytes, BitmapData bmpData, byte minValue, byte maxValue)
+        public static void ApplyMinMaxDirect(byte[] imageBytes, int pixelDepth, byte minValue, byte maxValue)
         {
-            int pixelDepth = bmpData.GetPixelDepth();
+            bool isColor = BitmapDataExt.IsColorPixelDepth(pixelDepth);
 
             // Adjust image to within min/max.
             for (int i = 0; i < imageBytes.Length; i += pixelDepth)
@@ -435,7 +439,7 @@ namespace Freedom35.ImageProcessing
                 }
 
                 // Extra bytes for color images (RGB)
-                if (pixelDepth == 3 && i < imageBytes.Length - 2)
+                if (isColor && i < imageBytes.Length - 2)
                 {
                     // G
                     if (imageBytes[i + 1] < minValue)
