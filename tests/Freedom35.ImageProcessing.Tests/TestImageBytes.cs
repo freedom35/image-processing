@@ -82,38 +82,59 @@ namespace ImageProcessingTests
             }
         }
 
-        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
-        [DataTestMethod]
-        public void TestBytesGetMinValue(string resourcePath)
+        [TestMethod]
+        public void TestBytesGetMinValue()
         {
-            using Image image = TestImage.FromResource(resourcePath);
+            const string ResourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";
+
+            using Image image = TestImage.FromResource(ResourcePath);
 
             byte min = ImageBytes.GetMinValue(image);
 
             Assert.AreEqual(0x00, min);
         }
 
-        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
-        [DataTestMethod]
-        public void TestBytesGetMaxValue(string resourcePath)
+        [TestMethod]
+        public void TestBytesGetMaxValue()
         {
-            using Image image = TestImage.FromResource(resourcePath);
+            const string ResourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";
+
+            using Image image = TestImage.FromResource(ResourcePath);
             
             byte max = ImageBytes.GetMaxValue(image);
 
             Assert.AreEqual(0xff, max);
         }
 
-        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
-        [DataTestMethod]
-        public void TestBytesGetMinMaxValue(string resourcePath)
+        [TestMethod]
+        public void TestBytesGetMinMaxValue()
         {
-            using Image image = TestImage.FromResource(resourcePath);
+            const string ResourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";
+
+            using Image image = TestImage.FromResource(ResourcePath);
 
             Tuple<byte, byte> minMax = ImageBytes.GetMinMaxValue(image);
 
             Assert.AreEqual(0x00, minMax.Item1);
             Assert.AreEqual(0xff, minMax.Item2);
+        }
+
+        [TestMethod]
+        public void TestBytesGetAvgValue()
+        {
+            const string ResourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";
+
+            using Image image = TestImage.FromResource(ResourcePath);
+
+            byte avg = ImageBytes.GetAverageValue(image);
+
+            // Average for image
+            Assert.AreEqual(0x8c, avg);
+
+            avg = ImageBytes.GetAverageValue(image, 0x22, 0x24);
+
+            // Average in range
+            Assert.AreEqual(0x23, avg);
         }
 
         [DataRow(new byte[0], ImageType.Unknown)]

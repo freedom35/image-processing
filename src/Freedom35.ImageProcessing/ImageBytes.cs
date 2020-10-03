@@ -305,11 +305,8 @@ namespace Freedom35.ImageProcessing
         /// <returns>Average pixel intensity</returns>
         private static byte GetAverageBitmapValue(Bitmap bitmap, byte min, byte max)
         {
-            // Get range of values
-            int valueRange = (max - min) + 1;
-
             // Check range is valid
-            if (valueRange < 1)
+            if (max < min)
             {
                 throw new ArgumentException("max cannot be less than min.");
             }
@@ -319,10 +316,10 @@ namespace Freedom35.ImageProcessing
 
             int pixelDepth = bmpData.GetPixelDepth();
             bool isColor = bmpData.IsColor();
-            byte avg;
+            byte val;
 
-            // Create array for each value in range
-            byte[] histogram = new byte[valueRange];
+            int sum = 0;
+            int count = 0;
 
             // Find distribution of pixels at each level.
             for (int i = 0; i < rgbValues.Length; i += pixelDepth)
@@ -330,23 +327,23 @@ namespace Freedom35.ImageProcessing
                 if (isColor)
                 {
                     // Find average value of RGB
-                    avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+                    val = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
                 }
                 else
                 {
-                    avg = rgbValues[i];
+                    val = rgbValues[i];
                 }
 
                 // Check value within range
-                if (avg >= min && avg <= max)
+                if (val >= min && val <= max)
                 {
-                    // Offset index for array
-                    histogram[avg - min]++;
+                    sum += val;
+                    count++;
                 }
             }
 
             // Return average value within range
-            return (byte)histogram.Average(b => b);
+            return count > 0 ? (byte)(sum / count) : byte.MinValue;
         }
 
         /// <summary>
