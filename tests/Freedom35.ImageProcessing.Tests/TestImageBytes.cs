@@ -115,5 +115,43 @@ namespace ImageProcessingTests
             Assert.AreEqual(0x00, minMax.Item1);
             Assert.AreEqual(0xff, minMax.Item2);
         }
+
+        [DataRow(new byte[0], ImageType.Unknown)]
+        [DataRow(new byte[] { 0x00, 0x00 }, ImageType.Unknown)]
+        [DataRow(new byte[] { 0xFF, 0xFF, 0x42, 0x42 }, ImageType.Unknown)]
+        [DataRow(new byte[] { 0x42, 0x4d, 0x42, 0x42 }, ImageType.Bitmap)]
+        [DataRow(new byte[] { 0x49, 0x49, 0x2a, 0x42, 0x42 }, ImageType.TIFF)]
+        [DataRow(new byte[] { 0xff, 0xd8, 0xff, 0xf4, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x42, 0x42 }, ImageType.JPEG)]
+        [DataRow(new byte[] { 0x89, 0x50, 0x4e, 0x47, 0x42, 0x42 }, ImageType.PNG)]
+        [DataTestMethod]
+        public void TestTryGetImageType(byte[] imageBytes, ImageType expectedType)
+        {
+            ImageType type;
+
+            if (expectedType == ImageType.Unknown)
+            {
+                // Should fail - unable to determine type
+                Assert.IsFalse(ImageBytes.TryGetImageType(imageBytes, out type));
+            }
+            else
+            {
+                Assert.IsTrue(ImageBytes.TryGetImageType(imageBytes, out type));
+            }
+
+            Assert.AreEqual(expectedType, type);
+        }
+
+        [DataRow(new byte[0], ImageType.Unknown)]
+        [DataRow(new byte[] { 0x00, 0x00, 0x42, 0x42 }, ImageType.Unknown)]
+        [DataRow(new byte[] { 0xFF, 0xFF, 0x42, 0x42 }, ImageType.Unknown)]
+        [DataRow(new byte[] { 0x42, 0x4d, 0x42, 0x42 }, ImageType.Bitmap)]
+        [DataRow(new byte[] { 0x49, 0x49, 0x2a, 0x42, 0x42 }, ImageType.TIFF)]
+        [DataRow(new byte[] { 0xff, 0xd8, 0xff, 0xf4, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x42, 0x42 }, ImageType.JPEG)]
+        [DataRow(new byte[] { 0x89, 0x50, 0x4e, 0x47, 0x42, 0x42 }, ImageType.PNG)]
+        [DataTestMethod]
+        public void TestIsImageType(byte[] imageBytes, ImageType expectedType)
+        {
+            Assert.IsTrue(ImageBytes.IsImageType(imageBytes, expectedType));
+        }
     }
 }

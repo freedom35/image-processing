@@ -71,8 +71,8 @@ namespace Freedom35.ImageProcessing
         /// Gets array of bytes to identify type of encoding method.
         /// </summary>
         /// <param name="type">Type of image</param>
-        /// <returns>Starting bytes for image encoding</returns>
-        public static byte[] GetEncodingBytes(this ImageType imageType)
+        /// <returns>Header bytes for image encoding</returns>
+        public static byte[] GetHeaderBytes(this ImageType imageType)
         {
             switch (imageType)
             {
@@ -89,6 +89,8 @@ namespace Freedom35.ImageProcessing
                     return PngEncoding;
 
                 case ImageType.Unknown:
+                    return new byte[0];
+
                 default:
                     throw new NotImplementedException($"Encoding not implemented for '{imageType}'.");
             }
