@@ -11,10 +11,10 @@ You are welcome to use/update this software under the terms of the **MIT license
 <br />
 
 ## Latest Releases
-A published package is available for download on [NuGet.org](https://nuget.org).  
+A published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 |Version|Notes|
 |:---:|-----|
-|1.0.0|Initial release.|
+|[1.0.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.0)|Initial release.|
 
 <br />
 <br />
