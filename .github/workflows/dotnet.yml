@@ -10,6 +10,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    env:
+      Solution_Name: Freedom35.ImageProcessing.sln
 
     steps:
     - uses: actions/checkout@v2
@@ -18,8 +21,8 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore $env:Solution_Name
     - name: Build
-      run: dotnet build Freedom35.ImageProcessing.sln --no-restore
+      run: dotnet build $env:Solution_Name --no-restore
     - name: Test
-      run: dotnet test Freedom35.ImageProcessing.sln --no-build --verbosity normal
+      run: dotnet test $env:Solution_Name --no-build --verbosity normal
