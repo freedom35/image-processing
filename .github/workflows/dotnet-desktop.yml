@@ -61,4 +61,4 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test $Solution_Name
+      run: dotnet test Freedom35.ImageProcessing.sln
