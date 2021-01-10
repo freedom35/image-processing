@@ -19,6 +19,17 @@ A published package is available for download on [NuGet.org](https://www.nuget.o
 <br />
 <br />
 
+# Sample Solutions
+The repository contains some sample [Visual Studio](https://visualstudio.microsoft.com) solutions described below.
+
+|Name|Description|
+|-----|-----|
+|Freedom35.ImageProcessing.sln|Portable solution (for both Windows/Mac) containing image processing library and unit tests.|
+|Freedom35.ImageProcessing.WindowsDesktop.sln|Solution containing image processing library, unit tests, plus an Image Viewer app for Windows desktop.|  
+
+<br />
+<br />
+
 # Usage of Library
 Below are the steps involved in using the Image Processing Library in your own projects.  
 The repository also contains an **ImageViewerApp** (WPF) project to demonstrate usage of the Image Processing Library.  
