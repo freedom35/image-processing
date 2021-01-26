@@ -43,6 +43,7 @@ namespace Freedom35.ImageProcessing
         /// Smoothing/Low-pass filter.
         /// (Less blurring)
         /// </summary>
+        [Description("Smoothing (Mexican Hat)")]
         SmoothingMexicanHat,
 
         /// <summary>
