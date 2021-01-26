@@ -129,7 +129,7 @@ namespace ImageProcessingTests
             byte avg = ImageBytes.GetAverageValue(image);
 
             // Average for image
-            Assert.AreEqual(0x8c, avg);
+            Assert.AreEqual(0x8d, avg);
 
             avg = ImageBytes.GetAverageValue(image, 0x22, 0x24);
 
