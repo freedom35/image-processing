@@ -343,7 +343,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Return average value within range
-            return count > 0 ? (byte)(sum / count) : byte.MinValue;
+            return count > 0 ? (byte)Math.Round(Convert.ToDouble(sum) / count) : byte.MinValue;
         }
 
         /// <summary>

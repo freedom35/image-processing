@@ -14,6 +14,7 @@ You are welcome to use/update this software under the terms of the **MIT license
 A published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 |Version|Notes|
 |:---:|-----|
+|[1.0.2](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.2)|Revision to return rounded value for ImageBytes.GetAverageValue.|
 |[1.0.1](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.1)|Revision to add enum description attribute for 'Mexican Hat' smoothing filter.|
 |[1.0.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.0)|Initial release.|
 
