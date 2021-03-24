@@ -1,7 +1,7 @@
 # Image Processing Library
 This image processing library is a lightweight open source library targeting **.NET Standard v2.0**.  
 
-Note: **.NET Standard** libraries can be used in both **.NET Full Framework** and **.NET Core** projects.
+Note: **.NET Standard** libraries can be used in **.NET Full Framework** and **.NET Core** (now **.NET 5.0**) projects.
 
 This library may be used as an educational tool on how such image processing methods can be implemented, or used within your own projects that require some form of image processing.  
 
@@ -14,6 +14,7 @@ You are welcome to use/update this software under the terms of the **MIT license
 A published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 |Version|Notes|
 |:---:|-----|
+|[1.1.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.1.0)|Added support for applying EXIF orientation data to images.|
 |[1.0.2](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.2)|Revision to return rounded value for ImageBytes.GetAverageValue.|
 |[1.0.1](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.1)|Revision to add enum description attribute for 'Mexican Hat' smoothing filter.|
 |[1.0.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.0)|Initial release.|
@@ -191,6 +192,10 @@ Class for cropping an image based on a region.
 
 ## Image Edit Class
 Class to begin/end the editing of **bitmap** image bytes.  
+<br />
+
+## Image EXIF Class
+Class for adjusting the orientation of an image based on **exchangeable image file format** (EXIF) metadata.  
 <br />
 
 ## Image Formatting Class

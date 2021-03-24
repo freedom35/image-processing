@@ -146,8 +146,14 @@ namespace ImageViewerApp
 
             try
             {
+                // Load image into memory
+                Image imageFromFile = Image.FromFile(filename);
+
+                // Adjust image orientation based on EXIF (if present)
+                Image orientatedImage = ImageEXIF.ApplyOrientation(imageFromFile);
+
                 // Keep reference to original image for restore
-                originalImage = Image.FromFile(filename);
+                originalImage = orientatedImage;
 
                 // Clone as do not want original modified
                 Image clone = (Image)originalImage.Clone();
