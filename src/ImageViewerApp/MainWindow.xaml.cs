@@ -59,7 +59,7 @@ namespace ImageViewerApp
         private void Button_OpenImage_Click(object sender, RoutedEventArgs e)
         {
             // Configure open file dialog box
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog
+            Microsoft.Win32.OpenFileDialog openFileDialog = new()
             {
                 Title = "Select an image to open",
                 FileName = "",
@@ -81,7 +81,7 @@ namespace ImageViewerApp
             string ext = System.IO.Path.GetExtension(fileName);
 
             // Configure file dialog box
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new()
             {
                 Title = "Save image as...",
                 FileName = fileName,
@@ -101,7 +101,7 @@ namespace ImageViewerApp
             }
         }
 
-        private int GetFilterIndex(string filter, string searchExt)
+        private static int GetFilterIndex(string filter, string searchExt)
         {
             // Extract ext types
             char[] types = filter.Split('|').Where(t => t.StartsWith('*')).Select(t => t.TrimStart('*', '.').First()).ToArray();
@@ -177,7 +177,7 @@ namespace ImageViewerApp
             btRestoreImage.IsEnabled = enable;
         }
 
-        private void DisplayHistogram(Image sourceImage, System.Windows.Controls.Image targetPictureBox)
+        private static void DisplayHistogram(Image sourceImage, System.Windows.Controls.Image targetPictureBox)
         {
             // Create histogram of image
             Image histogram = ImageHistogram.Create(sourceImage,

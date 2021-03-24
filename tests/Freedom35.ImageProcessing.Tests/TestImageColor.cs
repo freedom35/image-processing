@@ -39,7 +39,7 @@ namespace ImageProcessingTests
         [TestMethod]
         public void TestConvertNoImageToGrayscale()
         {
-            byte[] imageBytes = { };
+            byte[] imageBytes = System.Array.Empty<byte>();
 
             byte[] convertedImage = ImageColor.ColorImageToGrayscale(imageBytes);
 
