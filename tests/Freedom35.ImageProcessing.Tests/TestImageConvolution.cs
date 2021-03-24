@@ -20,7 +20,7 @@ namespace ImageProcessingTests
             };
 
             // Grayscale image
-            BitmapData bmpData = new BitmapData()
+            BitmapData bmpData = new()
             {
                 Height = 4,
                 Width = 5,
@@ -74,7 +74,7 @@ namespace ImageProcessingTests
             };
 
             // Color image
-            BitmapData bmpData = new BitmapData()
+            BitmapData bmpData = new()
             {
                 Height = 4,
                 Width = 5,

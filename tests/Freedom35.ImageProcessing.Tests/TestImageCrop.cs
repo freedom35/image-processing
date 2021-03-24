@@ -20,7 +20,7 @@ namespace ImageProcessingTests
 
             Assert.IsNotNull(sourceImage);
 
-            Rectangle region = new Rectangle(0, 0, sourceImage.Width / 2, sourceImage.Height / 2);
+            Rectangle region = new(0, 0, sourceImage.Width / 2, sourceImage.Height / 2);
 
             // Crop region of image
             using Image croppedImage = ImageCrop.ByRegion(sourceImage, region);

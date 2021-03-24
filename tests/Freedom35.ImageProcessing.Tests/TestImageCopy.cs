@@ -18,7 +18,7 @@ namespace ImageProcessingTests
             Assert.IsNotNull(sourceBitmap);
 
             // Create blank bitmap
-            using Bitmap copyBitmap = new Bitmap(sourceBitmap.Width, sourceBitmap.Height, sourceBitmap.PixelFormat);
+            using Bitmap copyBitmap = new(sourceBitmap.Width, sourceBitmap.Height, sourceBitmap.PixelFormat);
             
             // Crop region of image
             ImageCopy.FromSourceToDestination(sourceBitmap, copyBitmap);
