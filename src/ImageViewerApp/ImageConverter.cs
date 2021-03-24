@@ -36,7 +36,7 @@ namespace ImageViewerApp
         public static BitmapImage ConvertImageToBitmapSource(Image image)
         {
             // First convert to stream
-            using MemoryStream stream = new MemoryStream();
+            using MemoryStream stream = new();
             image.Save(stream, ImageFormat.Bmp);
 
             return ConvertStreamToBitmapSource(stream);
