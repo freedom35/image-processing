@@ -225,9 +225,11 @@ namespace Freedom35.ImageProcessing
             bool isColor = bmpData.IsColor();
             byte avg;
 
+            int limit = bmpData.GetSafeArrayLimitForImage(rgbValues);
+
             // Find minimum/maximum value
             // (Zero is lowest min, 255 is highest max - stop looking once both found)
-            for (int i = 0; i < rgbValues.Length && (min > byte.MinValue || max < byte.MaxValue); i += pixelDepth)
+            for (int i = 0; i < limit && (min > byte.MinValue || max < byte.MaxValue); i += pixelDepth)
             {
                 if (isColor)
                 {
@@ -318,11 +320,13 @@ namespace Freedom35.ImageProcessing
             bool isColor = bmpData.IsColor();
             byte val;
 
+            int limit = bmpData.GetSafeArrayLimitForImage(rgbValues);
+
             int sum = 0;
             int count = 0;
 
             // Find distribution of pixels at each level.
-            for (int i = 0; i < rgbValues.Length; i += pixelDepth)
+            for (int i = 0; i < limit; i += pixelDepth)
             {
                 if (isColor)
                 {

@@ -46,5 +46,27 @@ namespace Freedom35.ImageProcessing
             // RGB[A]
             return pixelDepth >= 3;
         }
+
+        /// <summary>
+        /// Determines a safe array limit for when looping image bytes.
+        /// (Takes into account pixel depth)
+        /// </summary>
+        public static int GetSafeArrayLimitForImage(this BitmapData bitmapData, byte[] imageBytes)
+        {
+            bool isColor = bitmapData.IsColor();
+            int pixelDepth = bitmapData.GetPixelDepth();
+
+            return GetSafeArrayLimitForImage(isColor, pixelDepth, imageBytes);
+        }
+
+        /// <summary>
+        /// Determines a safe array limit for when looping image bytes.
+        /// (Takes into account pixel depth)
+        /// </summary>
+        public static int GetSafeArrayLimitForImage(bool isColor, int pixelDepth, byte[] imageBytes)
+        {
+            // A bitmap converted from a jpeg can potentially have an array with extra odd byte.
+            return isColor ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length;
+        }
     }
 }

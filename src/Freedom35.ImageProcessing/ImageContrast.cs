@@ -77,8 +77,8 @@ namespace Freedom35.ImageProcessing
             byte lowest = byte.MaxValue;
             byte val;
 
-            // Bitmap converted from jpeg can potentially can potentially have array with extra odd byte.
-            int limit = (isColor ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length);
+            // Bitmap converted from jpeg can potentially have array with extra odd byte.
+            int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
 
             //////////////////////////////////////
             // First find current contrast range
@@ -197,7 +197,7 @@ namespace Freedom35.ImageProcessing
             }
 
             bool isColor = BitmapDataExt.IsColorPixelDepth(pixelDepth);
-            int limit = (pixelDepth > 1 ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length);
+            int limit = BitmapDataExt.GetSafeArrayLimitForImage(isColor, pixelDepth, imageBytes);
 
             // Apply distribution to image to equalize
             if (isColor)
