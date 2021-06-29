@@ -377,6 +377,11 @@ namespace ImageViewerApp
                 defaultCursor = Cursor;
                 Cursor = System.Windows.Input.Cursors.Cross;
             }
+            else if (e.ChangedButton == System.Windows.Input.MouseButton.Right && e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                // Shortcut to undo - useful when zooming
+                Button_UndoImageChange_Click(null, null);
+            }
         }
 
         private void Image_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
