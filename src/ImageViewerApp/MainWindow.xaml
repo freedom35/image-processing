@@ -71,7 +71,7 @@
         <!-- Image Viewer -->
         <Grid Grid.Column="0" Grid.Row="1" Margin="10">
             <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
-                <Image x:Name="pbImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" >
+                <Image x:Name="pbImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" MouseDown="Image_MouseDown" MouseUp="Image_MouseUp" MouseLeave="Image_MouseLeave">
 
                 </Image>
             </Border>

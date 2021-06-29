@@ -21,12 +21,16 @@ namespace ImageViewerApp
 
         #region Members
 
+        private const string SaveFileFilter = "Bitmap|*.bmp|JPEG|*.jpg|PNG|*.png|TIFF|*.tif";
+
         private Image originalImage = null;
         private Image currentImage = null;
         private Image previousImage= null;
 
-        private const string SaveFileFilter = "Bitmap|*.bmp|JPEG|*.jpg|PNG|*.png|TIFF|*.tif";
+        private System.Windows.Point zoomStartPoint = new(-1, -1);
         
+        private System.Windows.Input.Cursor defaultCursor = null;
+
         #endregion
 
         private void DisposeOfImages()
@@ -361,6 +365,89 @@ namespace ImageViewerApp
             {
                 tbErrorInfo.Dispatcher.BeginInvoke((Action)delegate () { DisplayError(errorText); });
             }
+        }
+
+        private void Image_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (currentImage != null && e.ChangedButton == System.Windows.Input.MouseButton.Left && e.LeftButton == System.Windows.Input.MouseButtonState.Pressed && sender is IInputElement element)
+            {
+                zoomStartPoint = e.GetPosition(element);
+
+                // Change cursor whilst selecting area
+                defaultCursor = Cursor;
+                Cursor = System.Windows.Input.Cursors.Cross;
+            }
+        }
+
+        private void Image_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                if (e.ChangedButton == System.Windows.Input.MouseButton.Left && e.LeftButton == System.Windows.Input.MouseButtonState.Released)
+                {
+                    try
+                    {
+                        // Check mouse started down within image
+                        if (zoomStartPoint.X > -1 && sender is System.Windows.Controls.Image imageControl)
+                        {
+                            // This will return area used to display image
+                            // (Regardless of image orientation and borders within control)
+                            System.Windows.Size controlDisplaySize = new(imageControl.ActualWidth, imageControl.ActualHeight);
+
+                            // Check control visible
+                            if (controlDisplaySize.Width > 0 && controlDisplaySize.Height > 0)
+                            {
+                                System.Windows.Point zoomEndPoint = e.GetPosition(imageControl);
+
+                                // Zoom area could be drawn in any direction
+                                double x = Math.Min(zoomStartPoint.X, zoomEndPoint.X);
+                                double y = Math.Min(zoomStartPoint.Y, zoomEndPoint.Y);
+                                double width = Math.Abs(zoomEndPoint.X - zoomStartPoint.X);
+                                double height = Math.Abs(zoomEndPoint.Y - zoomStartPoint.Y);
+
+                                // Validate size of zoom area
+                                if (width > 0 && height > 0)
+                                {
+                                    // Start/End points are relative to control size,
+                                    // need to convert values relative to image size
+                                    double ratioX = currentImage.Width / controlDisplaySize.Width;
+                                    double ratioY = currentImage.Height / controlDisplaySize.Height;
+
+                                    Rectangle zoomArea = new()
+                                    {
+                                        X = (int)Math.Floor(x * ratioX),
+                                        Y = (int)Math.Floor(y * ratioY),
+                                        Width = (int)Math.Ceiling(width * ratioX),
+                                        Height = (int)Math.Ceiling(height * ratioY)
+                                    };
+
+                                    DisplayImage(ImageCrop.ByRegion(currentImage, zoomArea));
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ReportException(ex);
+                    }
+
+                    ResetZoom();
+                }
+            }
+        }
+
+        private void Image_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ResetZoom();
+        }
+
+        private void ResetZoom()
+        {
+            // Invalidate area
+            zoomStartPoint = new(-1, -1);
+
+            // Restore origninal cursor
+            Cursor = defaultCursor ?? System.Windows.Input.Cursors.Arrow;
         }
     }
 }
