@@ -42,7 +42,7 @@ namespace Freedom35.ImageProcessing
             // 0-255
             int[] histogram = new int[byte.MaxValue + 1];
 
-            int limit = (pixelDepth > 1 ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length);
+            int limit = BitmapDataExt.GetSafeArrayLimitForImage(isColor, pixelDepth, imageBytes);
             byte avg;
 
             // Find number of pixels at each level.
