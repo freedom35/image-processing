@@ -70,11 +70,12 @@
         
         <!-- Image Viewer -->
         <Grid Grid.Column="0" Grid.Row="1" Margin="10">
-            <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
-                <Image x:Name="pbImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" >
+            <Border x:Name="borderImage" BorderBrush="White" BorderThickness="0.5" Padding="1">
+                <Image x:Name="pbImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" MouseLeftButtonDown="Image_MouseLeftButtonDown" MouseLeftButtonUp="Image_MouseLeftButtonUp" MouseLeave="Image_MouseLeave" MouseMove="Image_MouseMove" MouseRightButtonDown="Image_MouseRightButtonDown">
 
                 </Image>
             </Border>
+            <Rectangle x:Name="rectZoomArea" Stroke="Chartreuse" Width="0" Height="0" Visibility="Hidden" Panel.ZIndex="5" HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False" />
         </Grid>
 
         <!-- Options -->

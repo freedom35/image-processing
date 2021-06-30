@@ -80,7 +80,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Check region still within image
-            if (cropRegion.Width <= 0 || cropRegion.Height <= 0)
+            if (cropRegion.X > bitmap.Width || cropRegion.Y > bitmap.Height || cropRegion.Width <= 0 || cropRegion.Height <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(cropRegion), "Region provided outside of image area.");
             }
