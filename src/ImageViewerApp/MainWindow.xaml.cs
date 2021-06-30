@@ -367,24 +367,57 @@ namespace ImageViewerApp
             }
         }
 
-        private void Image_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Image_MouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (currentImage != null && e.ChangedButton == System.Windows.Input.MouseButton.Left && e.LeftButton == System.Windows.Input.MouseButtonState.Pressed && sender is IInputElement element)
+            // Shortcut to undo - useful when zooming
+            Button_UndoImageChange_Click(null, null);
+        }
+
+        private void Image_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (currentImage != null && sender is IInputElement element)
             {
                 zoomStartPoint = e.GetPosition(element);
 
                 // Change cursor whilst selecting area
                 defaultCursor = Cursor;
                 Cursor = System.Windows.Input.Cursors.Cross;
-            }
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Right && e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
-            {
-                // Shortcut to undo - useful when zooming
-                Button_UndoImageChange_Click(null, null);
+
+                // Show rectangle over zoom area
+                // (Get position relative to control area so as to account for any border offset)
+                System.Windows.Point zoomCurrentPoint = e.GetPosition(borderImage);
+                
+                rectZoomArea.Visibility = Visibility.Visible;
+                rectZoomArea.Margin = new(zoomCurrentPoint.X, zoomCurrentPoint.Y, 0, 0);
+                rectZoomArea.Width = 0;
+                rectZoomArea.Height = 0;
+                rectZoomArea.Tag = zoomCurrentPoint;
             }
         }
 
-        private void Image_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Image_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (zoomStartPoint.X > -1 && rectZoomArea.Tag is System.Windows.Point startPoint)
+            {
+                System.Windows.Point zoomCurrentPoint = e.GetPosition(borderImage);
+
+                double newWidth = zoomCurrentPoint.X - startPoint.X;
+                double newHeight = zoomCurrentPoint.Y - startPoint.Y;
+
+                // Shift margin if mouse moved in negative direction
+                if (newWidth < 0 || newHeight < 0)
+                {
+                    double newX = newWidth < 0 ? startPoint.X + newWidth : startPoint.X;
+                    double newY = newHeight < 0 ? startPoint.Y + newHeight : startPoint.Y;
+                    rectZoomArea.Margin = new(newX, newY, 0, 0);
+                }
+
+                rectZoomArea.Width = Math.Abs(newWidth);
+                rectZoomArea.Height = Math.Abs(newHeight);
+            }
+        }
+
+        private void Image_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (currentImage != null)
             {
@@ -450,6 +483,9 @@ namespace ImageViewerApp
         {
             // Invalidate area
             zoomStartPoint = new(-1, -1);
+
+            // Hide rectangle
+            rectZoomArea.Visibility = Visibility.Hidden;
 
             // Restore origninal cursor
             Cursor = defaultCursor ?? System.Windows.Input.Cursors.Arrow;
