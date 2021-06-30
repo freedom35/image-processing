@@ -208,15 +208,7 @@ namespace Freedom35.ImageProcessing
                 // Can only apply color filter to a color image
                 if (bmpData.IsColor())
                 {
-                    // Check for extra bytes in stride
-                    if (bmpData.Stride % bmpData.Width == 0)
-                    {
-                        ApplyFilterDirectRGB(imageBytes, r, g, b);
-                    }
-                    else
-                    {
-                        ApplyFilterDirectRGB(imageBytes, r, g, b, bmpData);
-                    }
+                    ApplyFilterDirectRGB(imageBytes, r, g, b, bmpData);
                 }
                 else
                 {
@@ -263,19 +255,29 @@ namespace Freedom35.ImageProcessing
         /// <param name="bmpData">Image dimension info</param>
         public static void ApplyFilterDirectRGB(byte[] imageBytes, byte r, byte g, byte b, BitmapData bmpData)
         {
+            if (!bmpData.IsColor())
+            {
+                throw new ArgumentException("Image is not color, RGB filter cannot be applied.");
+            }
+
             int stride = bmpData.Stride;
+            int stridePadding = bmpData.GetStridePaddingLength();
+            int width = stride - stridePadding;
             int height = bmpData.Height;
             int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+
+            // May also have alpha byte
+            int pixelDepth = bmpData.GetPixelDepth();
 
             // Apply mask for each color pixel
             for (int y = 0; y < height; y++)
             {
-                // For compressed images, stride may have an extra byte per image row
+                // Images may have extra bytes per row to pad for CPU addressing.
                 // so need to ensure we traverse to the correct byte when moving between rows.
                 // I.e. not divisible by 3
                 int offset = y * stride;
 
-                for (int x = 0; x < stride; x += 3)
+                for (int x = 0; x < width; x += pixelDepth)
                 {
                     int i = offset + x;
 

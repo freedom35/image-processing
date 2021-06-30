@@ -15,7 +15,7 @@
 
     <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
 
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -98,26 +98,69 @@ namespace Freedom35.ImageProcessing
         {
             byte[] imageBytes = ImageBytes.FromImage(image, out BitmapData bmpData);
 
-            int pixelDepth = bmpData.GetPixelDepth();
-
             // If original image color, now only require 1 byte per image
-            byte[] binaryBytes = new byte[imageBytes.Length / pixelDepth];
+            byte[] binaryBytes;
 
-            int sum;
-
-            // Get 0 or 1 for each pixel
-            for (int i = 0; i < binaryBytes.Length; i++)
+            if (bmpData.IsColor())
             {
-                sum = 0;
+                // If original image color, now only require 1 byte per image
+                binaryBytes = new byte[bmpData.Width * bmpData.Height];
 
-                // Check if any compnent has value
-                for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                int pixelDepth = bmpData.GetPixelDepth();
+
+                // Image may have a depth of 4 pixels (RGBA - transparency layer)
+                const int ColorDepth = 3;
+
+                int stride = bmpData.Stride;
+                int stridePadding = bmpData.GetStridePaddingLength();
+                int width = stride - stridePadding;
+                int height = bmpData.Height;
+                int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+                int index = 0;
+                
+                // Get 0 or 1 for each pixel
+                for (int y = 0; y < height; y++)
                 {
-                    sum += imageBytes[i + j];
-                }
+                    // Images may have extra bytes per row to pad for CPU addressing.
+                    // so need to ensure we traverse to the correct byte when moving between rows.
+                    // I.e. not divisible by 3
+                    int offset = y * stride;
+                    
+                    for (int x = 0; x < width; x += pixelDepth)
+                    {
+                        int i = offset + x;
 
-                // Set binary value
-                binaryBytes[i] = (sum / pixelDepth) < threshold ? Constants.Zero : Constants.One;
+                        if (i < limit && index < binaryBytes.Length)
+                        {
+                            int sum = 0;
+
+                            // Check if any component has value
+                            for (int j = 0; j < ColorDepth && i + j < imageBytes.Length; j++)
+                            {
+                                sum += imageBytes[i + j];
+                            }
+
+                            // Set binary value
+                            binaryBytes[index++] = (sum / ColorDepth) < threshold ? Constants.Zero : Constants.One;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Grayscale
+                binaryBytes = new byte[imageBytes.Length];
+
+                // Get 0 or 1 for each pixel
+                for (int i = 0; i < binaryBytes.Length; i++)
+                {
+                    // Set binary value
+                    binaryBytes[i] = imageBytes[i] < threshold ? Constants.Zero : Constants.One;
+                }
             }
 
             return binaryBytes;

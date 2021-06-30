@@ -48,6 +48,15 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
+        /// Determines whether pixel depth indicates an opacity/alpha value.
+        /// </summary>
+        public static bool HasOpacityValue(this BitmapData bitmapData)
+        {
+            // RGBA
+            return GetPixelDepth(bitmapData) == 4;
+        }
+
+        /// <summary>
         /// Determines a safe array limit for when looping image bytes.
         /// (Takes into account pixel depth)
         /// </summary>
@@ -67,6 +76,14 @@ namespace Freedom35.ImageProcessing
         {
             // A bitmap converted from a jpeg can potentially have an array with extra odd byte.
             return isColor ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length;
+        }
+
+        /// <summary>
+        /// Images may have extra bytes per row to pad for CPU addressing.
+        /// </summary>
+        public static int GetStridePaddingLength(this BitmapData bitmapData)
+        {
+            return Math.Abs(bitmapData.Stride) % bitmapData.Width;
         }
     }
 }
