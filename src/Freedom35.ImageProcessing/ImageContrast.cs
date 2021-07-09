@@ -179,7 +179,7 @@ namespace Freedom35.ImageProcessing
         {
             int[] histogram = ImageHistogram.GetHistogramValues(imageBytes, pixelDepth);
 
-            double numberOfPixels = (imageWidth * imageHeight);
+            double numberOfPixels = imageWidth * imageHeight;
             double numberOfLevels = histogram.Length;
             int cumulativeFrequency = 0;
             int equalizedValue;
@@ -202,9 +202,12 @@ namespace Freedom35.ImageProcessing
             // Apply distribution to image to equalize
             if (isColor)
             {
+                // Exclude alpha/transparency byte
+                int thresholdByteLength = Math.Min(pixelDepth, Constants.PixelDepthRGB);
+
                 for (int i = 0, j; i < limit; i += pixelDepth)
                 {
-                    for (j = 0; j < pixelDepth; j++)
+                    for (j = 0; j < thresholdByteLength; j++)
                     {
                         imageBytes[i + j] = (byte)histogram[imageBytes[i + j]];
                     }
