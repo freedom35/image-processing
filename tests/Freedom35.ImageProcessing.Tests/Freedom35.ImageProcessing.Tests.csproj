@@ -15,10 +15,11 @@
 
     <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
 
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\clock-bw.bmp" />
     <None Remove="Resources\clock-otsu.bmp" />
     <None Remove="Resources\clock.bmp" />
     <None Remove="Resources\clock.jpg" />
@@ -27,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\clock-bw.bmp" />
     <EmbeddedResource Include="Resources\clock-otsu.bmp" />
     <EmbeddedResource Include="Resources\clock.bmp" />
     <EmbeddedResource Include="Resources\clock.jpg" />

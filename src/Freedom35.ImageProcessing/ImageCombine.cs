@@ -2,6 +2,7 @@
 // GitHub:  freedom35
 // License: MIT
 //------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -16,14 +17,14 @@ namespace Freedom35.ImageProcessing
     {
         /// <summary>
         /// Combines multiple images together.
-        /// (Pixel values are added, not averaged)
+        /// (Pixel values combined via bitwise or, not averaged)
         /// </summary>
         /// <param name="images">Images to combine</param>
-        /// <returns>New combined image</returns>
+        /// <returns>New combined image as bitmap</returns>
         public static Bitmap All<T>(IEnumerable<T> images) where T : Image
         {
             // Check have at least 1 image
-            if (images.Count() == 0)
+            if (!images.Any())
             {
                 return null;
             }
@@ -34,39 +35,40 @@ namespace Freedom35.ImageProcessing
             // Get bytes for image
             byte[] rgbValues1 = ImageEdit.Begin(combinedImage, out BitmapData bmpData1);
 
-            int pixelDepth = bmpData1.GetPixelDepth();
-            bool isColor = bmpData1.IsColor();
-
-            int limit1 = bmpData1.GetSafeArrayLimitForImage(rgbValues1);
-
-            // Add additional images to first
-            foreach (Image image in images.Skip(1))
+            try
             {
-                // Only reading this image
-                byte[] rgbValues2 = ImageBytes.FromImage(image, out BitmapData bmpData2);
+                bool firstImageIsColor = bmpData1.IsColor();
 
-                // Check both images are color or B&W
-                if (isColor == bmpData2.IsColor())
+                // Add additional images to first
+                foreach (Image image in images.Skip(1))
                 {
-                    // Protect against different sized images
-                    int limit = System.Math.Min(limit1, bmpData2.GetSafeArrayLimitForImage(rgbValues2));
+                    // Only reading this image
+                    byte[] rgbValues2 = ImageBytes.FromImage(image, out BitmapData bmpData2);
 
-                    // Combine images
-                    for (int i = 0; i < limit; i += pixelDepth)
+                    // Check both images are color or B&W
+                    if (firstImageIsColor == bmpData2.IsColor())
                     {
-                        rgbValues1[i] = (byte)((rgbValues1[i] + rgbValues2[i]) & 0xFFF0);   // Max 255
+                        // Protect against different sized images
+                        int limit = Math.Min(rgbValues1.Length, rgbValues2.Length);
 
-                        if (isColor)
+                        // Combine images
+                        for (int i = 0; i < limit; i++)
                         {
-                            rgbValues1[i + 1] = (byte)((rgbValues1[i + 1] + rgbValues2[i + 1]) & 0xFFF0);   // Max 255
-                            rgbValues1[i + 2] = (byte)((rgbValues1[i + 2] + rgbValues2[i + 2]) & 0xFFF0);   // Max 255
+                            // Max value for pixel is 255
+                            rgbValues1[i] |= rgbValues2[i];
                         }
                     }
+                    else
+                    {
+                        throw new ArgumentException("Not all images have the same color depth");
+                    }    
                 }
             }
-
-            // Release combined image
-            ImageEdit.End(combinedImage, bmpData1, rgbValues1);
+            finally
+            {
+                // Release combined image
+                ImageEdit.End(combinedImage, bmpData1, rgbValues1);
+            }
 
             return combinedImage;
         }
