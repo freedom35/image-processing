@@ -40,6 +40,9 @@ namespace ImageProcessingTests
             using Image sourceImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock.bmp");
             Assert.IsNotNull(sourceImage);
 
+            // Get bytes before combining
+            byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
+
             Image[] imagesToCombine = new Image[]
             {
                 sourceImage
@@ -47,13 +50,12 @@ namespace ImageProcessingTests
 
             Bitmap combinedImage = ImageCombine.All(imagesToCombine);
 
-            // Get bytes for images
-            byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
+            // Get bytes for 'combined' image
             byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
 
             Assert.AreEqual(sourceBytes.Length, combinedBytes.Length);
 
-            // Should return the same image when only one
+            // Should return the same image when only combining one
             for (int i = 0; i < sourceBytes.Length; i++)
             {
                 Assert.AreEqual(sourceBytes[i], combinedBytes[i]);
@@ -69,6 +71,8 @@ namespace ImageProcessingTests
             using Image sourceImage = TestImage.FromResource(resourcePath);
             Assert.IsNotNull(sourceImage);
 
+            byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
+
             using Image sourceImageCopy = TestImage.FromResource(resourcePath);
             Assert.IsNotNull(sourceImageCopy);
 
@@ -80,8 +84,7 @@ namespace ImageProcessingTests
 
             Bitmap combinedImage = ImageCombine.All(imagesToCombine);
 
-            // Get bytes for images
-            byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
+            // Get bytes for comparison
             byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
 
             Assert.AreEqual(sourceBytes.Length, combinedBytes.Length);
@@ -102,10 +105,7 @@ namespace ImageProcessingTests
             using Image sourceImage = TestImage.FromResource(resourcePath);
             Assert.IsNotNull(sourceImage);
 
-            using Image sourceImageCopy = TestImage.FromResource(resourcePath);
-            Assert.IsNotNull(sourceImageCopy);
-
-            using Image negativeCopy = ImageColor.ToNegative(sourceImageCopy);
+            using Image negativeCopy = ImageColor.ToNegative(sourceImage);
             Assert.IsNotNull(negativeCopy);
 
             Image[] imagesToCombine = new Image[]
@@ -117,13 +117,10 @@ namespace ImageProcessingTests
             Bitmap combinedImage = ImageCombine.All(imagesToCombine);
 
             // Get bytes for images
-            byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
             byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
 
-            Assert.AreEqual(sourceBytes.Length, combinedBytes.Length);
-
             // Compare bytes - should combine to max out each pixel
-            for (int i = 0; i < sourceBytes.Length; i++)
+            for (int i = 0; i < combinedBytes.Length; i++)
             {
                 Assert.AreEqual(byte.MaxValue, combinedBytes[i]);
             }
