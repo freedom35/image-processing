@@ -3,6 +3,7 @@ using Freedom35.ImageProcessing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Drawing;
+using System.Runtime.Versioning;
 
 namespace ImageProcessingTests
 {
@@ -34,6 +35,7 @@ namespace ImageProcessingTests
             Assert.ThrowsException<ArgumentException>(() => ImageCombine.All(imagesToCombine));
         }
 
+        [UnsupportedOSPlatform("linux")]
         [TestMethod]
         public void TestCombineAllOne()
         {
