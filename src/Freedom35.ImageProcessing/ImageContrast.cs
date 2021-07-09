@@ -109,12 +109,15 @@ namespace Freedom35.ImageProcessing
             // Constant for loop
             double maxMinusMin = max - min;
 
+            // Exclude alpha/transparency byte
+            int pixelDepthWithoutAlpha = Math.Min(pixelDepth, Constants.PixelDepthRGB);
+
             //////////////////////////////////////
             // Now contrast stretch image
             //////////////////////////////////////
             for (int i = 0; i < limit; i += pixelDepth)
             {
-                for (int j = 0; j < pixelDepth; j++)
+                for (int j = 0; j < pixelDepthWithoutAlpha; j++)
                 {
                     // Contrast-stretch value
                     val = (byte)(((imageBytes[i + j] - lowest) * (maxMinusMin / (highest - lowest))) + min);
@@ -203,11 +206,11 @@ namespace Freedom35.ImageProcessing
             if (isColor)
             {
                 // Exclude alpha/transparency byte
-                int thresholdByteLength = Math.Min(pixelDepth, Constants.PixelDepthRGB);
+                int pixelDepthWithoutAlpha = Math.Min(pixelDepth, Constants.PixelDepthRGB);
 
                 for (int i = 0, j; i < limit; i += pixelDepth)
                 {
-                    for (j = 0; j < thresholdByteLength; j++)
+                    for (j = 0; j < pixelDepthWithoutAlpha; j++)
                     {
                         imageBytes[i + j] = (byte)histogram[imageBytes[i + j]];
                     }
