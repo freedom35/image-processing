@@ -51,7 +51,9 @@ namespace ImageProcessingTests
             byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
             byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
 
-            // Should return the same image
+            Assert.AreEqual(sourceBytes.Length, combinedBytes.Length);
+
+            // Should return the same image when only one
             for (int i = 0; i < sourceBytes.Length; i++)
             {
                 Assert.AreEqual(sourceBytes[i], combinedBytes[i]);
@@ -81,6 +83,8 @@ namespace ImageProcessingTests
             // Get bytes for images
             byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
             byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
+
+            Assert.AreEqual(sourceBytes.Length, combinedBytes.Length);
 
             // Compare bytes - should be same, bytes OR'd
             for (int i = 0; i < sourceBytes.Length; i++)
@@ -115,6 +119,8 @@ namespace ImageProcessingTests
             // Get bytes for images
             byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
             byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
+
+            Assert.AreEqual(sourceBytes.Length, combinedBytes.Length);
 
             // Compare bytes - should combine to max out each pixel
             for (int i = 0; i < sourceBytes.Length; i++)
