@@ -372,12 +372,14 @@ namespace Freedom35.ImageProcessing
 
                 if (isColor && i < imageBytes.Length - 2)
                 {
+                    // G
                     if (imageBytes[i + 1] > maxValue)
                     {
                         imageBytes[i + 1] = maxValue;
                     }
 
-                    if (imageBytes[i + 1] > maxValue)
+                    // R
+                    if (imageBytes[i + 2] > maxValue)
                     {
                         imageBytes[i + 2] = maxValue;
                     }
@@ -454,7 +456,7 @@ namespace Freedom35.ImageProcessing
                         imageBytes[i + 1] = maxValue;
                     }
 
-                    // B
+                    // R
                     if (imageBytes[i + 2] < minValue)
                     {
                         imageBytes[i + 2] = minValue;
