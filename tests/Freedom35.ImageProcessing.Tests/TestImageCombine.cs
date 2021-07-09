@@ -40,9 +40,6 @@ namespace ImageProcessingTests
             using Image sourceImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock.bmp");
             Assert.IsNotNull(sourceImage);
 
-            // Get bytes before combining
-            byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
-
             Image[] imagesToCombine = new Image[]
             {
                 sourceImage
@@ -50,16 +47,8 @@ namespace ImageProcessingTests
 
             Bitmap combinedImage = ImageCombine.All(imagesToCombine);
 
-            // Get bytes for 'combined' image
-            byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
-
-            Assert.AreEqual(sourceBytes.Length, combinedBytes.Length);
-
             // Should return the same image when only combining one
-            for (int i = 0; i < sourceBytes.Length; i++)
-            {
-                Assert.AreEqual(sourceBytes[i], combinedBytes[i]);
-            }
+            Assert.IsTrue(TestImage.Compare(sourceImage, combinedImage));
         }
 
         [TestMethod]
@@ -70,8 +59,6 @@ namespace ImageProcessingTests
             // Load source image
             using Image sourceImage = TestImage.FromResource(resourcePath);
             Assert.IsNotNull(sourceImage);
-
-            byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
 
             using Image sourceImageCopy = TestImage.FromResource(resourcePath);
             Assert.IsNotNull(sourceImageCopy);
@@ -84,16 +71,8 @@ namespace ImageProcessingTests
 
             Bitmap combinedImage = ImageCombine.All(imagesToCombine);
 
-            // Get bytes for comparison
-            byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
-
-            Assert.AreEqual(sourceBytes.Length, combinedBytes.Length);
-
-            // Compare bytes - should be same, bytes OR'd
-            for (int i = 0; i < sourceBytes.Length; i++)
-            {
-                Assert.AreEqual(sourceBytes[i], combinedBytes[i]);
-            }
+            // Compare images
+            Assert.IsTrue(TestImage.Compare(sourceImage, combinedImage));
         }
 
         [TestMethod]
