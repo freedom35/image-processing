@@ -19,16 +19,14 @@ namespace Freedom35.ImageProcessing.Tests
             return Image.FromStream(resourceStream);
         }
 
-        public static bool Compare(Image image1, Image image2, bool compareLastByte = true)
+        public static bool Compare(Image image1, Image image2)
         {
             byte[] imageBytes1 = ImageBytes.FromImage(image1);
             byte[] imageBytes2 = ImageBytes.FromImage(image2);
 
             bool match = imageBytes1.Length == imageBytes2.Length;
 
-            int limit = compareLastByte ? imageBytes1.Length : imageBytes1.Length - 3;
-
-            for (int i = 0; match && i < limit; i++)
+            for (int i = 0; match && i < imageBytes1.Length; i++)
             {
                 match = imageBytes1[i] == imageBytes2[i];
             }

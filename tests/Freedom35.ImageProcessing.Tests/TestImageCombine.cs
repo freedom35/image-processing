@@ -40,15 +40,19 @@ namespace ImageProcessingTests
             using Image sourceImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock.bmp");
             Assert.IsNotNull(sourceImage);
 
-            Bitmap[] imagesToCombine = new Bitmap[]
+            Image[] imagesToCombine = new Image[]
             {
-                ImageFormatting.ToBitmap(sourceImage)
+                sourceImage
             };
 
+            // Combine
             Bitmap combinedBitmap = ImageCombine.All(imagesToCombine);
 
+            // Convert for byte comparison
+            Bitmap sourceBitmap = ImageFormatting.ToBitmap(sourceImage);
+
             // Should return the same image when only combining one
-            Assert.IsTrue(TestImage.Compare(sourceImage, combinedBitmap, false));
+            Assert.IsTrue(TestImage.Compare(sourceBitmap, combinedBitmap));
         }
 
         [TestMethod]
@@ -63,16 +67,20 @@ namespace ImageProcessingTests
             using Image sourceImageCopy = TestImage.FromResource(resourcePath);
             Assert.IsNotNull(sourceImageCopy);
 
-            Bitmap[] imagesToCombine = new Bitmap[]
+            Image[] imagesToCombine = new Image[]
             {
-                ImageFormatting.ToBitmap(sourceImage),
-                ImageFormatting.ToBitmap(sourceImageCopy)
+                sourceImage,
+                sourceImageCopy
             };
 
+            // Combine
             Bitmap combinedImage = ImageCombine.All(imagesToCombine);
 
+            // Convert for byte comparison
+            Bitmap sourceBitmap = ImageFormatting.ToBitmap(sourceImage);
+
             // Compare images
-            Assert.IsTrue(TestImage.Compare(sourceImage, combinedImage, false));
+            Assert.IsTrue(TestImage.Compare(sourceBitmap, combinedImage));
         }
 
         [TestMethod]
@@ -87,10 +95,10 @@ namespace ImageProcessingTests
             using Image negativeCopy = ImageColor.ToNegative(sourceImage);
             Assert.IsNotNull(negativeCopy);
 
-            Bitmap[] imagesToCombine = new Bitmap[]
+            Image[] imagesToCombine = new Image[]
             {
-                ImageFormatting.ToBitmap(sourceImage),
-                ImageFormatting.ToBitmap(negativeCopy)
+                sourceImage,
+                negativeCopy
             };
 
             Bitmap combinedImage = ImageCombine.All(imagesToCombine);
