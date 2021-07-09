@@ -37,7 +37,12 @@ namespace Freedom35.ImageProcessing
 
             try
             {
-                bool firstImageIsColor = bmpData1.IsColor();
+                // Get image 1 data
+                int pixelDepth1 = bmpData1.GetPixelDepth();
+                int pixelDepthWithoutAlpha = Math.Min(pixelDepth1, Constants.PixelDepthRGB);
+                int stride1 = bmpData1.Stride;
+                int width1 = bmpData1.GetStrideWithoutPadding();
+                int height1 = bmpData1.Height;
 
                 // Add additional images to first
                 foreach (Image image in images.Skip(1))
@@ -46,16 +51,37 @@ namespace Freedom35.ImageProcessing
                     byte[] rgbValues2 = ImageBytes.FromImage(image, out BitmapData bmpData2);
 
                     // Check both images are color or B&W
-                    if (firstImageIsColor == bmpData2.IsColor())
+                    if (pixelDepth1 == bmpData2.GetPixelDepth())
                     {
                         // Protect against different sized images
-                        int limit = Math.Min(rgbValues1.Length, rgbValues2.Length);
+                        int limit = Math.Min(bmpData1.GetSafeArrayLimitForImage(rgbValues1), bmpData2.GetSafeArrayLimitForImage(rgbValues2));
+                        int minHeight = Math.Min(height1, bmpData2.Height);
+                        int minStride = Math.Min(stride1, bmpData2.Stride);
+                        int minWidth = Math.Min(width1, bmpData2.GetStrideWithoutPadding());
 
-                        // Combine images
-                        for (int i = 0; i < limit; i++)
+                        for (int y = 0; y < minHeight; y++)
                         {
-                            // Max value for pixel is 255
-                            rgbValues1[i] |= rgbValues2[i];
+                            // Images may have extra bytes per row to pad for CPU addressing.
+                            // so need to ensure we traverse to the correct byte when moving between rows.
+                            int offset = y * minStride;
+
+                            for (int x = 0; x < minWidth; x += pixelDepth1)
+                            {
+                                int i = offset + x;
+
+                                if (i < limit)
+                                {
+                                    for (int j = 0; j < pixelDepthWithoutAlpha; j++)
+                                    {
+                                        // Combine images
+                                        rgbValues1[i + j] |= rgbValues2[i + j];
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
                         }
                     }
                     else
