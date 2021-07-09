@@ -48,7 +48,7 @@ namespace ImageProcessingTests
             Bitmap combinedBitmap = ImageCombine.All(imagesToCombine);
 
             // Should return the same image when only combining one
-            Assert.IsTrue(TestImage.Compare(sourceImage, combinedBitmap));
+            Assert.IsTrue(TestImage.Compare(sourceImage, combinedBitmap, false));
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace ImageProcessingTests
             Bitmap combinedImage = ImageCombine.All(imagesToCombine);
 
             // Compare images
-            Assert.IsTrue(TestImage.Compare(sourceImage, combinedImage));
+            Assert.IsTrue(TestImage.Compare(sourceImage, combinedImage, false));
         }
 
         [TestMethod]

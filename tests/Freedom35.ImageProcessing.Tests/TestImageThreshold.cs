@@ -151,7 +151,8 @@ namespace ImageProcessingTests
             // Check if has a transparency layer
             if (pixelFormat.ToString().ToLower().EndsWith("argb"))
             {
-                return imageBytes.Where((b, i) => i % 4 != 3).ToArray();
+                // Skip last byte (padding) - contents may vary per platform
+                return imageBytes.Take(imageBytes.Length - 4).Where((b, i) => i % 4 != 3).ToArray();
             }
 
             return imageBytes;
