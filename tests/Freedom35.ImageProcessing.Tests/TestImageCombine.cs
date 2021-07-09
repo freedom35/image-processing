@@ -40,17 +40,15 @@ namespace ImageProcessingTests
             using Image sourceImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock.bmp");
             Assert.IsNotNull(sourceImage);
 
-            using Bitmap sourceBitmap = ImageFormatting.ToBitmap(sourceImage);
-            
             Bitmap[] imagesToCombine = new Bitmap[]
             {
-                sourceBitmap
+                ImageFormatting.ToBitmap(sourceImage)
             };
 
             Bitmap combinedBitmap = ImageCombine.All(imagesToCombine);
 
             // Should return the same image when only combining one
-            Assert.IsTrue(TestImage.Compare(sourceBitmap, combinedBitmap));
+            Assert.IsTrue(TestImage.Compare(sourceImage, combinedBitmap));
         }
 
         [TestMethod]
