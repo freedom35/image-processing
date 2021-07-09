@@ -73,8 +73,8 @@ namespace ImageProcessingTests
 
             byte[] withoutAlphaBytes = RemoveAlphaLayerBytes(ImageBytes.FromImage(thresholdImage), sourceImage.PixelFormat);
 
-            // Check all bytes thresholded
-            Assert.IsTrue(withoutAlphaBytes.All(b => b == byte.MinValue || b == byte.MaxValue));
+            // Check bytes thresholded
+            Assert.IsTrue(withoutAlphaBytes.Take(sourceImage.Width).All(b => b == byte.MinValue || b == byte.MaxValue));
         }
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
@@ -152,7 +152,7 @@ namespace ImageProcessingTests
             if (pixelFormat.ToString().ToLower().EndsWith("argb"))
             {
                 // Skip last byte (padding) - contents may vary per platform
-                return imageBytes.Take(imageBytes.Length - 4).Where((b, i) => i % 4 != 3).ToArray();
+                return imageBytes.Where((b, i) => i % 4 != 3).ToArray();
             }
 
             return imageBytes;

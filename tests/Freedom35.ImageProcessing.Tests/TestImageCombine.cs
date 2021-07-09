@@ -3,7 +3,6 @@ using Freedom35.ImageProcessing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Drawing;
-using System.Runtime.Versioning;
 
 namespace ImageProcessingTests
 {
@@ -35,7 +34,6 @@ namespace ImageProcessingTests
             Assert.ThrowsException<ArgumentException>(() => ImageCombine.All(imagesToCombine));
         }
 
-        [UnsupportedOSPlatform("linux")]
         [TestMethod]
         public void TestCombineAllOne()
         {
@@ -51,10 +49,14 @@ namespace ImageProcessingTests
             Bitmap combinedBitmap = ImageCombine.All(imagesToCombine);
 
             // Convert for byte comparison
-            Bitmap sourceBitmap = ImageFormatting.ToBitmap(sourceImage);
+            byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
+            byte[] combinedBytes = ImageBytes.FromImage(combinedBitmap);
 
             // Should return the same image when only combining one
-            Assert.IsTrue(TestImage.Compare(sourceBitmap, combinedBitmap));
+            for (int i = 0; i < sourceImage.Width; i++)
+            {
+                Assert.AreEqual(sourceBytes[i], combinedBytes[i]);
+            }
         }
 
         [TestMethod]
