@@ -54,8 +54,11 @@ namespace Freedom35.ImageProcessing
             // Determine whether color
             int pixelDepth = bmpData.GetPixelDepth();
 
-            // Apply threshold value to image.
-            ApplyOtsuMethodDirect(imageBytes, pixelDepth);
+            // Get threshold using Otsu
+            byte threshold = GetByOtsuMethod(imageBytes, pixelDepth);
+
+            // Apply using BitmapData to account for stride padding
+            ApplyDirect(imageBytes, bmpData, threshold);
 
             ImageEdit.End(bitmap, bmpData, imageBytes);
         }
@@ -183,19 +186,87 @@ namespace Freedom35.ImageProcessing
         /// Any pixel values below threshold will be changed to 0 (black).
         /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
         /// </summary>
-        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="bitmap">Reference to bitmap</param>
         /// <param name="threshold">Threshold value</param>
         public static void ApplyDirect(ref Bitmap bitmap, byte threshold)
         {
             byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
 
-            // Determine whether color
-            int pixelDepth = bmpData.GetPixelDepth();
-
             // Apply threshold value to image.
-            ApplyDirect(imageBytes, pixelDepth, threshold);
+            ApplyDirect(imageBytes, bmpData, threshold);
 
             ImageEdit.End(bitmap, bmpData, imageBytes);
+        }
+
+        /// <summary>
+        /// Any pixel values below threshold will be changed to 0 (black).
+        /// Any pixel values above (or equal to) threshold will be changed to 255 (white).
+        /// </summary>
+        /// <param name="imageBytes">Image bytes</param>
+        /// <param name="bitmapData">Pixel depth</param>
+        /// <param name="threshold">Threshold value</param>
+        private static void ApplyDirect(byte[] imageBytes, BitmapData bitmapData, byte threshold)
+        {
+            if (bitmapData.IsColor())
+            {
+                int pixelDepth = bitmapData.GetPixelDepth();
+                int stride = bitmapData.Stride;
+                int width = bitmapData.GetStrideWithoutPadding();
+                int height = bitmapData.Height;
+
+                int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
+
+                // Exclude alpha/transparency byte when averaging
+                int thresholdByteLength = Math.Min(pixelDepth, Constants.PixelDepthRGB);
+
+                int pixelSum;
+                bool belowThreshold;
+
+                // Find distribution of pixels at each level
+                for (int y = 0; y < height; y++)
+                {
+                    // Images may have extra bytes per row to pad for CPU addressing.
+                    // so need to ensure we traverse to the correct byte when moving between rows.
+                    int offset = y * stride;
+
+                    for (int x = 0; x < width; x += pixelDepth)
+                    {
+                        int i = offset + x;
+
+                        if (i < limit)
+                        {
+                            pixelSum = 0;
+
+                            // Sum each pixel component
+                            for (int j = 0; j < thresholdByteLength && i + j < imageBytes.Length; j++)
+                            {
+                                pixelSum += imageBytes[i + j];
+                            }
+
+                            // Compare average to threshold
+                            belowThreshold = (pixelSum / thresholdByteLength) < threshold;
+
+                            // Apply threshold
+                            for (int j = 0; j < thresholdByteLength && i + j < imageBytes.Length; j++)
+                            {
+                                imageBytes[i + j] = belowThreshold ? byte.MinValue : byte.MaxValue;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Apply threshold value to image
+                for (int i = 0; i < imageBytes.Length; i++)
+                {
+                    imageBytes[i] = imageBytes[i] < threshold ? byte.MinValue : byte.MaxValue;
+                }
+            }
         }
 
         /// <summary>
@@ -210,25 +281,28 @@ namespace Freedom35.ImageProcessing
             // Check if color
             if (pixelDepth > 1)
             {
+                // Exclude alpha/transparency byte when averaging
+                int thresholdByteLength = Math.Min(pixelDepth, Constants.PixelDepthRGB);
+
                 int pixelSum;
                 bool belowThreshold;
 
-                // Loop each pixel
+                // Loop each pixel (include transparency byte)
                 for (int i = 0; i < imageBytes.Length; i += pixelDepth)
                 {
                     pixelSum = 0;
 
                     // Sum each pixel component
-                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    for (int j = 0; j < thresholdByteLength && i + j < imageBytes.Length; j++)
                     {
                         pixelSum += imageBytes[i + j];
                     }
 
                     // Compare average to threshold
-                    belowThreshold = (pixelSum / pixelDepth) < threshold;
+                    belowThreshold = (pixelSum / thresholdByteLength) < threshold;
 
                     // Apply threshold
-                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    for (int j = 0; j < thresholdByteLength && i + j < imageBytes.Length; j++)
                     {
                         imageBytes[i + j] = belowThreshold ? byte.MinValue : byte.MaxValue;
                     }
@@ -369,12 +443,14 @@ namespace Freedom35.ImageProcessing
 
                 if (isColor && i < imageBytes.Length - 2)
                 {
+                    // G
                     if (imageBytes[i + 1] > maxValue)
                     {
                         imageBytes[i + 1] = maxValue;
                     }
 
-                    if (imageBytes[i + 1] > maxValue)
+                    // R
+                    if (imageBytes[i + 2] > maxValue)
                     {
                         imageBytes[i + 2] = maxValue;
                     }
@@ -451,7 +527,7 @@ namespace Freedom35.ImageProcessing
                         imageBytes[i + 1] = maxValue;
                     }
 
-                    // B
+                    // R
                     if (imageBytes[i + 2] < minValue)
                     {
                         imageBytes[i + 2] = minValue;

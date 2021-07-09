@@ -25,7 +25,7 @@ namespace Freedom35.ImageProcessing.Tests
             byte[] imageBytes2 = ImageBytes.FromImage(image2);
 
             bool match = imageBytes1.Length == imageBytes2.Length;
-            
+
             for (int i = 0; match && i < imageBytes1.Length; i++)
             {
                 match = imageBytes1[i] == imageBytes2[i];

@@ -222,40 +222,63 @@ namespace Freedom35.ImageProcessing
             byte[] rgbValues = GetBitmapBytes(bitmap, out BitmapData bmpData);
 
             int pixelDepth = bmpData.GetPixelDepth();
-            bool isColor = bmpData.IsColor();
+            int stride = bmpData.Stride;
+            int width = bmpData.GetStrideWithoutPadding();
+            int height = bmpData.Height;
             byte avg;
 
             int limit = bmpData.GetSafeArrayLimitForImage(rgbValues);
 
-            // Find minimum/maximum value
-            // (Zero is lowest min, 255 is highest max - stop looking once both found)
-            for (int i = 0; i < limit && (min > byte.MinValue || max < byte.MaxValue); i += pixelDepth)
+            if (bmpData.IsColor())
             {
-                if (isColor)
+                // Find minimum/maximum value
+                // (Zero is lowest min, 255 is highest max - stop looking once both found)
+                for (int y = 0; y < height && (min > byte.MinValue || max < byte.MaxValue); y++)
                 {
-                    avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+                    // Images may have extra bytes per row to pad for CPU addressing.
+                    // so need to ensure we traverse to the correct byte when moving between rows.
+                    int offset = y * stride;
 
-                    // Check for min
-                    if (avg < min)
+                    for (int x = 0; x < width; x += pixelDepth)
                     {
-                        min = avg;
-                    }
+                        int i = offset + x;
 
-                    // Check for max
-                    if (avg > max)
-                    {
-                        max = avg;
+                        if (i < limit)
+                        {
+                            // Avg of RGB values only (not transparency layer)
+                            avg = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+
+                            // Check for min
+                            if (avg < min)
+                            {
+                                min = avg;
+                            }
+
+                            // Check for max
+                            if (avg > max)
+                            {
+                                max = avg;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
-                else
+            }
+            else
+            {
+                // Find minimum/maximum value
+                for (int i = 0; i < limit && (min > byte.MinValue || max < byte.MaxValue); i += pixelDepth)
                 {
-                    // Check for min
+                    // Check for new min
                     if (rgbValues[i] < min)
                     {
                         min = rgbValues[i];
                     }
 
-                    // Check for max
+                    // Check for new max
                     if (rgbValues[i] > max)
                     {
                         max = rgbValues[i];
@@ -317,32 +340,61 @@ namespace Freedom35.ImageProcessing
             byte[] rgbValues = GetBitmapBytes(bitmap, out BitmapData bmpData);
 
             int pixelDepth = bmpData.GetPixelDepth();
-            bool isColor = bmpData.IsColor();
-            byte val;
+            int stride = bmpData.Stride;
+            int width = bmpData.GetStrideWithoutPadding();
+            int height = bmpData.Height;
 
             int limit = bmpData.GetSafeArrayLimitForImage(rgbValues);
 
             int sum = 0;
             int count = 0;
+            byte val;
 
-            // Find distribution of pixels at each level.
-            for (int i = 0; i < limit; i += pixelDepth)
+            if (bmpData.IsColor())
             {
-                if (isColor)
+                // Find distribution of pixels at each level
+                for (int y = 0; y < height; y++)
                 {
-                    // Find average value of RGB
-                    val = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+                    // Images may have extra bytes per row to pad for CPU addressing.
+                    // so need to ensure we traverse to the correct byte when moving between rows.
+                    int offset = y * stride;
+
+                    for (int x = 0; x < width; x += pixelDepth)
+                    {
+                        int i = offset + x;
+
+                        if (i < limit)
+                        {
+                            // Find average value of RGB
+                            val = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
+
+                            // Check value within range
+                            if (val >= min && val <= max)
+                            {
+                                sum += val;
+                                count++;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                 }
-                else
+            }
+            else
+            {
+                // Find distribution of pixels at each level
+                for (int i = 0; i < limit; i += pixelDepth)
                 {
                     val = rgbValues[i];
-                }
 
-                // Check value within range
-                if (val >= min && val <= max)
-                {
-                    sum += val;
-                    count++;
+                    // Check value within range
+                    if (val >= min && val <= max)
+                    {
+                        sum += val;
+                        count++;
+                    }
                 }
             }
 

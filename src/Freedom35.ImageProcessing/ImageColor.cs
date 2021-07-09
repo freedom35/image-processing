@@ -208,7 +208,7 @@ namespace Freedom35.ImageProcessing
                 // Can only apply color filter to a color image
                 if (bmpData.IsColor())
                 {
-                    ApplyFilterDirectRGB(imageBytes, r, g, b);
+                    ApplyFilterDirectRGB(imageBytes, r, g, b, bmpData);
                 }
                 else
                 {
@@ -241,6 +241,58 @@ namespace Freedom35.ImageProcessing
 
                 // Blue (MSB)
                 imageBytes[i] &= b;
+            }
+        }
+
+        /// <summary>
+        /// Applies color filter to image.
+        /// (Safer if source image was compressed, may be additional bytes per row)
+        /// </summary>
+        /// <param name="imageBytes">Color image bytes to process</param>
+        /// <param name="r">Red component to apply</param>
+        /// <param name="g">Green component to apply</param>
+        /// <param name="b">Blue component to apply</param>
+        /// <param name="bmpData">Image dimension info</param>
+        public static void ApplyFilterDirectRGB(byte[] imageBytes, byte r, byte g, byte b, BitmapData bmpData)
+        {
+            if (!bmpData.IsColor())
+            {
+                throw new ArgumentException("Image is not color, RGB filter cannot be applied.");
+            }
+
+            int stride = bmpData.Stride;
+            int stridePadding = bmpData.GetStridePaddingLength();
+            int width = stride - stridePadding;
+            int height = bmpData.Height;
+            int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+
+            // May also have alpha byte
+            int pixelDepth = bmpData.GetPixelDepth();
+
+            // Apply mask for each color pixel
+            for (int y = 0; y < height; y++)
+            {
+                // Images may have extra bytes per row to pad for CPU addressing.
+                // so need to ensure we traverse to the correct byte when moving between rows.
+                // I.e. not divisible by 3
+                int offset = y * stride;
+
+                for (int x = 0; x < width; x += pixelDepth)
+                {
+                    int i = offset + x;
+
+                    if (i < limit)
+                    {
+                        // Red (LSB)
+                        imageBytes[i + 2] &= r;
+
+                        // Green
+                        imageBytes[i + 1] &= g;
+
+                        // Blue (MSB)
+                        imageBytes[i] &= b;
+                    }
+                }
             }
         }
     }

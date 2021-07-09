@@ -43,8 +43,15 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         public static bool IsColorPixelDepth(int pixelDepth)
         {
-            // RGB[A]
-            return pixelDepth >= 3;
+            return pixelDepth >= 3; // RGB[A]
+        }
+
+        /// <summary>
+        /// Determines whether pixel depth indicates an opacity/alpha value.
+        /// </summary>
+        public static bool HasOpacityValue(this BitmapData bitmapData)
+        {
+            return GetPixelDepth(bitmapData) == 4;  // RGBA
         }
 
         /// <summary>
@@ -67,6 +74,22 @@ namespace Freedom35.ImageProcessing
         {
             // A bitmap converted from a jpeg can potentially have an array with extra odd byte.
             return isColor ? imageBytes.Length - (pixelDepth - 1) : imageBytes.Length;
+        }
+
+        /// <summary>
+        /// Images may have extra bytes per row to pad for CPU addressing.
+        /// </summary>
+        public static int GetStridePaddingLength(this BitmapData bitmapData)
+        {
+            return Math.Abs(bitmapData.Stride) % bitmapData.Width;
+        }
+
+        /// <summary>
+        /// Gets the stride value for image adjusted for any stride padding.
+        /// </summary>
+        public static int GetStrideWithoutPadding(this BitmapData bitmapData)
+        {
+            return bitmapData.Stride - bitmapData.GetStridePaddingLength();
         }
     }
 }
