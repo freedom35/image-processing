@@ -210,25 +210,28 @@ namespace Freedom35.ImageProcessing
             // Check if color
             if (pixelDepth > 1)
             {
+                // Exclude alpha/transparency byte when averaging
+                int thresholdByteLength = Math.Min(pixelDepth, Constants.PixelDepthRGB);
+
                 int pixelSum;
                 bool belowThreshold;
 
-                // Loop each pixel
+                // Loop each pixel (include transparency byte)
                 for (int i = 0; i < imageBytes.Length; i += pixelDepth)
                 {
                     pixelSum = 0;
 
                     // Sum each pixel component
-                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    for (int j = 0; j < thresholdByteLength && i + j < imageBytes.Length; j++)
                     {
                         pixelSum += imageBytes[i + j];
                     }
 
                     // Compare average to threshold
-                    belowThreshold = (pixelSum / pixelDepth) < threshold;
+                    belowThreshold = (pixelSum / thresholdByteLength) < threshold;
 
                     // Apply threshold
-                    for (int j = 0; j < pixelDepth && i + j < imageBytes.Length; j++)
+                    for (int j = 0; j < thresholdByteLength && i + j < imageBytes.Length; j++)
                     {
                         imageBytes[i + j] = belowThreshold ? byte.MinValue : byte.MaxValue;
                     }
