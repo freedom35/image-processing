@@ -60,6 +60,28 @@ namespace ImageProcessingTests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
         [DataTestMethod]
+        public void TestApplyThresholdValue(string sourceResourcePath)
+        {
+            // Load source image
+            using Image sourceImage = TestImage.FromResource(sourceResourcePath);
+
+            Assert.IsNotNull(sourceImage);
+
+            // Apply threshold
+            using Image thresholdImage = ImageThreshold.Apply(sourceImage, 0x40);
+            Assert.IsNotNull(thresholdImage);
+
+            byte[] withoutAlphaBytes = RemoveAlphaLayerBytes(ImageBytes.FromImage(thresholdImage), sourceImage.PixelFormat);
+
+            // Check all bytes thresholded
+            Assert.IsTrue(withoutAlphaBytes.All(b => b == byte.MinValue || b == byte.MaxValue));
+        }
+
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
+        [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
+        [DataTestMethod]
         public void TestApplyMin(string sourceResourcePath)
         {
             // Load source image
