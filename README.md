@@ -14,6 +14,7 @@ You are welcome to use/update this software under the terms of the **MIT license
 A published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 |Version|Notes|
 |:---:|-----|
+|[1.3.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.3.0)|Added support for applying sepia filter to images.|
 |[1.2.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.2.0)|i. Fixed issue with stride padded images causing an *index out of bounds* exception when enhancing contrast.<br />ii. Fixed issue with RGB color filters not working correctly for images with stride padding and alpha bytes.<br />iii. Fixed issue with processing images with stride padding and alpha bytes.<br />iv. Revision to combine images using bitwise OR.<br />v. Fixed issue where max threshold value was not correctly applied to the red (RGB) byte for color images.|
 |[1.1.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.1.0)|Added support for applying EXIF orientation data to images.|
 |[1.0.2](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.2)|Revision to return rounded value for ImageBytes.GetAverageValue.|
