@@ -7,7 +7,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:ip="clr-namespace:Freedom35.ImageProcessing;assembly=Freedom35.ImageProcessing"
         mc:Ignorable="d"
-        Title="Image Viewer App" Height="600" Width="800" MinHeight="200" MinWidth="300" Background="DodgerBlue"
+        Title="Image Viewer App" Height="640" Width="800" MinHeight="200" MinWidth="300" Background="DodgerBlue"
         Loaded="Window_Loaded">
     <Window.Resources>
         <Style TargetType="Button" x:Key="ImageOption" >
@@ -124,6 +124,9 @@
             </Button>
             <Button Style="{StaticResource ImageOption}" Click="Button_ToNegative_Click">
                 <Label>To Negative</Label>
+            </Button>
+            <Button Style="{StaticResource ImageOption}" Click="Button_ToSepia_Click">
+                <Label>To Sepia</Label>
             </Button>
         </WrapPanel>
     </Grid>

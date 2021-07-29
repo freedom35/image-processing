@@ -10,13 +10,13 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/freedom35/image-processing</PackageProjectUrl>
-    <PackageTags>Image, Image Processing, Bitmap</PackageTags>
+    <PackageTags>Image, Processing, Image-Processing, ImageProcessing, Bitmap, JPEG, PNG, TIFF, NetStandard</PackageTags>
     <PackageLicenseFile></PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
     <UserSecretsId>57c09de8-df1f-4ca3-8302-0928eb86934b</UserSecretsId>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
