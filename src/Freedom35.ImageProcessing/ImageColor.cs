@@ -295,5 +295,95 @@ namespace Freedom35.ImageProcessing
                 }
             }
         }
+
+        /// <summary>
+        /// Applies sepia filter to image.
+        /// (Reddish-brown color associated with old photographs)
+        /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
+        /// <param name="image">Image to convert</param>
+        /// <returns>Sepia image</returns>
+        public static T ToSepia<T>(T image) where T : Image
+        {
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+            ToSepiaDirect(ref bitmap);
+
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
+        }
+
+        /// <summary>
+        /// Applies sepia filter to image.
+        /// (Reddish-brown color associated with old photographs)
+        /// </summary>
+        /// <param name="bitmap">Image to process</param>
+        public static void ToSepiaDirect(ref Bitmap bitmap)
+        {
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+
+            try
+            {
+                if (!bmpData.IsColor())
+                {
+                    throw new ArgumentException("Image is not color, sepia filter cannot be applied.");
+                }
+
+                int stride = bmpData.Stride;
+                int stridePadding = bmpData.GetStridePaddingLength();
+                int width = stride - stridePadding;
+                int height = bmpData.Height;
+                int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+
+                // May also have alpha byte
+                int pixelDepth = bmpData.GetPixelDepth();
+
+                byte originalRed, originalGreen, originalBlue;
+
+                // Apply mask for each color pixel
+                for (int y = 0; y < height; y++)
+                {
+                    // Images may have extra bytes per row to pad for CPU addressing.
+                    // so need to ensure we traverse to the correct byte when moving between rows.
+                    // I.e. not divisible by 3
+                    int offset = y * stride;
+
+                    for (int x = 0; x < width; x += pixelDepth)
+                    {
+                        int i = offset + x;
+
+                        // Set RGB to sepia values (Source: Microsoft)
+                        if (i < limit)
+                        {
+                            // Get original RGB pixel values
+                            originalRed = imageBytes[i + 2];
+                            originalGreen = imageBytes[i + 1];
+                            originalBlue = imageBytes[i];
+
+                            // Red (LSB)
+                            imageBytes[i + 2] = ConvertToByte((0.393 * originalRed) + (0.769 * originalGreen) + (0.189 * originalBlue));
+
+                            // Green
+                            imageBytes[i + 1] = ConvertToByte((0.349 * originalRed) + (0.686 * originalGreen) + (0.168 * originalBlue));
+
+                            // Blue (MSB)
+                            imageBytes[i] = ConvertToByte((0.272 * originalRed) + (0.534 * originalGreen) + (0.131 * originalBlue));
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                ImageEdit.End(bitmap, bmpData, imageBytes);
+            }
+        }
+
+        /// <summary>
+        /// Helper method to convert a double value to a byte.
+        /// </summary>
+        private static byte ConvertToByte(double f)
+        {
+            // Ensure no bigger than 255
+            return f < byte.MaxValue ? (byte)Math.Round(f) : byte.MaxValue;
+        }
     }
 }

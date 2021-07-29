@@ -345,6 +345,21 @@ namespace ImageViewerApp
             }
         }
 
+        private void Button_ToSepia_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                try
+                {
+                    DisplayImage(ImageColor.ToSepia(currentImage));
+                }
+                catch (Exception ex)
+                {
+                    ReportException(ex);
+                }
+            }
+        }
+
         private void ReportException(Exception ex)
         {
             DisplayError(ex.Message);
