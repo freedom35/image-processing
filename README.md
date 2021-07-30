@@ -13,7 +13,7 @@ You are welcome to use/update this software under the terms of the **MIT license
 ## Release History
 The published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 |Date|Version|Release Notes|
-|:---|:---:|-----|
+|:---|:---:|:----|
 |2021/07/28|[1.3.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.3.0)|Added support for applying sepia filter to images.|
 |20201/07/08|[1.2.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.2.0)|Fixed issue with stride padded images causing an *index out of bounds* exception when enhancing contrast.<br />Fixed issue with RGB color filters not working correctly for images with stride padding and alpha bytes.<br />Fixed issue with processing images with stride padding and alpha bytes.<br />Fixed issue where max threshold value was not correctly applied to the red (RGB) byte for color images.<br />Revision to combine images using bitwise OR.|
 |2021/03/24|[1.1.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.1.0)|Added support for applying EXIF orientation data to images.|
@@ -68,7 +68,7 @@ Image currentImage = Image.FromFile(@"C:\Images\Example-Image.bmp");
 5. Most methods within the library are static, they should be called directly - they do not require instantiating a class first. Make the appropriate call to the method associated with the image processing function you wish to perform.  
 For example:
 ```csharp
-Image newImage = ImageColor.ToNegative(currentImage);
+Image newImage = ImageContrast.Enhance(currentImage);
 ```  
 <br />
 
@@ -113,10 +113,27 @@ Class for converting an image to binary/monochrome (0's and 1's).
 
 ## Image Bytes Class
 Class for returning the bytes of an image, or information on them, such as determining the type of image that bytes are encoded with (**bitmap**, **JPEG** etc.).  
+* Bytes from **image object**.
+* Bytes from **image file**.
+* Bytes from **image stream**.
+* Bytes from an **embedded resource**.
+* Min/Max/Average image bytes.
+* Bytes to/from bits.
+* Determine image format/type based on image bytes.
+
 <br />
 
 ## Image Color Class
-Class for manipulating and filtering image colors.  
+Class for manipulating and filtering image colors, such as:  
+* Convert to **grayscale**.
+* Convert to **black & white**.
+* Convert to **negative**.
+* Convert to **sepia**.
+* Convert to **red**.
+* Convert to **green**.
+* Convert to **blue**.
+* Apply specific **RGB** filter.
+
 <br />
 
 ## Image Combine Class
@@ -191,6 +208,7 @@ The tables below list the types of filters that can be applied to an image using
 |Name|Description|
 |-----|-----|
 |Emboss|Creates an embossing effect.|  
+
 <br />
 <br />
 
@@ -203,11 +221,25 @@ Class for cropping an image based on a region.
 <br />
 
 ## Image Edit Class
-Class to begin/end the editing of **bitmap** image bytes.  
+Helper class for editing **bitmap** image bytes. Class can be used if any custom image processing is required.
+
+```csharp
+// Begin will lock image and return image bytes and info
+// (Where bitmap is a System.Drawing.Bitmap)
+byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
+
+// Process image bytes as required
+// (Use BitmapData for info on width/height/stride etc.)
+//...
+
+// End will save image bytes back to image and unlock bitmap
+// (BitmapData should be updated if image attributes have changed)
+ImageEdit.End(bitmap, bitmapData, imageBytes);
+```
 <br />
 
 ## Image EXIF Class
-Class for adjusting the orientation of an image based on **exchangeable image file format** (EXIF) metadata.  
+Class to apply orientation information to image based on **exchangeable image file format** (EXIF) metadata.  
 <br />
 
 ## Image Formatting Class
@@ -215,7 +247,8 @@ Class for changing the format/type of image, such as from **JPEG** to **bitmap**
 <br />
 
 ## Image Histogram Class
-Class for determining the histogram values for an image (as an array). Also supports creating a histogram image for a source image.   
+Class for determining the [histogram](https://en.wikipedia.org/wiki/Histogram) values for an image (as an array). A histogram is a bar graph/chart representation of data distribution, such as the number of pixels at each gray level. A histogram can help identify any bias in image intensity, which can prove useful when enhancing contrast etc. The histogram class also contains methods for creating a histogram image representation of a source image.  
+
 <br />
 
 ## Image Resize Class
@@ -241,5 +274,5 @@ The Chow & Kaneko method is also known as local or adaptive thresholding.
 <br />
 
 ## Image Thumbnail Class
-Class for creating a thumbnail size image for a source image.   
+Class for creating a thumbnail size image of a source image.   
 <br />
