@@ -10,16 +10,16 @@ See the appropriate section for details on each image processing class and their
 You are welcome to use/update this software under the terms of the **MIT license**.  
 <br />
 
-## Latest Releases
-A published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
-|Version|Notes|
-|:---:|-----|
-|[1.3.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.3.0)|Added support for applying sepia filter to images.|
-|[1.2.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.2.0)|i. Fixed issue with stride padded images causing an *index out of bounds* exception when enhancing contrast.<br />ii. Fixed issue with RGB color filters not working correctly for images with stride padding and alpha bytes.<br />iii. Fixed issue with processing images with stride padding and alpha bytes.<br />iv. Revision to combine images using bitwise OR.<br />v. Fixed issue where max threshold value was not correctly applied to the red (RGB) byte for color images.|
-|[1.1.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.1.0)|Added support for applying EXIF orientation data to images.|
-|[1.0.2](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.2)|Revision to return rounded value for ImageBytes.GetAverageValue.|
-|[1.0.1](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.1)|Revision to add enum description attribute for 'Mexican Hat' smoothing filter.|
-|[1.0.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.0)|Initial release.|
+## Release History
+The published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
+|Date|Version|Release Notes|
+|:---|:---:|-----|
+|2021/07/28|[1.3.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.3.0)|Added support for applying sepia filter to images.|
+|20201/07/08|[1.2.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.2.0)|Fixed issue with stride padded images causing an *index out of bounds* exception when enhancing contrast.<br />Fixed issue with RGB color filters not working correctly for images with stride padding and alpha bytes.<br />Fixed issue with processing images with stride padding and alpha bytes.<br />Fixed issue where max threshold value was not correctly applied to the red (RGB) byte for color images.<br />Revision to combine images using bitwise OR.|
+|2021/03/24|[1.1.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.1.0)|Added support for applying EXIF orientation data to images.|
+|2021/01/26|[1.0.2](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.2)|Revision to return rounded value for ImageBytes.GetAverageValue.|
+|2021/01/25|[1.0.1](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.1)|Revision to add enum description attribute for 'Mexican Hat' smoothing filter.|
+|2020/10/02|[1.0.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.0)|Initial release.|
 
 <br />
 <br />
@@ -55,8 +55,18 @@ Note: Examples are in C#, but the library may also be used in other .NET languag
 using Freedom35.ImageProcessing;
 ```
 
-3. Most methods within the library are static, they should be called directly - they do not require instantiating a class first. Make the appropriate call to the method associated with the image processing function you wish to perform.  
-Example:
+3. You may also want to include the System.Drawing namespace at the top of your code file for the *System.Drawing.Image* and *System.Drawing.Bitmap* classes.  
+```csharp
+using System.Drawing;
+```
+
+4. Load image into memory as a *System.Drawing.Image* object. Here is an example if you're simply loading an existing image from file:
+```csharp
+Image currentImage = Image.FromFile(@"C:\Images\Example-Image.bmp");
+```
+
+5. Most methods within the library are static, they should be called directly - they do not require instantiating a class first. Make the appropriate call to the method associated with the image processing function you wish to perform.  
+For example:
 ```csharp
 Image newImage = ImageColor.ToNegative(currentImage);
 ```  
@@ -102,7 +112,7 @@ Class for converting an image to binary/monochrome (0's and 1's).
 <br />
 
 ## Image Bytes Class
-Class for returning the bytes of an image, or information on them, such as determining the type of image that bytes are encoded with (**bitmap**, **JPEG** etc).  
+Class for returning the bytes of an image, or information on them, such as determining the type of image that bytes are encoded with (**bitmap**, **JPEG** etc.).  
 <br />
 
 ## Image Color Class
