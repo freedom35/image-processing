@@ -13,7 +13,7 @@ namespace Freedom35.ImageProcessing
     /// <summary>
     /// Class for changing format of image.
     /// </summary>
-    public sealed class ImageFormatting
+    public static class ImageFormatting
     {
         /// <summary>
         /// Returns copy of source image as a bitmap.
