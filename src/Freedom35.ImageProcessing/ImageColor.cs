@@ -5,6 +5,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Freedom35.ImageProcessing
 {
@@ -16,8 +17,60 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Converts color image bytes to grayscale.
         /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
+        /// <param name="image">Image to convert</param>
+        /// <returns>Grayscale image</returns>
+        public static T ToGrayscale<T>(T image) where T : Image
+        {
+            Bitmap colorBitmap = ImageFormatting.ToBitmap(image);
+
+            // Read bytes for image
+            byte[] originalBytes = ImageBytes.FromImage(colorBitmap, out BitmapData bitmapData);
+
+            if (!bitmapData.IsColor())
+            {
+                throw new ArgumentException("Image is not color, cannot convert to grayscale.");
+            }
+
+            // Convert bytes
+            byte[] convertedBytes = ToGrayscale(originalBytes, bitmapData);
+
+            // Create new image with same dimensions in grayscale
+            Bitmap grayscaleBitmap = new Bitmap(bitmapData.Width, bitmapData.Height, PixelFormat.Format8bppIndexed);
+
+            // Create suitable color palette
+            ImageColorPalette.ApplyGrayscale8bit(grayscaleBitmap);
+
+            // Lock full image
+            Rectangle rect = new Rectangle(0, 0, grayscaleBitmap.Width, grayscaleBitmap.Height);
+
+            // Lock the bitmap's bits while we change them.  
+            bitmapData = grayscaleBitmap.LockBits(rect, ImageLockMode.WriteOnly, grayscaleBitmap.PixelFormat);
+
+            try
+            {
+                // Ensure we stay within image
+                int limit = Math.Min(convertedBytes.Length, rect.Width * rect.Height);
+
+                // Copy the binary values to the bitmap
+                Marshal.Copy(convertedBytes, 0, bitmapData.Scan0, limit);
+            }
+            finally
+            {
+                // Release/unlock image
+                grayscaleBitmap.UnlockBits(bitmapData);
+            }
+
+            // Convert to original image format
+            return (T)ImageFormatting.Convert(grayscaleBitmap, image.RawFormat);
+        }
+
+        /// <summary>
+        /// Converts color image bytes to grayscale.
+        /// </summary>
         /// <returns>New image as grayscale</returns>
         /// <param name="rgbBytes">bytes for color image</param>
+        [Obsolete("Method is deprecated, use ToGrayscale method instead.")]
         public static byte[] ColorImageToGrayscale(byte[] rgbBytes)
         {
             // Check image bytes non-null
@@ -38,6 +91,51 @@ namespace Freedom35.ImageProcessing
             {
                 // Get average value for each RGB pixel
                 grayscaleBytes[j] = (byte)((rgbBytes[i] + rgbBytes[i + 1] + rgbBytes[i + 2]) / 3);
+            }
+
+            return grayscaleBytes;
+        }
+
+        /// <summary>
+        /// Converts color image bytes to grayscale.
+        /// </summary>
+        /// <returns>New image as grayscale</returns>
+        /// <param name="imageBytes">bytes for color image</param>
+        /// <param name="bitmapData">Image dimension info</param>
+        public static byte[] ToGrayscale(byte[] imageBytes, BitmapData bitmapData)
+        {
+            int stride = bitmapData.Stride;
+            int stridePadding = bitmapData.GetStridePaddingLength();
+            int width = stride - stridePadding;
+            int height = bitmapData.Height;
+            int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
+
+            // May also have alpha byte
+            int pixelDepth = bitmapData.GetPixelDepth();
+
+            // Create new array for converted bytes
+            byte[] grayscaleBytes = new byte[bitmapData.Width * height];
+
+            int grayscaleIndex = 0;
+
+            // Apply mask for each color pixel
+            for (int y = 0; y < height; y++)
+            {
+                // Images may have extra bytes per row to pad for CPU addressing.
+                // so need to ensure we traverse to the correct byte when moving between rows.
+                // I.e. not divisible by 3
+                int offset = y * stride;
+
+                for (int x = 0; x < width; x += pixelDepth)
+                {
+                    int i = offset + x;
+
+                    if (i < limit && grayscaleIndex < grayscaleBytes.Length)
+                    {
+                        // Get average value for each RGB pixel
+                        grayscaleBytes[grayscaleIndex++] = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
+                    }
+                }
             }
 
             return grayscaleBytes;
@@ -99,19 +197,24 @@ namespace Freedom35.ImageProcessing
         /// <param name="bitmap">Image to process</param>
         public static void ToNegativeDirect(ref Bitmap bitmap)
         {
-            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
 
-            // Check if monochrome
-            if (bmpData.PixelFormat == PixelFormat.Format1bppIndexed)
+            try
             {
-                MonochromeToNegative(imageBytes);
+                // Check if monochrome
+                if (bitmapData.PixelFormat == PixelFormat.Format1bppIndexed)
+                {
+                    MonochromeToNegative(imageBytes);
+                }
+                else
+                {
+                    ToNegative(imageBytes);
+                }
             }
-            else
+            finally
             {
-                ToNegative(imageBytes);
+                ImageEdit.End(bitmap, bitmapData, imageBytes);
             }
-
-            ImageEdit.End(bitmap, bmpData, imageBytes);
         }
 
         /// <summary>
@@ -201,14 +304,14 @@ namespace Freedom35.ImageProcessing
         public static void ApplyFilterDirectRGB(ref Bitmap bitmap, byte r, byte g, byte b)
         {
             // Get image bytes and info
-            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
 
             try
             {
                 // Can only apply color filter to a color image
-                if (bmpData.IsColor())
+                if (bitmapData.IsColor())
                 {
-                    ApplyFilterDirectRGB(imageBytes, r, g, b, bmpData);
+                    ApplyFilterDirectRGB(imageBytes, r, g, b, bitmapData);
                 }
                 else
                 {
@@ -217,7 +320,7 @@ namespace Freedom35.ImageProcessing
             }
             finally
             {
-                ImageEdit.End(bitmap, bmpData, imageBytes);
+                ImageEdit.End(bitmap, bitmapData, imageBytes);
             }
         }
 
@@ -252,22 +355,22 @@ namespace Freedom35.ImageProcessing
         /// <param name="r">Red component to apply</param>
         /// <param name="g">Green component to apply</param>
         /// <param name="b">Blue component to apply</param>
-        /// <param name="bmpData">Image dimension info</param>
-        public static void ApplyFilterDirectRGB(byte[] imageBytes, byte r, byte g, byte b, BitmapData bmpData)
+        /// <param name="bitmapData">Image dimension info</param>
+        public static void ApplyFilterDirectRGB(byte[] imageBytes, byte r, byte g, byte b, BitmapData bitmapData)
         {
-            if (!bmpData.IsColor())
+            if (!bitmapData.IsColor())
             {
                 throw new ArgumentException("Image is not color, RGB filter cannot be applied.");
             }
 
-            int stride = bmpData.Stride;
-            int stridePadding = bmpData.GetStridePaddingLength();
+            int stride = bitmapData.Stride;
+            int stridePadding = bitmapData.GetStridePaddingLength();
             int width = stride - stridePadding;
-            int height = bmpData.Height;
-            int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+            int height = bitmapData.Height;
+            int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
 
             // May also have alpha byte
-            int pixelDepth = bmpData.GetPixelDepth();
+            int pixelDepth = bitmapData.GetPixelDepth();
 
             // Apply mask for each color pixel
             for (int y = 0; y < height; y++)
@@ -319,23 +422,23 @@ namespace Freedom35.ImageProcessing
         /// <param name="bitmap">Image to process</param>
         public static void ToSepiaDirect(ref Bitmap bitmap)
         {
-            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
 
             try
             {
-                if (!bmpData.IsColor())
+                if (!bitmapData.IsColor())
                 {
                     throw new ArgumentException("Image is not color, sepia filter cannot be applied.");
                 }
 
-                int stride = bmpData.Stride;
-                int stridePadding = bmpData.GetStridePaddingLength();
+                int stride = bitmapData.Stride;
+                int stridePadding = bitmapData.GetStridePaddingLength();
                 int width = stride - stridePadding;
-                int height = bmpData.Height;
-                int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+                int height = bitmapData.Height;
+                int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
 
                 // May also have alpha byte
-                int pixelDepth = bmpData.GetPixelDepth();
+                int pixelDepth = bitmapData.GetPixelDepth();
 
                 byte originalRed, originalGreen, originalBlue;
 
@@ -373,7 +476,7 @@ namespace Freedom35.ImageProcessing
             }
             finally
             {
-                ImageEdit.End(bitmap, bmpData, imageBytes);
+                ImageEdit.End(bitmap, bitmapData, imageBytes);
             }
         }
 
