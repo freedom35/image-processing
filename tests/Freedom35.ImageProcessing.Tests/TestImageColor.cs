@@ -1,22 +1,47 @@
-using Freedom35.ImageProcessing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
+using System.Drawing.Imaging;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Freedom35.ImageProcessing;
 
 namespace ImageProcessingTests
 {
     [TestClass]
     public class TestImageColor
     {
+        /// <summary>
+        /// Helper method for test methods.
+        /// </summary>
+        private static byte[] CreateColorImage4x4(out BitmapData bitmapData)
+        {
+            bitmapData = new()
+            {
+                Height = 4,
+                Width = 4,
+                Stride = 12,
+                PixelFormat = PixelFormat.Format24bppRgb
+            };
+
+            List<byte> listBytes = new();
+
+            for (int i = 0; i < bitmapData.Width * bitmapData.Height; i++)
+            {
+                // RGB
+                listBytes.Add(50);
+                listBytes.Add(100);
+                listBytes.Add(150);
+            }
+
+            return listBytes.ToArray();
+        }
+
         [TestMethod]
         public void TestConvertToGrayscale()
         {
-            byte[] imageBytes = {
-                50,
-                100,
-                150
-            };
+            byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);
 
-            byte[] convertedImage = ImageColor.ColorImageToGrayscale(imageBytes);
+            byte[] convertedImage = ImageColor.ToGrayscale(imageBytes, bitmapData);
 
             Assert.IsNotNull(convertedImage);
             Assert.AreEqual(convertedImage.Length, imageBytes.Length / 3);
@@ -25,25 +50,32 @@ namespace ImageProcessingTests
 
 
         [TestMethod]
-        [ExpectedException(typeof(System.ArgumentOutOfRangeException))]
         public void TestConvertInvalidImageToGrayscale()
         {
-            byte[] imageBytes = {
-                50
-            };
+            byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);
 
-            ImageColor.ColorImageToGrayscale(imageBytes);
+            // Set to non-color
+            bitmapData.Stride = bitmapData.Width;
+            bitmapData.PixelFormat = PixelFormat.Format8bppIndexed;
+
+            Assert.ThrowsException<ArgumentException>(() => ImageColor.ToGrayscale(imageBytes, bitmapData));
         }
 
 
         [TestMethod]
         public void TestConvertNoImageToGrayscale()
         {
-            byte[] imageBytes = System.Array.Empty<byte>();
+            byte[] imageBytes = Array.Empty<byte>();
 
-            byte[] convertedImage = ImageColor.ColorImageToGrayscale(imageBytes);
+            BitmapData bitmapData = new()
+            {
+                Height = 0,
+                Width = 0,
+                Stride = 0,
+                PixelFormat = PixelFormat.Format24bppRgb
+            };
 
-            Assert.AreEqual(convertedImage.Length, 0);
+            Assert.ThrowsException<ArgumentException>(() => ImageColor.ToGrayscale(imageBytes, bitmapData));
         }
 
 
@@ -56,7 +88,17 @@ namespace ImageProcessingTests
                 150
             };
 
-            byte[] convertedImage = ImageColor.GrayscaleImageToBlackAndWhite(imageBytes);
+            byte[] convertedImage = ImageColor.ToBlackAndWhite(imageBytes);
+
+            Assert.IsTrue(convertedImage.All(b => b == 0 || b == 255));
+        }
+
+        [TestMethod]
+        public void TestConvertToBackAndWhiteWithThreshold()
+        {
+            byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);
+
+            byte[] convertedImage = ImageColor.ToBlackAndWhite(imageBytes, 0x42);
 
             Assert.IsTrue(convertedImage.All(b => b == 0 || b == 255));
         }

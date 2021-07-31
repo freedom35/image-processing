@@ -26,11 +26,6 @@ namespace Freedom35.ImageProcessing
             // Read bytes for image
             byte[] originalBytes = ImageBytes.FromImage(colorBitmap, out BitmapData bitmapData);
 
-            if (!bitmapData.IsColor())
-            {
-                throw new ArgumentException("Image is not color, cannot convert to grayscale.");
-            }
-
             // Convert bytes
             byte[] convertedBytes = ToGrayscale(originalBytes, bitmapData);
 
@@ -50,6 +45,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>Grayscale image bytes</returns>
         public static byte[] ToGrayscale(byte[] imageBytes, BitmapData bitmapData)
         {
+            if (!bitmapData.IsColor())
+            {
+                throw new ArgumentException("Image is not color, cannot convert to grayscale.");
+            }
+
             int stride = bitmapData.Stride;
             int stridePadding = bitmapData.GetStridePaddingLength();
             int width = stride - stridePadding;
