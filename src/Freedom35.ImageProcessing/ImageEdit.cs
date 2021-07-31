@@ -57,7 +57,7 @@ namespace Freedom35.ImageProcessing
         /// Finished editing an image.
         /// (Copies new byte values to image and unlocks bitmap)
         /// </summary>
-        public static void End(Bitmap bitmap, BitmapData bitmapData, byte[] rgbValues)
+        public static void End(Bitmap bitmap, BitmapData bitmapData, byte[] imageBytes)
         {
             // Convert monochrome back to byte array
             if (bitmap.PixelFormat == PixelFormat.Format1bppIndexed)
@@ -66,12 +66,22 @@ namespace Freedom35.ImageProcessing
                 bitmapData.Stride /= Constants.BitsPerByte;
 
                 // Consolidate to bytes
-                rgbValues = ImageBytes.BitsToBytes(rgbValues);
+                imageBytes = ImageBytes.BitsToBytes(imageBytes);
             }
 
             // Copy the RGB values back to the bitmap
-            Marshal.Copy(rgbValues, 0, bitmapData.Scan0, rgbValues.Length);
+            Marshal.Copy(imageBytes, 0, bitmapData.Scan0, imageBytes.Length);
 
+            // Unlock the bits.
+            bitmap.UnlockBits(bitmapData);
+        }
+
+        /// <summary>
+        /// Finished editing an image.
+        /// (Just unlocks bitmap)
+        /// </summary>
+        public static void End(Bitmap bitmap, BitmapData bitmapData)
+        {
             // Unlock the bits.
             bitmap.UnlockBits(bitmapData);
         }

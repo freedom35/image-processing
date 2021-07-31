@@ -15,7 +15,7 @@ namespace Freedom35.ImageProcessing
     public static class ImageColor
     {
         /// <summary>
-        /// Converts color image bytes to grayscale.
+        /// Converts color image to grayscale.
         /// </summary>
         /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to convert</param>
@@ -36,7 +36,19 @@ namespace Freedom35.ImageProcessing
             byte[] convertedBytes = ToGrayscale(originalBytes, bitmapData);
 
             // Create new image with same dimensions in grayscale
-            Bitmap grayscaleBitmap = new Bitmap(bitmapData.Width, bitmapData.Height, PixelFormat.Format8bppIndexed);
+            Bitmap grayscaleBitmap = CreateGrayscaleBitmap(bitmapData.Width, bitmapData.Height, convertedBytes);
+
+            // Convert to original image format
+            return (T)ImageFormatting.Convert(grayscaleBitmap, image.RawFormat);
+        }
+
+        /// <summary>
+        /// Creates a grayscale bitmap.
+        /// </summary>
+        private static Bitmap CreateGrayscaleBitmap(int width, int height, byte[] imageBytes)
+        {
+            // Create new image with same dimensions in grayscale
+            Bitmap grayscaleBitmap = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
 
             // Create suitable color palette
             ImageColorPalette.ApplyGrayscale8bit(grayscaleBitmap);
@@ -45,15 +57,15 @@ namespace Freedom35.ImageProcessing
             Rectangle rect = new Rectangle(0, 0, grayscaleBitmap.Width, grayscaleBitmap.Height);
 
             // Lock the bitmap's bits while we change them.  
-            bitmapData = grayscaleBitmap.LockBits(rect, ImageLockMode.WriteOnly, grayscaleBitmap.PixelFormat);
+            BitmapData bitmapData = grayscaleBitmap.LockBits(rect, ImageLockMode.WriteOnly, grayscaleBitmap.PixelFormat);
 
             try
             {
                 // Ensure we stay within image
-                int limit = Math.Min(convertedBytes.Length, rect.Width * rect.Height);
+                //int limit = Math.Min(imageBytes.Length, rect.Width * rect.Height);
 
                 // Copy the binary values to the bitmap
-                Marshal.Copy(convertedBytes, 0, bitmapData.Scan0, limit);
+                Marshal.Copy(imageBytes, 0, bitmapData.Scan0, imageBytes.Length);
             }
             finally
             {
@@ -61,8 +73,59 @@ namespace Freedom35.ImageProcessing
                 grayscaleBitmap.UnlockBits(bitmapData);
             }
 
-            // Convert to original image format
-            return (T)ImageFormatting.Convert(grayscaleBitmap, image.RawFormat);
+            return grayscaleBitmap;
+        }
+
+        /// <summary>
+        /// Converts color image bytes to grayscale.
+        /// </summary>
+        /// <returns>New image as grayscale</returns>
+        /// <param name="imageBytes">bytes for color image</param>
+        /// <param name="bitmapData">Image dimension info</param>
+        /// <returns>Grayscale image bytes</returns>
+        public static byte[] ToGrayscale(byte[] imageBytes, BitmapData bitmapData)
+        {
+            int stride = bitmapData.Stride;
+            int stridePadding = bitmapData.GetStridePaddingLength();
+            int width = stride - stridePadding;
+            int height = bitmapData.Height;
+            int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
+
+            // May also have alpha byte
+            int pixelDepth = bitmapData.GetPixelDepth();
+
+            // Determine any required padding
+            int newStridePadding = (4 - (bitmapData.Width * sizeof(byte)) % 4) % 4;
+
+            // Create new array for converted bytes
+            byte[] grayscaleBytes = new byte[(bitmapData.Width + newStridePadding) * height];
+
+            int grayscaleIndex = 0;
+
+            // Apply mask for each color pixel
+            for (int y = 0; y < height; y++)
+            {
+                // Images may have extra bytes per row to pad for CPU addressing.
+                // so need to ensure we traverse to the correct byte when moving between rows.
+                // I.e. not divisible by 3
+                int offset = y * stride;
+
+                for (int x = 0; x < width; x += pixelDepth)
+                {
+                    int i = offset + x;
+
+                    if (i < limit && grayscaleIndex < grayscaleBytes.Length)
+                    {
+                        // Get average value for each RGB pixel
+                        grayscaleBytes[grayscaleIndex++] = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
+                    }
+                }
+
+                // Add padding before moving to next row
+                grayscaleIndex += newStridePadding;
+            }
+
+            return grayscaleBytes;
         }
 
         /// <summary>
@@ -97,49 +160,96 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Converts color image bytes to grayscale.
+        /// Converts image to black & white.
+        /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
+        /// <param name="image">Image to convert</param>
+        /// <returns>Black & white image</returns>
+        public static T ToBlackAndWhite<T>(T image) where T : Image
+        {
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+            
+            // Read bytes for image
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
+
+            // If color, convert to grayscale first (will convert to single byte per pixel)
+            if (bitmapData.IsColor())
+            {
+                byte[] grayscaleBytes = ToGrayscale(imageBytes, bitmapData);
+
+                // Release original bitmap
+                ImageEdit.End(bitmap, bitmapData);
+
+                // Create new image with same dimensions in grayscale
+                bitmap = CreateGrayscaleBitmap(bitmapData.Width, bitmapData.Height, grayscaleBytes);
+
+                // Re-aquire image bytes
+                imageBytes = ImageEdit.Begin(bitmap, out bitmapData);
+            }
+
+            try
+            {
+                // Convert bytes
+                imageBytes = GrayscaleImageToBlackAndWhite(imageBytes);
+            }
+            finally
+            {
+                // Release image
+                ImageEdit.End(bitmap, bitmapData, imageBytes);
+            }
+
+            // Convert to original image format
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
+        }
+
+        /// <summary>
+        /// Converts image bytes to black & white.
         /// </summary>
         /// <returns>New image as grayscale</returns>
         /// <param name="imageBytes">bytes for color image</param>
+        /// <param name="whiteThreshold">Threshold value for determining a white value (lower will be black)</param>
         /// <param name="bitmapData">Image dimension info</param>
-        public static byte[] ToGrayscale(byte[] imageBytes, BitmapData bitmapData)
-        {
-            int stride = bitmapData.Stride;
-            int stridePadding = bitmapData.GetStridePaddingLength();
-            int width = stride - stridePadding;
-            int height = bitmapData.Height;
-            int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
+        //public static void ToBlackAndWhite(byte[] imageBytes, byte whiteThreshold, BitmapData bitmapData)
+        //{
+        //    int stride = bitmapData.Stride;
+        //    int stridePadding = bitmapData.GetStridePaddingLength();
+        //    int width = stride - stridePadding;
+        //    int height = bitmapData.Height;
+        //    int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
 
-            // May also have alpha byte
-            int pixelDepth = bitmapData.GetPixelDepth();
+        //    // May also have alpha byte
+        //    int pixelDepth = bitmapData.GetPixelDepth();
 
-            // Create new array for converted bytes
-            byte[] grayscaleBytes = new byte[bitmapData.Width * height];
+        //    // Create new array for converted bytes
+        //    byte[] grayscaleBytes = new byte[bitmapData.Width * height];
 
-            int grayscaleIndex = 0;
+        //    int grayscaleIndex = 0;
 
-            // Apply mask for each color pixel
-            for (int y = 0; y < height; y++)
-            {
-                // Images may have extra bytes per row to pad for CPU addressing.
-                // so need to ensure we traverse to the correct byte when moving between rows.
-                // I.e. not divisible by 3
-                int offset = y * stride;
+        //    // Apply mask for each color pixel
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        // Images may have extra bytes per row to pad for CPU addressing.
+        //        // so need to ensure we traverse to the correct byte when moving between rows.
+        //        // I.e. not divisible by 3
+        //        int offset = y * stride;
 
-                for (int x = 0; x < width; x += pixelDepth)
-                {
-                    int i = offset + x;
+        //        for (int x = 0; x < width; x += pixelDepth)
+        //        {
+        //            int i = offset + x;
 
-                    if (i < limit && grayscaleIndex < grayscaleBytes.Length)
-                    {
-                        // Get average value for each RGB pixel
-                        grayscaleBytes[grayscaleIndex++] = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
-                    }
-                }
-            }
+        //            if (i < limit && grayscaleIndex < grayscaleBytes.Length)
+        //            {
+        //                // Get average value for each RGB pixel
+        //                grayscaleBytes[grayscaleIndex++] = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
 
-            return grayscaleBytes;
-        }
+        //                // Use threshold value to determine black (0) or white (255)
+        //                bwBytes[i] = grayscaleBytes[i] < whiteThreshold ? byte.MinValue : byte.MaxValue;
+        //            }
+        //        }
+        //    }
+            
+        //    return grayscaleBytes;
+        //}
 
         /// <summary>
         /// Converts grayscale image bytes to black and white.
@@ -170,7 +280,7 @@ namespace Freedom35.ImageProcessing
             for (int i = 0; i < length; i++)
             {
                 // Use threshold value to determine black (0) or white (255)
-                bwBytes[i] = (grayscaleBytes[i] < whiteThreshold ? byte.MinValue : byte.MaxValue);
+                bwBytes[i] = grayscaleBytes[i] < whiteThreshold ? byte.MinValue : byte.MaxValue;
             }
 
             return bwBytes;
