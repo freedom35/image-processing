@@ -14,53 +14,146 @@ namespace Freedom35.ImageProcessing
     public static class ImageColor
     {
         /// <summary>
+        /// Converts color image to grayscale.
+        /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
+        /// <param name="image">Image to convert</param>
+        /// <returns>Grayscale image</returns>
+        public static T ToGrayscale<T>(T image) where T : Image
+        {
+            Bitmap colorBitmap = ImageFormatting.ToBitmap(image);
+
+            // Read bytes for image
+            byte[] originalBytes = ImageBytes.FromImage(colorBitmap, out BitmapData bitmapData);
+
+            // Convert bytes
+            byte[] convertedBytes = ToGrayscale(originalBytes, bitmapData);
+
+            // Create new image with same dimensions in grayscale
+            Bitmap grayscaleBitmap = ImageCreate.CreateGrayscaleBitmap(bitmapData.Width, bitmapData.Height, convertedBytes);
+
+            // Convert to original image format
+            return (T)ImageFormatting.Convert(grayscaleBitmap, image.RawFormat);
+        }
+
+        /// <summary>
         /// Converts color image bytes to grayscale.
         /// </summary>
         /// <returns>New image as grayscale</returns>
-        /// <param name="rgbBytes">bytes for color image</param>
-        public static byte[] ColorImageToGrayscale(byte[] rgbBytes)
+        /// <param name="imageBytes">bytes for color image</param>
+        /// <param name="bitmapData">Image dimension info</param>
+        /// <returns>Grayscale image bytes</returns>
+        public static byte[] ToGrayscale(byte[] imageBytes, BitmapData bitmapData)
         {
-            // Check image bytes non-null
-            int length = rgbBytes?.Length ?? 0;
-
-            // Check length is valid, otherwise unlikely color
-            if (length % 3 != 0)
+            if (!bitmapData.IsColor())
             {
-                throw new ArgumentOutOfRangeException(nameof(rgbBytes), "Array length is not divisible by 3.");
+                throw new ArgumentException("Image is not color, cannot convert to grayscale.");
             }
 
-            // Create new array for converted bytes
-            byte[] grayscaleBytes = new byte[length / 3];
+            int stride = bitmapData.Stride;
+            int stridePadding = bitmapData.GetStridePaddingLength();
+            int width = stride - stridePadding;
+            int height = bitmapData.Height;
+            int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
 
-            // Original array contains 3 bytes per pixel - color/RGB
-            // Converted array will only contain one byte per pixel
-            for (int i = 0, j = 0; i < length - 2; i += 3, j++)
+            // May also have alpha byte
+            int pixelDepth = bitmapData.GetPixelDepth();
+
+            // Determine any required padding
+            int newStridePadding = (4 - (bitmapData.Width * sizeof(byte)) % 4) % 4;
+
+            // Create new array for converted bytes
+            byte[] grayscaleBytes = new byte[(bitmapData.Width + newStridePadding) * height];
+
+            int grayscaleIndex = 0;
+
+            // Apply mask for each color pixel
+            for (int y = 0; y < height; y++)
             {
-                // Get average value for each RGB pixel
-                grayscaleBytes[j] = (byte)((rgbBytes[i] + rgbBytes[i + 1] + rgbBytes[i + 2]) / 3);
+                // Images may have extra bytes per row to pad for CPU addressing.
+                // so need to ensure we traverse to the correct byte when moving between rows.
+                // I.e. not divisible by 3
+                int offset = y * stride;
+
+                for (int x = 0; x < width; x += pixelDepth)
+                {
+                    int i = offset + x;
+
+                    if (i < limit && grayscaleIndex < grayscaleBytes.Length)
+                    {
+                        // Get average value for each RGB pixel
+                        grayscaleBytes[grayscaleIndex++] = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
+                    }
+                }
+
+                // Add padding before moving to next row
+                grayscaleIndex += newStridePadding;
             }
 
             return grayscaleBytes;
         }
 
         /// <summary>
+        /// Converts image to black & white.
+        /// </summary>
+        /// <typeparam name="T">Image type to process and return</typeparam>
+        /// <param name="image">Image to convert</param>
+        /// <returns>Black & white image</returns>
+        public static T ToBlackAndWhite<T>(T image) where T : Image
+        {
+            Bitmap bitmap = ImageFormatting.ToBitmap(image);
+            
+            // Read bytes for image
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
+
+            // If color, convert to grayscale first (will convert to single byte per pixel)
+            if (bitmapData.IsColor())
+            {
+                byte[] grayscaleBytes = ToGrayscale(imageBytes, bitmapData);
+
+                // Release original bitmap
+                ImageEdit.End(bitmap, bitmapData);
+
+                // Create new image with same dimensions in grayscale
+                bitmap = ImageCreate.CreateGrayscaleBitmap(bitmapData.Width, bitmapData.Height, grayscaleBytes);
+
+                // Re-aquire image bytes
+                imageBytes = ImageEdit.Begin(bitmap, out bitmapData);
+            }
+
+            try
+            {
+                // Convert bytes
+                imageBytes = ToBlackAndWhite(imageBytes);
+            }
+            finally
+            {
+                // Release image
+                ImageEdit.End(bitmap, bitmapData, imageBytes);
+            }
+
+            // Convert to original image format
+            return (T)ImageFormatting.Convert(bitmap, image.RawFormat);
+        }
+
+        /// <summary>
         /// Converts grayscale image bytes to black and white.
         /// </summary>
-        /// <returns>New image as black and white</returns>
         /// <param name="grayscaleBytes">bytes for grayscale image</param>
-        public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes)
+        /// <returns>New image as black and white</returns>
+        public static byte[] ToBlackAndWhite(byte[] grayscaleBytes)
         {
             // Use mid-threshold value for each pixel
-            return GrayscaleImageToBlackAndWhite(grayscaleBytes, 0x80);
+            return ToBlackAndWhite(grayscaleBytes, 0x80);
         }
 
         /// <summary>
         /// Converts grayscale image bytes to black and white using a specific threshold value.
         /// </summary>
-        /// <returns>New image as black and white</returns>
         /// <param name="grayscaleBytes">bytes for grayscale image</param>
         /// <param name="whiteThreshold">Threshold value for determining a white value (lower will be black)</param>
-        public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes, byte whiteThreshold)
+        /// <returns>New image as black and white</returns>
+        public static byte[] ToBlackAndWhite(byte[] grayscaleBytes, byte whiteThreshold)
         {
             // Check image bytes non-null
             int length = grayscaleBytes?.Length ?? 0;
@@ -72,7 +165,7 @@ namespace Freedom35.ImageProcessing
             for (int i = 0; i < length; i++)
             {
                 // Use threshold value to determine black (0) or white (255)
-                bwBytes[i] = (grayscaleBytes[i] < whiteThreshold ? byte.MinValue : byte.MaxValue);
+                bwBytes[i] = grayscaleBytes[i] < whiteThreshold ? byte.MinValue : byte.MaxValue;
             }
 
             return bwBytes;
@@ -99,19 +192,24 @@ namespace Freedom35.ImageProcessing
         /// <param name="bitmap">Image to process</param>
         public static void ToNegativeDirect(ref Bitmap bitmap)
         {
-            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
 
-            // Check if monochrome
-            if (bmpData.PixelFormat == PixelFormat.Format1bppIndexed)
+            try
             {
-                MonochromeToNegative(imageBytes);
+                // Check if monochrome
+                if (bitmapData.PixelFormat == PixelFormat.Format1bppIndexed)
+                {
+                    MonochromeToNegative(imageBytes);
+                }
+                else
+                {
+                    ToNegative(imageBytes);
+                }
             }
-            else
+            finally
             {
-                ToNegative(imageBytes);
+                ImageEdit.End(bitmap, bitmapData, imageBytes);
             }
-
-            ImageEdit.End(bitmap, bmpData, imageBytes);
         }
 
         /// <summary>
@@ -201,14 +299,14 @@ namespace Freedom35.ImageProcessing
         public static void ApplyFilterDirectRGB(ref Bitmap bitmap, byte r, byte g, byte b)
         {
             // Get image bytes and info
-            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
 
             try
             {
                 // Can only apply color filter to a color image
-                if (bmpData.IsColor())
+                if (bitmapData.IsColor())
                 {
-                    ApplyFilterDirectRGB(imageBytes, r, g, b, bmpData);
+                    ApplyFilterDirectRGB(imageBytes, r, g, b, bitmapData);
                 }
                 else
                 {
@@ -217,7 +315,7 @@ namespace Freedom35.ImageProcessing
             }
             finally
             {
-                ImageEdit.End(bitmap, bmpData, imageBytes);
+                ImageEdit.End(bitmap, bitmapData, imageBytes);
             }
         }
 
@@ -252,22 +350,22 @@ namespace Freedom35.ImageProcessing
         /// <param name="r">Red component to apply</param>
         /// <param name="g">Green component to apply</param>
         /// <param name="b">Blue component to apply</param>
-        /// <param name="bmpData">Image dimension info</param>
-        public static void ApplyFilterDirectRGB(byte[] imageBytes, byte r, byte g, byte b, BitmapData bmpData)
+        /// <param name="bitmapData">Image dimension info</param>
+        public static void ApplyFilterDirectRGB(byte[] imageBytes, byte r, byte g, byte b, BitmapData bitmapData)
         {
-            if (!bmpData.IsColor())
+            if (!bitmapData.IsColor())
             {
                 throw new ArgumentException("Image is not color, RGB filter cannot be applied.");
             }
 
-            int stride = bmpData.Stride;
-            int stridePadding = bmpData.GetStridePaddingLength();
+            int stride = bitmapData.Stride;
+            int stridePadding = bitmapData.GetStridePaddingLength();
             int width = stride - stridePadding;
-            int height = bmpData.Height;
-            int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+            int height = bitmapData.Height;
+            int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
 
             // May also have alpha byte
-            int pixelDepth = bmpData.GetPixelDepth();
+            int pixelDepth = bitmapData.GetPixelDepth();
 
             // Apply mask for each color pixel
             for (int y = 0; y < height; y++)
@@ -319,23 +417,23 @@ namespace Freedom35.ImageProcessing
         /// <param name="bitmap">Image to process</param>
         public static void ToSepiaDirect(ref Bitmap bitmap)
         {
-            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bmpData);
+            byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
 
             try
             {
-                if (!bmpData.IsColor())
+                if (!bitmapData.IsColor())
                 {
                     throw new ArgumentException("Image is not color, sepia filter cannot be applied.");
                 }
 
-                int stride = bmpData.Stride;
-                int stridePadding = bmpData.GetStridePaddingLength();
+                int stride = bitmapData.Stride;
+                int stridePadding = bitmapData.GetStridePaddingLength();
                 int width = stride - stridePadding;
-                int height = bmpData.Height;
-                int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+                int height = bitmapData.Height;
+                int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
 
                 // May also have alpha byte
-                int pixelDepth = bmpData.GetPixelDepth();
+                int pixelDepth = bitmapData.GetPixelDepth();
 
                 byte originalRed, originalGreen, originalBlue;
 
@@ -373,7 +471,7 @@ namespace Freedom35.ImageProcessing
             }
             finally
             {
-                ImageEdit.End(bitmap, bmpData, imageBytes);
+                ImageEdit.End(bitmap, bitmapData, imageBytes);
             }
         }
 
@@ -385,5 +483,64 @@ namespace Freedom35.ImageProcessing
             // Ensure no bigger than 255
             return f < byte.MaxValue ? (byte)Math.Round(f) : byte.MaxValue;
         }
+
+        #region Deprecated Methods
+
+        /// <summary>
+        /// Converts color image bytes to grayscale.
+        /// </summary>
+        /// <param name="rgbBytes">bytes for color image</param>
+        /// <returns>New image as grayscale</returns>
+        [Obsolete("Method is deprecated, use ToGrayscale method instead.")]
+        public static byte[] ColorImageToGrayscale(byte[] rgbBytes)
+        {
+            // Check image bytes non-null
+            int length = rgbBytes?.Length ?? 0;
+
+            // Check length is valid, otherwise unlikely color
+            if (length % 3 != 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rgbBytes), "Array length is not divisible by 3.");
+            }
+
+            // Create new array for converted bytes
+            byte[] grayscaleBytes = new byte[length / 3];
+
+            // Original array contains 3 bytes per pixel - color/RGB
+            // Converted array will only contain one byte per pixel
+            for (int i = 0, j = 0; i < length - 2; i += 3, j++)
+            {
+                // Get average value for each RGB pixel
+                grayscaleBytes[j] = (byte)((rgbBytes[i] + rgbBytes[i + 1] + rgbBytes[i + 2]) / 3);
+            }
+
+            return grayscaleBytes;
+        }
+
+        /// <summary>
+        /// Converts grayscale image bytes to black and white.
+        /// </summary>
+        /// <param name="grayscaleBytes">bytes for grayscale image</param>
+        /// <returns>New image as black and white</returns>
+        [Obsolete("Method is deprecated, use ToBlackAndWhite method instead.")]
+        public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes)
+        {
+            // Use mid-threshold value for each pixel
+            return ToBlackAndWhite(grayscaleBytes);
+        }
+
+        /// <summary>
+        /// Converts grayscale image bytes to black and white using a specific threshold value.
+        /// </summary>
+        /// <param name="grayscaleBytes">bytes for grayscale image</param>
+        /// <param name="whiteThreshold">Threshold value for determining a white value (lower will be black)</param>
+        /// <returns>New image as black and white</returns>
+        [Obsolete("Method is deprecated, use ToBlackAndWhite method instead.")]
+        public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes, byte whiteThreshold)
+        {
+            return ToBlackAndWhite(grayscaleBytes, whiteThreshold);
+        }
+
+        #endregion
     }
 }

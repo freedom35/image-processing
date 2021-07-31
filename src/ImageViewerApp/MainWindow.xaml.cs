@@ -330,6 +330,21 @@ namespace ImageViewerApp
             }
         }
 
+        private void Button_ToGrayscale_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                try
+                {
+                    DisplayImage(ImageColor.ToGrayscale(currentImage));
+                }
+                catch (Exception ex)
+                {
+                    ReportException(ex);
+                }
+            }
+        }
+
         private void Button_ToNegative_Click(object sender, RoutedEventArgs e)
         {
             if (currentImage != null)

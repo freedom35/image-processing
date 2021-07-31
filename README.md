@@ -14,6 +14,7 @@ You are welcome to use/update this software under the terms of the **MIT license
 The published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 |Date|Version|Release Notes|
 |:---|:---:|:----|
+|2021/07/30|[1.4.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.4.0)|Added overload methods for converting color images to grayscale.<br />Added overload methods for converting images to black & white.|
 |2021/07/28|[1.3.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.3.0)|Added support for applying sepia filter to images.|
 |20201/07/08|[1.2.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.2.0)|Fixed issue with stride padded images causing an *index out of bounds* exception when enhancing contrast.<br />Fixed issue with RGB color filters not working correctly for images with stride padding and alpha bytes.<br />Fixed issue with processing images with stride padding and alpha bytes.<br />Fixed issue where max threshold value was not correctly applied to the red (RGB) byte for color images.<br />Revision to combine images using bitwise OR.|
 |2021/03/24|[1.1.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.1.0)|Added support for applying EXIF orientation data to images.|
@@ -164,12 +165,6 @@ When an image is equalized, the proportions between each pixel value of the orig
 I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), which is only slightly brighter than another pixel (p3), the brightness of all three pixels may change, but the delta brightness between p1 and p2 will become the same as the delta between p2 and p3 (after equalization).  
 <br />
 
-
-## Image Convert Class
-Methods for converting images to different formats/types.  
-<br />
-
-
 ## Image Convolution Class
 An image can be manipulated to enhance or isolate features etc. This is a fundamental of image processing and often used as a pre-processing step in machine vision applications.  
 <br />
@@ -218,24 +213,6 @@ Class for copying image bytes from one **bitmap** to another.
 
 ## Image Crop Class
 Class for cropping an image based on a region.  
-<br />
-
-## Image Edit Class
-Helper class for editing **bitmap** image bytes. Class can be used if any custom image processing is required.
-
-```csharp
-// Begin will lock image and return image bytes and info
-// (Where bitmap is a System.Drawing.Bitmap)
-byte[] imageBytes = ImageEdit.Begin(bitmap, out BitmapData bitmapData);
-
-// Process image bytes as required
-// (Use BitmapData for info on width/height/stride etc.)
-//...
-
-// End will save image bytes back to image and unlock bitmap
-// (BitmapData should be updated if image attributes have changed)
-ImageEdit.End(bitmap, bitmapData, imageBytes);
-```
 <br />
 
 ## Image EXIF Class
