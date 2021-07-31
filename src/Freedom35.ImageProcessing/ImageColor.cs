@@ -5,7 +5,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 
 namespace Freedom35.ImageProcessing
 {
@@ -36,44 +35,10 @@ namespace Freedom35.ImageProcessing
             byte[] convertedBytes = ToGrayscale(originalBytes, bitmapData);
 
             // Create new image with same dimensions in grayscale
-            Bitmap grayscaleBitmap = CreateGrayscaleBitmap(bitmapData.Width, bitmapData.Height, convertedBytes);
+            Bitmap grayscaleBitmap = ImageCreate.CreateGrayscaleBitmap(bitmapData.Width, bitmapData.Height, convertedBytes);
 
             // Convert to original image format
             return (T)ImageFormatting.Convert(grayscaleBitmap, image.RawFormat);
-        }
-
-        /// <summary>
-        /// Creates a grayscale bitmap.
-        /// </summary>
-        private static Bitmap CreateGrayscaleBitmap(int width, int height, byte[] imageBytes)
-        {
-            // Create new image with same dimensions in grayscale
-            Bitmap grayscaleBitmap = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
-
-            // Create suitable color palette
-            ImageColorPalette.ApplyGrayscale8bit(grayscaleBitmap);
-
-            // Lock full image
-            Rectangle rect = new Rectangle(0, 0, grayscaleBitmap.Width, grayscaleBitmap.Height);
-
-            // Lock the bitmap's bits while we change them.  
-            BitmapData bitmapData = grayscaleBitmap.LockBits(rect, ImageLockMode.WriteOnly, grayscaleBitmap.PixelFormat);
-
-            try
-            {
-                // Ensure we stay within image
-                //int limit = Math.Min(imageBytes.Length, rect.Width * rect.Height);
-
-                // Copy the binary values to the bitmap
-                Marshal.Copy(imageBytes, 0, bitmapData.Scan0, imageBytes.Length);
-            }
-            finally
-            {
-                // Release/unlock image
-                grayscaleBitmap.UnlockBits(bitmapData);
-            }
-
-            return grayscaleBitmap;
         }
 
         /// <summary>
@@ -181,7 +146,7 @@ namespace Freedom35.ImageProcessing
                 ImageEdit.End(bitmap, bitmapData);
 
                 // Create new image with same dimensions in grayscale
-                bitmap = CreateGrayscaleBitmap(bitmapData.Width, bitmapData.Height, grayscaleBytes);
+                bitmap = ImageCreate.CreateGrayscaleBitmap(bitmapData.Width, bitmapData.Height, grayscaleBytes);
 
                 // Re-aquire image bytes
                 imageBytes = ImageEdit.Begin(bitmap, out bitmapData);
