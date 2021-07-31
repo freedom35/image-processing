@@ -203,55 +203,6 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Converts image bytes to black & white.
-        /// </summary>
-        /// <returns>New image as grayscale</returns>
-        /// <param name="imageBytes">bytes for color image</param>
-        /// <param name="whiteThreshold">Threshold value for determining a white value (lower will be black)</param>
-        /// <param name="bitmapData">Image dimension info</param>
-        //public static void ToBlackAndWhite(byte[] imageBytes, byte whiteThreshold, BitmapData bitmapData)
-        //{
-        //    int stride = bitmapData.Stride;
-        //    int stridePadding = bitmapData.GetStridePaddingLength();
-        //    int width = stride - stridePadding;
-        //    int height = bitmapData.Height;
-        //    int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
-
-        //    // May also have alpha byte
-        //    int pixelDepth = bitmapData.GetPixelDepth();
-
-        //    // Create new array for converted bytes
-        //    byte[] grayscaleBytes = new byte[bitmapData.Width * height];
-
-        //    int grayscaleIndex = 0;
-
-        //    // Apply mask for each color pixel
-        //    for (int y = 0; y < height; y++)
-        //    {
-        //        // Images may have extra bytes per row to pad for CPU addressing.
-        //        // so need to ensure we traverse to the correct byte when moving between rows.
-        //        // I.e. not divisible by 3
-        //        int offset = y * stride;
-
-        //        for (int x = 0; x < width; x += pixelDepth)
-        //        {
-        //            int i = offset + x;
-
-        //            if (i < limit && grayscaleIndex < grayscaleBytes.Length)
-        //            {
-        //                // Get average value for each RGB pixel
-        //                grayscaleBytes[grayscaleIndex++] = (byte)((imageBytes[i] + imageBytes[i + 1] + imageBytes[i + 2]) / 3);
-
-        //                // Use threshold value to determine black (0) or white (255)
-        //                bwBytes[i] = grayscaleBytes[i] < whiteThreshold ? byte.MinValue : byte.MaxValue;
-        //            }
-        //        }
-        //    }
-            
-        //    return grayscaleBytes;
-        //}
-
-        /// <summary>
         /// Converts grayscale image bytes to black and white.
         /// </summary>
         /// <returns>New image as black and white</returns>
