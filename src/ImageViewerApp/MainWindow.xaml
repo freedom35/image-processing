@@ -7,7 +7,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:ip="clr-namespace:Freedom35.ImageProcessing;assembly=Freedom35.ImageProcessing"
         mc:Ignorable="d"
-        Title="Image Viewer App" Height="640" Width="800" MinHeight="200" MinWidth="300" Background="DodgerBlue"
+        Title="Image Viewer App" Height="700" Width="1000" MinHeight="200" MinWidth="300" Background="DodgerBlue"
         Loaded="Window_Loaded">
     <Window.Resources>
         <Style TargetType="Button" x:Key="ImageOption" >
@@ -79,7 +79,7 @@
         </Grid>
 
         <!-- Options -->
-        <WrapPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Vertical" VerticalAlignment="Center" Margin="5,0,10,0">
+        <WrapPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Vertical" VerticalAlignment="Bottom" Margin="5,0,10,6">
             
             <Border BorderBrush="White" BorderThickness="0.5" Padding="1">
                 <Image x:Name="pbThumbnail" Width="120" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=ImageBytes, Converter={StaticResource imageConverter}}" Margin="0,5,0,5" >
@@ -121,6 +121,9 @@
             </Button>
             <Button Style="{StaticResource ImageOption}" Click="Button_ApplyRedFilter_Click">
                 <Label>Apply Red Filter</Label>
+            </Button>
+            <Button Style="{StaticResource ImageOption}" Click="Button_ToGrayscale_Click">
+                <Label>To Grayscale</Label>
             </Button>
             <Button Style="{StaticResource ImageOption}" Click="Button_ToNegative_Click">
                 <Label>To Negative</Label>
