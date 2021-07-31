@@ -124,7 +124,7 @@ namespace Freedom35.ImageProcessing
             try
             {
                 // Convert bytes
-                imageBytes = GrayscaleImageToBlackAndWhite(imageBytes);
+                imageBytes = ToBlackAndWhite(imageBytes);
             }
             finally
             {
@@ -526,7 +526,7 @@ namespace Freedom35.ImageProcessing
         public static byte[] GrayscaleImageToBlackAndWhite(byte[] grayscaleBytes)
         {
             // Use mid-threshold value for each pixel
-            return GrayscaleImageToBlackAndWhite(grayscaleBytes, 0x80);
+            return ToBlackAndWhite(grayscaleBytes);
         }
 
         /// <summary>
