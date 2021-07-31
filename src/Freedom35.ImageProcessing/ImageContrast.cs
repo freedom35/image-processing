@@ -64,13 +64,13 @@ namespace Freedom35.ImageProcessing
         /// Stretches image contrast to specified min/max values.
         /// </summary>
         /// <param name="imageBytes">Image bytes (Grayscale/RGB)</param>
-        /// <param name="bmpData">Info on image properties</param>
+        /// <param name="bitmapData">Info on image properties</param>
         /// <param name="min">Minimum contrast value</param>
         /// <param name="max">Maximum contrast value</param>
-        public static void StretchDirect(byte[] imageBytes, BitmapData bmpData, byte min, byte max)
+        public static void StretchDirect(byte[] imageBytes, BitmapData bitmapData, byte min, byte max)
         {
-            int pixelDepth = bmpData.GetPixelDepth();
-            bool isColor = bmpData.IsColor();
+            int pixelDepth = bitmapData.GetPixelDepth();
+            bool isColor = bitmapData.IsColor();
 
             // Initialize with opposite values
             byte highest = byte.MinValue;
@@ -78,7 +78,7 @@ namespace Freedom35.ImageProcessing
             byte val;
 
             // Bitmap converted from jpeg can potentially have array with extra odd byte.
-            int limit = bmpData.GetSafeArrayLimitForImage(imageBytes);
+            int limit = bitmapData.GetSafeArrayLimitForImage(imageBytes);
 
             //////////////////////////////////////
             // First find current contrast range

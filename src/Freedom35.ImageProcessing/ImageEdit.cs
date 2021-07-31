@@ -16,33 +16,33 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Begin editing an image.
         /// </summary>
-        public static byte[] Begin(Bitmap bitmap, out BitmapData bmpData)
+        public static byte[] Begin(Bitmap bitmap, out BitmapData bitmapData)
         {
-            return Begin(bitmap, ImageLockMode.ReadWrite, out bmpData);
+            return Begin(bitmap, ImageLockMode.ReadWrite, out bitmapData);
         }
 
         /// <summary>
         /// Begin editing an image.
         /// </summary>
-        public static byte[] Begin(Bitmap bitmap, ImageLockMode lockMode, out BitmapData bmpData)
+        public static byte[] Begin(Bitmap bitmap, ImageLockMode lockMode, out BitmapData bitmapData)
         {
             // Lock full image
             Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
 
             // Lock the bitmap's bits while we change them.  
-            bmpData = bitmap.LockBits(rect, lockMode, bitmap.PixelFormat);
+            bitmapData = bitmap.LockBits(rect, lockMode, bitmap.PixelFormat);
 
             // Create length with number of bytes in image
-            byte[] rgbValues = new byte[bmpData.GetByteCount()];
+            byte[] rgbValues = new byte[bitmapData.GetByteCount()];
 
             // Copy the RGB values into the array.
-            Marshal.Copy(bmpData.Scan0, rgbValues, 0, rgbValues.Length);
+            Marshal.Copy(bitmapData.Scan0, rgbValues, 0, rgbValues.Length);
 
             // Check if monochrome
             if (bitmap.PixelFormat == PixelFormat.Format1bppIndexed)
             {
                 // Adjust stride
-                bmpData.Stride *= Constants.BitsPerByte;
+                bitmapData.Stride *= Constants.BitsPerByte;
 
                 // Convert each bit to a separate byte
                 return ImageBytes.BytesToBits(rgbValues);
@@ -57,23 +57,23 @@ namespace Freedom35.ImageProcessing
         /// Finished editing an image.
         /// (Copies new byte values to image and unlocks bitmap)
         /// </summary>
-        public static void End(Bitmap bitmap, BitmapData bmpData, byte[] rgbValues)
+        public static void End(Bitmap bitmap, BitmapData bitmapData, byte[] rgbValues)
         {
             // Convert monochrome back to byte array
             if (bitmap.PixelFormat == PixelFormat.Format1bppIndexed)
             {
                 // Restore stride
-                bmpData.Stride /= Constants.BitsPerByte;
+                bitmapData.Stride /= Constants.BitsPerByte;
 
                 // Consolidate to bytes
                 rgbValues = ImageBytes.BitsToBytes(rgbValues);
             }
 
             // Copy the RGB values back to the bitmap
-            Marshal.Copy(rgbValues, 0, bmpData.Scan0, rgbValues.Length);
+            Marshal.Copy(rgbValues, 0, bitmapData.Scan0, rgbValues.Length);
 
             // Unlock the bits.
-            bitmap.UnlockBits(bmpData);
+            bitmap.UnlockBits(bitmapData);
         }
     }
 }
