@@ -1,11 +1,11 @@
-using Freedom35.ImageProcessing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing;
-using Freedom35.ImageProcessing.Tests;
+using System.Runtime.Versioning;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
+    [SupportedOSPlatform("windows")]
     public class TestImageResize
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]

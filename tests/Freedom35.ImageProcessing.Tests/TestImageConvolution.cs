@@ -1,11 +1,11 @@
-using Freedom35.ImageProcessing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 using System.Drawing.Imaging;
+using System.Runtime.Versioning;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
+    [SupportedOSPlatform("windows")]
     public class TestImageConvolution
     {
         [TestMethod]

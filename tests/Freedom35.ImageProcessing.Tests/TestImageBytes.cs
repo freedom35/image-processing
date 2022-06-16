@@ -1,11 +1,10 @@
-using Freedom35.ImageProcessing;
-using Freedom35.ImageProcessing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Versioning;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
     public class TestImageBytes
@@ -83,6 +82,7 @@ namespace ImageProcessingTests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestBytesGetMinValue()
         {
             const string ResourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";
@@ -95,6 +95,7 @@ namespace ImageProcessingTests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestBytesGetMaxValue()
         {
             const string ResourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";
@@ -107,6 +108,7 @@ namespace ImageProcessingTests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestBytesGetMinMaxValue()
         {
             const string ResourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";
@@ -120,6 +122,7 @@ namespace ImageProcessingTests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestBytesGetAvgValue()
         {
             const string ResourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";

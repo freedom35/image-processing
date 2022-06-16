@@ -1,12 +1,12 @@
-using Freedom35.ImageProcessing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Drawing;
-using Freedom35.ImageProcessing.Tests;
+using System.Runtime.Versioning;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
+    [SupportedOSPlatform("windows")]
     public class TestImageThreshold
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp", "Freedom35.ImageProcessing.Tests.Resources.clock-otsu.bmp")]

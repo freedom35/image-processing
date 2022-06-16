@@ -1,11 +1,11 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Freedom35.ImageProcessing;
+using System.Runtime.Versioning;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
     public class TestImageColor
@@ -13,6 +13,7 @@ namespace ImageProcessingTests
         /// <summary>
         /// Helper method for test methods.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         private static byte[] CreateColorImage4x4(out BitmapData bitmapData)
         {
             bitmapData = new()
@@ -37,6 +38,7 @@ namespace ImageProcessingTests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestConvertToGrayscale()
         {
             byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);
@@ -48,8 +50,8 @@ namespace ImageProcessingTests
             Assert.AreEqual(convertedImage[0], imageBytes.Average(b => b));
         }
 
-
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestConvertInvalidImageToGrayscale()
         {
             byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);
@@ -61,8 +63,8 @@ namespace ImageProcessingTests
             Assert.ThrowsException<ArgumentException>(() => ImageColor.ToGrayscale(imageBytes, bitmapData));
         }
 
-
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestConvertNoImageToGrayscale()
         {
             byte[] imageBytes = Array.Empty<byte>();
@@ -94,6 +96,7 @@ namespace ImageProcessingTests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestConvertToBackAndWhiteWithThreshold()
         {
             byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);
