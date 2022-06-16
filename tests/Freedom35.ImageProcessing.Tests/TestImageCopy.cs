@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing;
-using System.Runtime.Versioning;
 
 namespace Freedom35.ImageProcessing.Tests
 {
@@ -9,7 +8,6 @@ namespace Freedom35.ImageProcessing.Tests
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
         [DataTestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestFromSourceToDestination(string resourcePath)
         {
             // Load source image

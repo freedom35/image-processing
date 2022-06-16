@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
-using System.Runtime.Versioning;
 
 namespace Freedom35.ImageProcessing.Tests
 {
@@ -13,7 +12,6 @@ namespace Freedom35.ImageProcessing.Tests
         /// <summary>
         /// Helper method for test methods.
         /// </summary>
-        [SupportedOSPlatform("windows")]
         private static byte[] CreateColorImage4x4(out BitmapData bitmapData)
         {
             bitmapData = new()
@@ -38,7 +36,6 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestConvertToGrayscale()
         {
             byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);
@@ -51,7 +48,6 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestConvertInvalidImageToGrayscale()
         {
             byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);
@@ -64,7 +60,6 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestConvertNoImageToGrayscale()
         {
             byte[] imageBytes = Array.Empty<byte>();
@@ -96,7 +91,6 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestConvertToBackAndWhiteWithThreshold()
         {
             byte[] imageBytes = CreateColorImage4x4(out BitmapData bitmapData);

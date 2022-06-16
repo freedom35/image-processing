@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing.Imaging;
-using System.Runtime.Versioning;
 
 namespace Freedom35.ImageProcessing.Tests
 {
@@ -8,7 +7,6 @@ namespace Freedom35.ImageProcessing.Tests
     public class TestImageConvolution
     {
         [TestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestApplyKernelGrayscale()
         {
             // 4x5 image
@@ -63,7 +61,6 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestApplyKernelColor()
         {
             // 4x5 image (RGB)

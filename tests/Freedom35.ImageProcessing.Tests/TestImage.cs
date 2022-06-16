@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.IO;
-using System.Runtime.Versioning;
 
 namespace Freedom35.ImageProcessing.Tests
 {
@@ -9,7 +8,6 @@ namespace Freedom35.ImageProcessing.Tests
     /// </summary>
     static class TestImage
     {
-        [SupportedOSPlatform("windows")]
         public static Image FromResource(string resourcePath)
         {
             // Keep stream open for processing

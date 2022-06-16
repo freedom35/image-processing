@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing;
-using System.Runtime.Versioning;
 
 namespace Freedom35.ImageProcessing.Tests
 {
@@ -9,7 +8,6 @@ namespace Freedom35.ImageProcessing.Tests
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
         [DataTestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestImageResizeAsNew(string resourcePath)
         {
             // Load source image
@@ -34,7 +32,6 @@ namespace Freedom35.ImageProcessing.Tests
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
         [DataTestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestImageResizeAsNewByRatio(string resourcePath)
         {
             // Load source image
@@ -55,7 +52,6 @@ namespace Freedom35.ImageProcessing.Tests
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
         [DataTestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestImageResizeOriginal(string resourcePath)
         {
             // Load source image
@@ -82,7 +78,6 @@ namespace Freedom35.ImageProcessing.Tests
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
         [DataTestMethod]
-        [SupportedOSPlatform("windows")]
         public void TestImageResizeOriginalByRatio(string resourcePath)
         {
             // Load source image
