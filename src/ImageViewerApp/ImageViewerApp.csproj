@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Description>.NET Core Windows app for demonstrating image processing functions.</Description>
     <Authors>Alan Barr (GitHub: freedom35)</Authors>
     <PackageLicenseFile></PackageLicenseFile>
     <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.5.0</Version>
+    <Version>1.6.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
