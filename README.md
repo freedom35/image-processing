@@ -1,7 +1,7 @@
 # Image Processing Library
 This image processing library is a lightweight open source library targeting **.NET Standard v2.0**.  
 
-Note: **.NET Standard** libraries can be used in **.NET Full Framework** and **.NET Core** (now **.NET 5.0**) projects.
+Note: **.NET Standard** libraries can be used in **.NET Full Framework** and **.NET Core** (now **.NET 6.0**) projects.
 
 This library may be used as an educational tool on how such image processing methods can be implemented, or used within your own projects that require some form of image processing.  
 
@@ -14,6 +14,7 @@ You are welcome to use/update this software under the terms of the **MIT license
 The published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 |Date|Version|Release Notes|
 |:---|:---:|:----|
+|2022/06/16|[1.4.1](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.4.1)|Updated System.Drawing.Common package dependency to v6.0.0.|
 |2021/07/30|[1.4.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.4.0)|Added overload methods for converting color images to grayscale.<br />Added overload methods for converting images to black & white.|
 |2021/07/28|[1.3.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.3.0)|Added support for applying sepia filter to images.|
 |20201/07/08|[1.2.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.2.0)|Fixed issue with stride padded images causing an *index out of bounds* exception when enhancing contrast.<br />Fixed issue with RGB color filters not working correctly for images with stride padding and alpha bytes.<br />Fixed issue with processing images with stride padding and alpha bytes.<br />Fixed issue where max threshold value was not correctly applied to the red (RGB) byte for color images.<br />Revision to combine images using bitwise OR.|
