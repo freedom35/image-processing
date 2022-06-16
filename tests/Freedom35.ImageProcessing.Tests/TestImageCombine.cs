@@ -6,10 +6,10 @@ using System.Runtime.Versioning;
 namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
-    [SupportedOSPlatform("windows")]
     public class TestImageCombine
     {
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestCombineAllNone()
         {
             Bitmap combinedImage = ImageCombine.All(Array.Empty<Image>());
@@ -17,6 +17,7 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestCombineAllMixedColor()
         {
             using Image colorImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock.bmp");
@@ -35,6 +36,7 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestCombineAllOne()
         {
             using Image sourceImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock.bmp");
@@ -60,6 +62,7 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestCombineAllSame()
         {
             string resourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";
@@ -88,6 +91,7 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [TestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestCombineAllWithNegative()
         {
             string resourcePath = "Freedom35.ImageProcessing.Tests.Resources.clock.bmp";

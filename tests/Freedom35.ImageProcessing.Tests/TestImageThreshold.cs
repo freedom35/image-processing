@@ -6,11 +6,11 @@ using System.Runtime.Versioning;
 namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
-    [SupportedOSPlatform("windows")]
     public class TestImageThreshold
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp", "Freedom35.ImageProcessing.Tests.Resources.clock-otsu.bmp")]
         [DataTestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestApplyThreshold(string sourceResourcePath, string resultResourcePath)
         {
             // Load source image
@@ -34,6 +34,7 @@ namespace Freedom35.ImageProcessing.Tests
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp", "Freedom35.ImageProcessing.Tests.Resources.clock-otsu.bmp")]
         [DataTestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestOtsuThreshold(string sourceResourcePath, string resultResourcePath)
         {
             // Load source image
@@ -60,6 +61,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
         [DataTestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestApplyThresholdValue(string sourceResourcePath)
         {
             // Load source image
@@ -82,6 +84,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
         [DataTestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestApplyMin(string sourceResourcePath)
         {
             // Load source image
@@ -105,6 +108,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
         [DataTestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestApplyMax(string sourceResourcePath)
         {
             // Load source image
@@ -128,6 +132,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
         [DataTestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestApplyMinMax(string sourceResourcePath)
         {
             // Load source image

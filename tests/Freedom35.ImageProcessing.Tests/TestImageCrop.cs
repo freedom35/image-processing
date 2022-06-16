@@ -5,7 +5,6 @@ using System.Runtime.Versioning;
 namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
-    [SupportedOSPlatform("windows")]
     public class TestImageCrop
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
@@ -13,6 +12,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
         [DataTestMethod]
+        [SupportedOSPlatform("windows")]
         public void TestByRegion(string resourcePath)
         {
             // Load source image
