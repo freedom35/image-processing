@@ -642,16 +642,16 @@ namespace Freedom35.ImageProcessing
                     }
 
                     // Create struct with threshold data
-                    rd = new ThresholdRegionData()
+                    rd = new ThresholdRegionData
                     {
                         X = x,
                         Y = y,
                         CenterX = regionX1 + (regionWidth / 2),
-                        CenterY = (y * regionHeight) + (regionHeight / 2)
+                        CenterY = (y * regionHeight) + (regionHeight / 2),
+                        
+                        // Apply Otsu to localized region
+                        Threshold = GetByOtsuMethod(regionBytes, pixelDepth)
                     };
-                                        
-                    // Apply Otsu to localized region
-                    rd.Threshold = GetByOtsuMethod(regionBytes, pixelDepth);
 
                     // Assign threshold data to region
                     regionThresholds[(y * horizontalRegions) + x] = rd;
