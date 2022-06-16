@@ -5,7 +5,7 @@
     <Description>.NET Standard library for image processing.</Description>
     <Authors>Alan Barr (GitHub: freedom35)</Authors>
     <Company>Alan Barr (GitHub: freedom35)</Company>
-    <Copyright>Copyright © Alan Barr 2021</Copyright>
+    <Copyright>Copyright © Alan Barr 2022</Copyright>
     <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -15,11 +15,11 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

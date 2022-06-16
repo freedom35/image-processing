@@ -1,11 +1,10 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Freedom35.ImageProcessing;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
     public class TestImageColor
@@ -48,7 +47,6 @@ namespace ImageProcessingTests
             Assert.AreEqual(convertedImage[0], imageBytes.Average(b => b));
         }
 
-
         [TestMethod]
         public void TestConvertInvalidImageToGrayscale()
         {
@@ -60,7 +58,6 @@ namespace ImageProcessingTests
 
             Assert.ThrowsException<ArgumentException>(() => ImageColor.ToGrayscale(imageBytes, bitmapData));
         }
-
 
         [TestMethod]
         public void TestConvertNoImageToGrayscale()

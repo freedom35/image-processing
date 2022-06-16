@@ -1,9 +1,7 @@
-using Freedom35.ImageProcessing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing;
-using Freedom35.ImageProcessing.Tests;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
     public class TestImageResize

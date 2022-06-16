@@ -1,11 +1,9 @@
-using Freedom35.ImageProcessing;
-using Freedom35.ImageProcessing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Drawing;
 using System.Linq;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
     public class TestImageBytes

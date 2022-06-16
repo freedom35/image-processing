@@ -1,9 +1,7 @@
-using Freedom35.ImageProcessing;
-using Freedom35.ImageProcessing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing;
 
-namespace ImageProcessingTests
+namespace Freedom35.ImageProcessing.Tests
 {
     [TestClass]
     public class TestImageCopy
