@@ -1,13 +1,15 @@
 # Image Processing Library
 This image processing library is a lightweight open source library targeting **.NET Standard v2.0**.  
 
-Note: **.NET Standard** libraries can be used in **.NET Full Framework** and **.NET Core** (now **.NET 6.0**) projects.
-
 This library may be used as an educational tool on how such image processing methods can be implemented, or used within your own projects that require some form of image processing.  
 
 See the appropriate section for details on each image processing class and their methods available.  
 
 You are welcome to use/update this software under the terms of the **MIT license**.  
+
+Notes: 
+1. **.NET Standard** libraries can be used in **.NET Full Framework** and **.NET Core** (now **.NET 6.0**) projects.
+2. The image processing library is only supported on **Windows OS** due to the dependency on Microsoft's [System.Drawing.Common](https://www.nuget.org/packages/System.Drawing.Common) NuGet package.
 <br />
 
 ## Release History
@@ -31,8 +33,8 @@ The repository contains some sample [Visual Studio](https://visualstudio.microso
 
 |Name|Description|
 |-----|-----|
-|Freedom35.ImageProcessing.sln|Portable solution (for both Windows/Mac) containing image processing library and unit tests.|
-|Freedom35.ImageProcessing.WindowsDesktop.sln|Solution containing image processing library, unit tests, plus an Image Viewer app for Windows desktop.|  
+|Freedom35.ImageProcessing.sln|Base solution containing image processing library and unit tests.|
+|Freedom35.ImageProcessing.WindowsDesktop.sln|Extended solution containing image processing library, unit tests, plus an Image Viewer app for Windows desktop.|  
 
 <br />
 <br />
