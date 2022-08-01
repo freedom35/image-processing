@@ -13,7 +13,7 @@ Notes:
 <br />
 
 ## Release History
-The published package is available for download on [NuGet.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
+The published package is available for download on [nuget.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 |Date|Version|Release Notes|
 |:---|:---:|:----|
 |2022/06/16|[1.4.1](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.4.1)|Updated System.Drawing.Common package dependency to v6.0.0.|
@@ -34,7 +34,7 @@ The repository contains some sample [Visual Studio](https://visualstudio.microso
 |Name|Description|
 |-----|-----|
 |Freedom35.ImageProcessing.sln|Base solution containing image processing library and unit tests.|
-|Freedom35.ImageProcessing.WindowsDesktop.sln|Extended solution containing image processing library, unit tests, plus an Image Viewer app for Windows desktop.|  
+|Freedom35.ImageProcessing.WindowsDesktop.sln|Extended solution containing projects from base solution, plus an Image Viewer app for Windows desktop.|  
 
 <br />
 <br />
@@ -69,39 +69,41 @@ using System.Drawing;
 Image currentImage = Image.FromFile(@"C:\Images\Example-Image.bmp");
 ```
 
-5. Most methods within the library are static, they should be called directly - they do not require instantiating a class first. Make the appropriate call to the method associated with the image processing function you wish to perform.  
-For example:
+5. Most methods within the library are static, they should be called directly - they do not require instantiating a class first. Make the appropriate call to the method associated with the image processing function you wish to perform. For example:
 ```csharp
 Image newImage = ImageContrast.Enhance(currentImage);
 ```  
 <br />
 
 ## Notes on Usage
-If you're only making a single call and do not necessarily want to include the namespace at the top of your code file, methods may also be called by explicitly including the namespace before the method name.  
-Example:
-```csharp
-// Full namespace
-Image newImage = Freedom35.ImageProcessing.ImageColor.ToNegative(currentImage);
-```  
+Below are some additional notes on using the Image Processing Library in projects.
+
+### Method Calls
 Most methods have a standard method that will return a new image (leaving the original intact), and also a direct method which will alter the original image directly. The **direct methods require using a bitmap** encoded image.  
 
 The standard methods will automatically convert the image to a Bitmap (if required) for processing, and return the processed image in the original format.  
-Example:
+
 ```csharp
-// Will apply threshold and return a new image
+// Example: Will apply threshold and return a new image
 Image newImage = ImageThreshold.ApplyOtsuMethod(currentImage);
 ```  
 ```csharp
-// Will apply threshold directly to current image
+// Example: Will apply threshold directly to current image
 ImageThreshold.ApplyOtsuMethodDirect(ref currentImage);
 ```  
 
-If you wish to display images in WPF projects where controls (such as the Image control) typically use the **System.Windows.Media.Imaging** namespace, **System.Drawing** images can be converted using the **Freedom35.ImageProcessing.ImageConverter** class.  
-Example:  
-
+### Namespace
+If you're only making a single call to the library and do not necessarily want to include the namespace at the top of your code file, methods may also be called by explicitly including the full namespace before the method name.  
 ```csharp
-// Convert to WPF image
-ImageSource wpfImage = ImageConverter.ConvertImageToBitmapSource(image);
+// Example using full namespace
+Image newImage = Freedom35.ImageProcessing.ImageColor.ToNegative(currentImage);
+```  
+
+### Windows Presentation Foundation (WPF)
+If you wish to display images in WPF projects where user controls typically use the **System.Windows.Media.Imaging** namespace for images rather than **System.Drawing** namespace, the ***ImageConverter*** class in the **ImageViewerApp** provides an example of how to convert images for WPF usage.  
+```csharp
+// Example: Convert System.Drawing image to WPF image
+BitmapSource wpfImage = ImageConverter.ConvertImageToBitmapSource(image);
 ```
 
 <br />
