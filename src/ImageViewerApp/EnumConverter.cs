@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Reflection;
 
 using Freedom35.ImageProcessing;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ImageViewerApp
 {
@@ -35,20 +36,22 @@ namespace ImageViewerApp
             throw new NotSupportedException();
         }
 
-        public static T GetValueFromDescription<T>(string description) where T : Enum
+        public static bool TryGetValueFromDescription<T>(string description, [NotNullWhen(true)] out T? enumValue) where T : Enum
         {
             FieldInfo[] fields = typeof(T).GetFields();
 
-            FieldInfo field = fields.FirstOrDefault(f => Attribute.GetCustomAttribute(f, typeof(DescriptionAttribute)) is DescriptionAttribute attr && attr.Description == description);
+            // Note: Matching enum description attribute (not name)
+            FieldInfo? field = fields.FirstOrDefault(f => Attribute.GetCustomAttribute(f, typeof(DescriptionAttribute)) is DescriptionAttribute attr && attr.Description == description);
 
             if (field != null)
             {
-                return (T)field.GetValue(null);
+                enumValue = (T?)field.GetValue(null);
+                return enumValue != null;
             }
-            else
-            {
-                return default;
-            }
+
+            // Must init
+            enumValue = default;
+            return false;
         }
     }
 }
