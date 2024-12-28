@@ -11,7 +11,7 @@ namespace Freedom35.ImageProcessing.Tests
         public static Image FromResource(string resourcePath)
         {
             // Keep stream open for processing
-            Stream resourceStream = System.Reflection.Assembly.GetCallingAssembly().GetManifestResourceStream(resourcePath);
+            Stream? resourceStream = System.Reflection.Assembly.GetCallingAssembly().GetManifestResourceStream(resourcePath) ?? throw new FileNotFoundException($"Unable to load resource: {resourcePath}");
             
             return Image.FromStream(resourceStream);
         }

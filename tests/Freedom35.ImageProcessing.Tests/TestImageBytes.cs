@@ -17,8 +17,6 @@ namespace Freedom35.ImageProcessing.Tests
         {
             byte[] imageBytes = ImageBytes.FromResource(resourcePath);
 
-            Assert.IsNotNull(imageBytes);
-
             // Check not an empty array
             Assert.IsTrue(imageBytes.Length > 0);
 
@@ -29,19 +27,19 @@ namespace Freedom35.ImageProcessing.Tests
         [TestMethod]
         public void TestBytesToBits()
         {
-            byte[] byteValues = new byte[] 
-            { 
+            byte[] byteValues =
+            [
                 0xD5, 
                 0x3C 
-            };
+            ];
 
             byte[] bitValues = ImageBytes.BytesToBits(byteValues);
 
-            byte[] expectedBitValues = new byte[]
-            {
+            byte[] expectedBitValues =
+            [
                 1, 1, 0, 1, 0, 1, 0, 1,
                 0, 0, 1, 1, 1, 1, 0, 0,
-            };
+            ];
 
             // Check expected number in array
             Assert.AreEqual(expectedBitValues.Length, bitValues.Length);
@@ -56,19 +54,19 @@ namespace Freedom35.ImageProcessing.Tests
         [TestMethod]
         public void TestBitsToBytes()
         {
-            byte[] bitValues = new byte[]
-            {
+            byte[] bitValues =
+            [
                 1, 1, 0, 1, 0, 1, 0, 1,
                 0, 0, 1, 1, 1, 1, 0, 0,
-            };
+            ];
 
             byte[] byteValues = ImageBytes.BitsToBytes(bitValues);
 
-            byte[] expectedByteValues = new byte[] 
-            { 
+            byte[] expectedByteValues =
+            [
                 0xD5, 
                 0x3C 
-            };
+            ];
 
             // Check expected number in array
             Assert.AreEqual(expectedByteValues.Length, byteValues.Length);

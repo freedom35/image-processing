@@ -13,9 +13,7 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(resourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
-            Bitmap bitmap = sourceImage as Bitmap;
+            Bitmap? bitmap = sourceImage as Bitmap;
 
             Assert.IsNotNull(bitmap);
 
@@ -25,7 +23,6 @@ namespace Freedom35.ImageProcessing.Tests
 
             using Image resizedImage = ImageResize.ResizeAsNew(bitmap, width, height);
 
-            Assert.IsNotNull(resizedImage);
             Assert.AreEqual(width, resizedImage.Width);
             Assert.AreEqual(height, resizedImage.Height);
         }
@@ -37,15 +34,12 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(resourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
-            Bitmap bitmap = sourceImage as Bitmap;
+            Bitmap? bitmap = sourceImage as Bitmap;
 
             Assert.IsNotNull(bitmap);
 
             using Image resizedImage = ImageResize.ResizeAsNew(bitmap, 2.0);
 
-            Assert.IsNotNull(resizedImage);
             Assert.AreEqual(bitmap.Width * 2, resizedImage.Width);
             Assert.AreEqual(bitmap.Height * 2, resizedImage.Height);
         }
@@ -57,9 +51,7 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             Image sourceImage = TestImage.FromResource(resourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
-            Bitmap bitmap = sourceImage as Bitmap;
+            Bitmap? bitmap = sourceImage as Bitmap;
 
             Assert.IsNotNull(bitmap);
 
@@ -83,9 +75,7 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             Image sourceImage = TestImage.FromResource(resourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
-            Bitmap bitmap = sourceImage as Bitmap;
+            Bitmap? bitmap = sourceImage as Bitmap;
 
             Assert.IsNotNull(bitmap);
 

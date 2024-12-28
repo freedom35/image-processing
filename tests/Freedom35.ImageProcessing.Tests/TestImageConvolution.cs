@@ -10,12 +10,12 @@ namespace Freedom35.ImageProcessing.Tests
         public void TestApplyKernelGrayscale()
         {
             // 4x5 image
-            byte[] imageBytes = {
+            byte[] imageBytes = [
                 1, 1, 3, 3, 4,
                 1, 1, 4, 4, 3,
                 2, 1, 3, 3, 3,
                 1, 1, 1, 4, 4
-            };
+            ];
 
             // Grayscale image
             BitmapData bmpData = new()
@@ -34,21 +34,13 @@ namespace Freedom35.ImageProcessing.Tests
             // Apply kernel to bytes
             byte[] resultBytes = ImageConvolution.ApplyKernel(imageBytes, bmpData, kernelMatrix);
 
-            // Edge cases retain original values
-            //byte[] expectedBytes = {
-            //    2, 5, 7, 6, 4,
-            //    2, 4, 7, 7, 3,
-            //    3, 2, 7, 7, 3,
-            //    1, 1, 1, 4, 4
-            //};
-
             // Edge cases assigned black value
-            byte[] expectedBytes = {
+            byte[] expectedBytes = [
                 2, 5, 7, 6, 0,
                 2, 4, 7, 7, 0,
                 3, 2, 7, 7, 0,
                 0, 0, 0, 0, 0
-            };
+            ];
 
             // Check arrays are same length
             Assert.AreEqual(expectedBytes.Length, resultBytes.Length);
@@ -64,12 +56,12 @@ namespace Freedom35.ImageProcessing.Tests
         public void TestApplyKernelColor()
         {
             // 4x5 image (RGB)
-            byte[] imageBytes = {
+            byte[] imageBytes = [
                 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 4, 4, 4,
                 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 3, 3, 3,
                 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4
-            };
+            ];
 
             // Color image
             BitmapData bmpData = new()
@@ -89,12 +81,12 @@ namespace Freedom35.ImageProcessing.Tests
             byte[] resultBytes = ImageConvolution.ApplyKernel(imageBytes, bmpData, kernelMatrix);
 
             // Edge cases assigned black value
-            byte[] expectedBytes = {
+            byte[] expectedBytes = [
                 2, 2, 2, 5, 5, 5, 7, 7, 7, 6, 6, 6, 0, 0, 0,
                 2, 2, 2, 4, 4, 4, 7, 7, 7, 7, 7, 7, 0, 0, 0,
                 3, 3, 3, 2, 2, 2, 7, 7, 7, 7, 7, 7, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-            };
+            ];
 
             // Check arrays are same length
             Assert.AreEqual(expectedBytes.Length, resultBytes.Length);

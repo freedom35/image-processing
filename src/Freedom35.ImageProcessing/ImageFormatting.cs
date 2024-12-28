@@ -106,12 +106,7 @@ namespace Freedom35.ImageProcessing
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
 
             // Find JPEG codec
-            ImageCodecInfo jpegEncoder = codecs.FirstOrDefault(c => c.FormatID == ImageFormat.Jpeg.Guid);
-
-            if (jpegEncoder == null)
-            {
-                throw new Exception("JPEG image encoder not found.");
-            }
+            ImageCodecInfo jpegEncoder = codecs.FirstOrDefault(c => c.FormatID == ImageFormat.Jpeg.Guid) ?? throw new Exception("JPEG image encoder not found.");
 
             // Create compression parameters
             EncoderParameters encParams = new EncoderParameters(1);

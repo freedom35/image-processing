@@ -115,7 +115,7 @@ namespace Freedom35.ImageProcessing
             }
 
             // Combine to create a new image
-            bitmap = ImageCombine.All(bitmaps);
+            Bitmap combinedBitmap = ImageCombine.All(bitmaps);
 
             // No longer needed
             foreach (Bitmap bmp in bitmaps)
@@ -123,7 +123,7 @@ namespace Freedom35.ImageProcessing
                 bmp.Dispose();
             }
 
-            return bitmap;
+            return combinedBitmap;
         }
 
         /// <summary>

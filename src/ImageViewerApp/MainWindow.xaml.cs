@@ -2,8 +2,6 @@
 using System;
 using System.Drawing;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Drawing.Imaging;
 using System.Linq;
 
@@ -23,13 +21,13 @@ namespace ImageViewerApp
 
         private const string SaveFileFilter = "Bitmap|*.bmp|JPEG|*.jpg|PNG|*.png|TIFF|*.tif";
 
-        private Image originalImage = null;
-        private Image currentImage = null;
-        private Image previousImage= null;
+        private Image? originalImage = null;
+        private Image? currentImage = null;
+        private Image? previousImage= null;
 
         private System.Windows.Point zoomStartPoint = new(-1, -1);
         
-        private System.Windows.Input.Cursor defaultCursor = null;
+        private System.Windows.Input.Cursor? defaultCursor = null;
 
         #endregion
 
@@ -49,14 +47,17 @@ namespace ImageViewerApp
         {
             // Check command line args for any 'Open With...' images.
             // (First arg will be app path)
-            string imageName = Environment.GetCommandLineArgs().Skip(1).FirstOrDefault();
+            string? imageName = Environment.GetCommandLineArgs().Skip(1).FirstOrDefault();
 
-            string[] SupportedImageTypes = { "bmp", "jpg", "png", "tif" };
-
-            // Open image if valid file type
-            if (!string.IsNullOrEmpty(imageName) && SupportedImageTypes.Any(t => imageName.EndsWith(t, StringComparison.OrdinalIgnoreCase)))
+            if (!string.IsNullOrEmpty(imageName))
             {
-                OpenImage(imageName);
+                string[] SupportedImageTypes = ["bmp", "jpg", "png", "tif"];
+
+                // Open image if valid file type
+                if (SupportedImageTypes.Any(t => imageName.EndsWith(t, StringComparison.OrdinalIgnoreCase)))
+                {
+                    OpenImage(imageName);
+                }
             }
         }
 
@@ -192,8 +193,8 @@ namespace ImageViewerApp
             // Create histogram of image
             Image histogram = ImageHistogram.Create(sourceImage,
                 new System.Drawing.Size((int)targetPictureBox.DesiredSize.Width - 20, (int)targetPictureBox.DesiredSize.Height),
-                System.Drawing.Color.DodgerBlue,
-                System.Drawing.Color.White);
+                Color.DodgerBlue,
+                Color.White);
 
             // Display histogram
             targetPictureBox.Source = ImageConverter.ConvertImageToBitmapSource(histogram);
@@ -258,7 +259,7 @@ namespace ImageViewerApp
             }
         }
 
-        private void Button_UndoImageChange_Click(object sender, RoutedEventArgs e)
+        private void Button_UndoImageChange_Click(object? sender, RoutedEventArgs? e)
         {
             if (previousImage != null)
             {
@@ -268,19 +269,25 @@ namespace ImageViewerApp
 
         private void Button_ApplyConvolution_Click(object sender, RoutedEventArgs e)
         {
-            if (currentImage != null && cmbConvolution.SelectedIndex > -1)
+            // Check an image is loaded
+            if (currentImage == null)
             {
-                string strValue = cmbConvolution.SelectedItem as string;
+                return;
+            }
 
-                ConvolutionType type = EnumConverter.GetValueFromDescription<ConvolutionType>(strValue);
-
-                try
+            // Check a valid filter is selected
+            if (cmbConvolution.SelectedIndex > -1 && cmbConvolution.SelectedItem is string strValue)
+            {
+                if (EnumConverter.TryGetValueFromDescription(strValue, out ConvolutionType type))
                 {
-                    DisplayImage(ImageConvolution.ApplyKernel(currentImage, type));
-                }
-                catch (Exception ex)
-                {
-                    ReportException(ex);
+                    try
+                    {
+                        DisplayImage(ImageConvolution.ApplyKernel(currentImage, type));
+                    }
+                    catch (Exception ex)
+                    {
+                        ReportException(ex);
+                    }
                 }
             }
         }

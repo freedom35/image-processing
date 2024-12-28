@@ -10,7 +10,7 @@ namespace Freedom35.ImageProcessing.Tests
         [TestMethod]
         public void TestCombineAllNone()
         {
-            Bitmap combinedImage = ImageCombine.All(Array.Empty<Image>());
+            Bitmap? combinedImage = ImageCombine.All(Array.Empty<Image>());
             Assert.IsNull(combinedImage);
         }
 
@@ -18,16 +18,14 @@ namespace Freedom35.ImageProcessing.Tests
         public void TestCombineAllMixedColor()
         {
             using Image colorImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock.bmp");
-            Assert.IsNotNull(colorImage);
-
+            
             using Image bwImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock-bw.bmp");
-            Assert.IsNotNull(bwImage);
-
-            Image[] imagesToCombine = new Image[]
-            {
+            
+            Image[] imagesToCombine =
+            [
                 colorImage,
                 bwImage
-            };
+            ];
 
             Assert.ThrowsException<ArgumentException>(() => ImageCombine.All(imagesToCombine));
         }
@@ -36,15 +34,15 @@ namespace Freedom35.ImageProcessing.Tests
         public void TestCombineAllOne()
         {
             using Image sourceImage = TestImage.FromResource("Freedom35.ImageProcessing.Tests.Resources.clock.bmp");
-            Assert.IsNotNull(sourceImage);
-
-            Image[] imagesToCombine = new Image[]
-            {
+            
+            Image[] imagesToCombine =
+            [
                 sourceImage
-            };
+            ];
 
             // Combine
-            Bitmap combinedBitmap = ImageCombine.All(imagesToCombine);
+            Bitmap? combinedBitmap = ImageCombine.All(imagesToCombine);
+            Assert.IsNotNull(combinedBitmap);
 
             // Convert for byte comparison
             byte[] sourceBytes = ImageBytes.FromImage(sourceImage);
@@ -64,19 +62,18 @@ namespace Freedom35.ImageProcessing.Tests
 
             // Load source image
             using Image sourceImage = TestImage.FromResource(resourcePath);
-            Assert.IsNotNull(sourceImage);
-
+            
             using Image sourceImageCopy = TestImage.FromResource(resourcePath);
-            Assert.IsNotNull(sourceImageCopy);
-
-            Image[] imagesToCombine = new Image[]
-            {
+            
+            Image[] imagesToCombine =
+            [
                 sourceImage,
                 sourceImageCopy
-            };
+            ];
 
             // Combine
-            Bitmap combinedImage = ImageCombine.All(imagesToCombine);
+            Bitmap? combinedImage = ImageCombine.All(imagesToCombine);
+            Assert.IsNotNull(combinedImage);
 
             // Convert for byte comparison
             Bitmap sourceBitmap = ImageFormatting.ToBitmap(sourceImage);
@@ -92,18 +89,17 @@ namespace Freedom35.ImageProcessing.Tests
 
             // Load source image
             using Image sourceImage = TestImage.FromResource(resourcePath);
-            Assert.IsNotNull(sourceImage);
-
+            
             using Image negativeCopy = ImageColor.ToNegative(sourceImage);
-            Assert.IsNotNull(negativeCopy);
-
-            Image[] imagesToCombine = new Image[]
-            {
+            
+            Image[] imagesToCombine =
+            [
                 sourceImage,
                 negativeCopy
-            };
+            ];
 
-            Bitmap combinedImage = ImageCombine.All(imagesToCombine);
+            Bitmap? combinedImage = ImageCombine.All(imagesToCombine);
+            Assert.IsNotNull(combinedImage);
 
             // Get bytes for images
             byte[] combinedBytes = ImageBytes.FromImage(combinedImage);
