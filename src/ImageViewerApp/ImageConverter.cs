@@ -15,7 +15,7 @@ namespace ImageViewerApp
     [ValueConversion(typeof(Image), typeof(ImageSource))]
     internal sealed class ImageConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Image img)
             {
@@ -33,7 +33,7 @@ namespace ImageViewerApp
             throw new NotSupportedException();
         }
 
-        public static BitmapImage ConvertImageToBitmapSource(Image image)
+        public static BitmapImage? ConvertImageToBitmapSource(Image image)
         {
             // First convert to stream
             using MemoryStream stream = new();
@@ -42,9 +42,9 @@ namespace ImageViewerApp
             return ConvertStreamToBitmapSource(stream);
         }
 
-        public static BitmapImage ConvertStreamToBitmapSource(MemoryStream stream)
+        public static BitmapImage? ConvertStreamToBitmapSource(MemoryStream stream)
         {
-            BitmapImage bmp = null;
+            BitmapImage? bmp = null;
 
             if (stream != null && stream.CanSeek && stream.CanRead)
             {
