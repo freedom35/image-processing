@@ -14,17 +14,11 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(sourceResourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
             // Apply Thresholding - currently uses Otsu as default
             using Image thresholdImage = ImageThreshold.Apply(sourceImage);
 
-            Assert.IsNotNull(thresholdImage);
-
             // Load correct result image
             using Image resultImage = TestImage.FromResource(resultResourcePath);
-
-            Assert.IsNotNull(resultImage);
 
             // Compare images
             Assert.IsTrue(TestImage.Compare(thresholdImage, resultImage));
@@ -37,18 +31,12 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(sourceResourcePath);
             
-            Assert.IsNotNull(sourceImage);
-
             // Apply Thresholding
             using Image thresholdImage = ImageThreshold.ApplyOtsuMethod(sourceImage);
-
-            Assert.IsNotNull(thresholdImage);
 
             // Load correct result image
             using Image resultImage = TestImage.FromResource(resultResourcePath);
             
-            Assert.IsNotNull(resultImage);
-
             // Compare images
             Assert.IsTrue(TestImage.Compare(thresholdImage, resultImage));
         }
@@ -63,12 +51,9 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(sourceResourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
             // Apply threshold
             using Image thresholdImage = ImageThreshold.Apply(sourceImage, 0x40);
-            Assert.IsNotNull(thresholdImage);
-
+            
             byte[] withoutAlphaBytes = RemoveAlphaLayerBytes(ImageBytes.FromImage(thresholdImage), sourceImage.PixelFormat);
 
             // Check bytes thresholded
@@ -85,12 +70,8 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(sourceResourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
             // Apply min value
             using Image minImage = ImageThreshold.ApplyMin(sourceImage, 0x20);
-
-            Assert.IsNotNull(minImage);
 
             byte[] withoutAlphaBytes = RemoveAlphaLayerBytes(ImageBytes.FromImage(minImage), sourceImage.PixelFormat);
 
@@ -108,12 +89,8 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(sourceResourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
             // Apply max value
             using Image maxImage = ImageThreshold.ApplyMax(sourceImage, 0xD0);
-
-            Assert.IsNotNull(maxImage);
 
             byte[] withoutAlphaBytes = RemoveAlphaLayerBytes(ImageBytes.FromImage(maxImage), sourceImage.PixelFormat);
 
@@ -131,12 +108,8 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(sourceResourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
             // Apply min/max value
             using Image minMaxImage = ImageThreshold.ApplyMinMax(sourceImage, 0x25, 0xc3);
-
-            Assert.IsNotNull(minMaxImage);
 
             byte[] withoutAlphaBytes = RemoveAlphaLayerBytes(ImageBytes.FromImage(minMaxImage), sourceImage.PixelFormat);
 

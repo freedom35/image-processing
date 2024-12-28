@@ -16,14 +16,10 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(resourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
             Rectangle region = new(0, 0, sourceImage.Width / 2, sourceImage.Height / 2);
 
             // Crop region of image
             using Image croppedImage = ImageCrop.ByRegion(sourceImage, region);
-
-            Assert.IsNotNull(croppedImage);
 
             // Check size
             Assert.AreEqual(region.Width, croppedImage.Width);

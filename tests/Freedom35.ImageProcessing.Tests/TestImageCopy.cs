@@ -11,7 +11,7 @@ namespace Freedom35.ImageProcessing.Tests
         public void TestFromSourceToDestination(string resourcePath)
         {
             // Load source image
-            using Bitmap sourceBitmap = TestImage.FromResource(resourcePath) as Bitmap;
+            using Bitmap? sourceBitmap = TestImage.FromResource(resourcePath) as Bitmap;
 
             Assert.IsNotNull(sourceBitmap);
 

@@ -17,15 +17,13 @@ namespace Freedom35.ImageProcessing.Tests
             // Load source image
             using Image sourceImage = TestImage.FromResource(sourceResourcePath);
 
-            Assert.IsNotNull(sourceImage);
-
             const byte Threshold = 0x7F;
 
             // Get bytes for image
             byte[] imageBytes = ImageBinary.AsBytes(sourceImage, Threshold);
 
             // Check we have some bytes
-            Assert.IsNotNull(imageBytes);
+            Assert.IsTrue(imageBytes.Length > 0);
 
             // Check all converted to binary (0 or 1)
             Assert.IsTrue(imageBytes.All(b => b < 0x02));

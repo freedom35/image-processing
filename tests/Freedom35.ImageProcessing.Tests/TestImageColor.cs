@@ -22,7 +22,7 @@ namespace Freedom35.ImageProcessing.Tests
                 PixelFormat = PixelFormat.Format24bppRgb
             };
 
-            List<byte> listBytes = new();
+            List<byte> listBytes = [];
 
             for (int i = 0; i < bitmapData.Width * bitmapData.Height; i++)
             {
@@ -32,7 +32,7 @@ namespace Freedom35.ImageProcessing.Tests
                 listBytes.Add(150);
             }
 
-            return listBytes.ToArray();
+            return [.. listBytes];
         }
 
         [TestMethod]
@@ -42,7 +42,6 @@ namespace Freedom35.ImageProcessing.Tests
 
             byte[] convertedImage = ImageColor.ToGrayscale(imageBytes, bitmapData);
 
-            Assert.IsNotNull(convertedImage);
             Assert.AreEqual(convertedImage.Length, imageBytes.Length / 3);
             Assert.AreEqual(convertedImage[0], imageBytes.Average(b => b));
         }
@@ -62,7 +61,7 @@ namespace Freedom35.ImageProcessing.Tests
         [TestMethod]
         public void TestConvertNoImageToGrayscale()
         {
-            byte[] imageBytes = Array.Empty<byte>();
+            byte[] imageBytes = [];
 
             BitmapData bitmapData = new()
             {
@@ -79,11 +78,11 @@ namespace Freedom35.ImageProcessing.Tests
         [TestMethod]
         public void TestConvertToBackAndWhite()
         {
-            byte[] imageBytes = {
+            byte[] imageBytes = [
                 50,
                 100,
                 150
-            };
+            ];
 
             byte[] convertedImage = ImageColor.ToBlackAndWhite(imageBytes);
 
@@ -103,11 +102,11 @@ namespace Freedom35.ImageProcessing.Tests
         [TestMethod]
         public void TestConvertToNegative()
         {
-            byte[] imageBytes = {
+            byte[] imageBytes = [
                 0x01,
                 0xf0,
                 0x3c
-            };
+            ];
 
             ImageColor.ToNegative(imageBytes);
 
@@ -119,10 +118,10 @@ namespace Freedom35.ImageProcessing.Tests
         [TestMethod]
         public void TestConvertMonochromeToNegative()
         {
-            byte[] imageBytes = {
+            byte[] imageBytes = [
                 1,
                 0
-            };
+            ];
 
             ImageColor.MonochromeToNegative(imageBytes);
 
