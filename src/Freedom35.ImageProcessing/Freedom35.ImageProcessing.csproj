@@ -15,8 +15,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.5.0</Version>
+    <Version>1.5.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>Revision for including readme in NuGet package.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
