@@ -5,42 +5,64 @@ This library may be used as an educational tool on how such image processing met
 
 See the appropriate section for details on each image processing class and their methods available.  
 
-You are welcome to use/update this software under the terms of the **MIT license**.  
+You are welcome to use/update this software under the terms of the [MIT license](https://github.com/freedom35/image-processing?tab=MIT-1-ov-file).  
+
 
 Notes: 
 1. **.NET Standard v2.0** libraries can be used in **.NET Full Framework** and **.NET Core** (now known simply as **.NET**) projects.
 2. The image processing library is only supported on **Windows OS** due to the dependency on Microsoft's [System.Drawing.Common](https://www.nuget.org/packages/System.Drawing.Common) NuGet package.
-<br />
+
 
 ## Release History
 The published package is available for download on [nuget.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
-|Date|Version|Release Notes|
-|:---|:---:|:----|
-|2024-12-28|[1.5.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.5.0)|Updated System.Drawing.Common package dependency to v9.0.0.|
-|2022-06-16|[1.4.1](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.4.1)|Updated System.Drawing.Common package dependency to v6.0.0.|
-|2021-07-30|[1.4.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.4.0)|Added overload methods for converting color images to grayscale.<br />Added overload methods for converting images to black & white.|
-|2021-07-28|[1.3.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.3.0)|Added support for applying sepia filter to images.|
-|2021-07-08|[1.2.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.2.0)|Fixed issue with stride padded images causing an *index out of bounds* exception when enhancing contrast.<br />Fixed issue with RGB color filters not working correctly for images with stride padding and alpha bytes.<br />Fixed issue with processing images with stride padding and alpha bytes.<br />Fixed issue where max threshold value was not correctly applied to the red (RGB) byte for color images.<br />Revision to combine images using bitwise OR.|
-|2021-03-24|[1.1.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.1.0)|Added support for applying EXIF orientation data to images.|
-|2021-01-26|[1.0.2](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.2)|Revision to return rounded value for ImageBytes.GetAverageValue.|
-|2021-01-25|[1.0.1](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.1)|Revision to add enum description attribute for 'Mexican Hat' smoothing filter.|
-|2020-10-02|[1.0.0](https://www.nuget.org/packages/Freedom35.ImageProcessing/1.0.0)|Initial release.|
 
-<br />
-<br />
 
-# Sample Solutions
-The repository contains some [Visual Studio](https://visualstudio.microsoft.com) solutions described below.
+### v1.5.1 (2024-12-28)
+* Revision for including readme in NuGet package.
+
+### v1.5.0 (2024-12-28)
+* Updated System.Drawing.Common package dependency to v9.0.0.
+
+### v1.4.1 (2022-06-16)
+* Updated System.Drawing.Common package dependency to v6.0.0.
+
+### v1.4.0 (2021-07-30)
+* Added overload methods for converting color images to grayscale.
+* Added overload methods for converting images to black & white.
+
+### v1.3.0 (2021-07-28)
+* Added support for applying sepia filter to images.
+
+### v1.2.0 (2021-07-08)
+* Fixed issue with stride padded images causing an *'index out of bounds'* exception when enhancing contrast.
+* Fixed issue with RGB color filters not working correctly for images with stride padding and alpha bytes.  
+* Fixed issue with processing images with stride padding and alpha bytes.
+* Fixed issue where max threshold value was not correctly applied to the red (RGB) byte for color images.
+* Revision to combine images using bitwise OR.
+
+### v1.1.0 (2021-03-24)
+* Added support for applying EXIF orientation data to images.
+
+### v1.0.2 (2021-01-26)
+* Revision to return rounded value for ImageBytes.GetAverageValue.
+
+### v1.0.1 (2021-01-25)
+* Revision to add enum description attribute for 'Mexican Hat' smoothing filter.
+
+### v1.0.0 (2020-10-02)
+* Initial release.
+
+
+## Sample Code Solutions
+The [GitHub repository](https://github.com/freedom35/image-processing) contains some [Visual Studio](https://visualstudio.microsoft.com) solutions described below.
 
 |Name|Description|
 |-----|-----|
 |Freedom35.ImageProcessing.sln|Base solution containing image processing library and unit tests.|
 |Freedom35.ImageProcessing.WindowsDesktop.sln|Extended solution containing projects from base solution, plus an **Image Viewer app** for Windows desktop.|  
 
-<br />
-<br />
 
-# Usage of Library
+## Usage of Library
 Below are the steps involved in using the Image Processing Library in your own projects.  
 The repository also contains an **ImageViewerApp** (WPF) project to demonstrate usage of the Image Processing Library.  
 
@@ -48,7 +70,7 @@ Methods support image types found in the **System.Drawing** namespace.
 
 The **Image** class used is **System.Drawing.Image** (base class).  
 The **Bitmap** class used is **System.Drawing.Bitmap**.  
-<br />
+  
 
 ## Usage in Projects
 Note: Examples are in C#, but the library may also be used in other .NET language projects.
@@ -74,7 +96,7 @@ Image currentImage = Image.FromFile(@"C:\Images\Example-Image.bmp");
 ```csharp
 Image newImage = ImageContrast.Enhance(currentImage);
 ```  
-<br />
+
 
 ## Notes on Usage
 Below are some additional notes on using the Image Processing Library in projects.
@@ -107,16 +129,14 @@ If you wish to display images in WPF projects where user controls typically use 
 BitmapSource wpfImage = ImageConverter.ConvertImageToBitmapSource(image);
 ```
 
-<br />
-<br />
 
 # Image Processing Classes
 The section below summarizes the classes available within the image processing library.  
-<br />
+
 
 ## Image Binary Class
 Class for converting an image to binary/monochrome (0's and 1's).  
-<br />
+
 
 ## Image Bytes Class
 Class for returning the bytes of an image, or information on them, such as determining the type of image that bytes are encoded with (**bitmap**, **JPEG** etc.).  
@@ -128,7 +148,6 @@ Class for returning the bytes of an image, or information on them, such as deter
 * Bytes to/from bits.
 * Determine image format/type based on image bytes.
 
-<br />
 
 ## Image Color Class
 Class for manipulating and filtering image colors, such as:  
@@ -141,15 +160,14 @@ Class for manipulating and filtering image colors, such as:
 * Convert to **blue**.
 * Apply specific **RGB** filter.
 
-<br />
 
 ## Image Combine Class
 Class for combining multiple images into a single image.  
-<br />
+  
 
 ## Image Contrast Class
 Class for improving the contrast of images.  
-<br />
+
 
 ### Contrast Stretch
 Contrast stretching improves the contrast of an image by utilizing unused areas of the upper and lower pixel values. However, if an image already contains pixels at the extreme upper and lower values, then contrast stretching will not provide any improvement as there is no room to 'stretch' into.  
@@ -159,7 +177,7 @@ For example, if an image is predominantly dark whereby all the values are in the
 When an image is contrast stretched, the proportions between each pixel value of the original image are maintained.  
 I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), the first pixel (p1) may become brighter or darker than the original image (depending on the stretch direction) but will still end up twice as bright as the value of the second pixel (p2).  
 
-<br />
+
 
 ### Histogram Equalization
 Histogram equalization improves the general contrast of an image by re-distributing the pixel value levels within an image so that the difference in brightness between each pixel value is even.  
@@ -169,17 +187,17 @@ For example, there may be no pixel values used in the mid-range or extreme light
 
 When an image is equalized, the proportions between each pixel value of the original image are **not** necessarily maintained.  
 I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), which is only slightly brighter than another pixel (p3), the brightness of all three pixels may change, but the delta brightness between p1 and p2 will become the same as the delta between p2 and p3 (after equalization).  
-<br />
+
 
 ## Image Convolution Class
 An image can be manipulated to enhance or isolate features etc. This is a fundamental of image processing and often used as a pre-processing step in machine vision applications.  
-<br />
+
 
 ### Convolution Filters
 The tables below list the types of filters that can be applied to an image using this library.  
-<br />
 
-#### *Edge Filters:*
+
+#### Edge Filters
 
 |Name|Description|
 |-----|-----|
@@ -191,9 +209,9 @@ The tables below list the types of filters that can be applied to an image using
 |Edge Sobel Vertical|Sobel vertical edge/high-pass filter.|
 |Edge Sobel Horizontal|Sobel horizontal edge/high-pass filter.|
 
-<br />
 
-#### *Smoothing Filters:*
+
+#### Smoothing Filters
 
 |Name|Description|
 |-----|-----|
@@ -202,60 +220,54 @@ The tables below list the types of filters that can be applied to an image using
 |Noise Reduction|Reduces image noise (by smoothing).|
 |Smoothing Mexican Hat|Smoothing/Low-pass filter.  (Less blurring than normal smoothing.)|
 
-<br />
 
-#### *Special Effect Filters:*
+#### Special Effect Filters
 
 |Name|Description|
 |-----|-----|
 |Emboss|Creates an embossing effect.|  
 
-<br />
-<br />
 
 ## Image Copy Class
 Class for copying image bytes from one **bitmap** to another.  
-<br />
+
 
 ## Image Crop Class
 Class for cropping an image based on a region.  
-<br />
+
 
 ## Image EXIF Class
 Class to apply orientation information to image based on **exchangeable image file format** (EXIF) metadata.  
-<br />
+
 
 ## Image Formatting Class
 Class for changing the format/type of image, such as from **JPEG** to **bitmap** etc.  
-<br />
+
 
 ## Image Histogram Class
 Class for determining the [histogram](https://en.wikipedia.org/wiki/Histogram) values for an image (as an array). A histogram is a bar graph/chart representation of data distribution, such as the number of pixels at each gray level. A histogram can help identify any bias in image intensity, which can prove useful when enhancing contrast etc. The histogram class also contains methods for creating a histogram image representation of a source image.  
 
-<br />
 
 ## Image Resize Class
 Class for resizing an image.   
-<br />
+
 
 ## Image Thresholding Class
 When applying a threshold to an image, values below the threshold are changed to black (0x00), and values above (or equal to) the threshold are changed to white (0xFF, 255 decimal).  
-<br />
+
 
 ### Basic Threshold
 For basic thresholding, a pre-determined value is used for the threshold, typically in the middle of the pixel value range such as 0x7F (127 decimal).  Pixel values are simply determined to be either above/below the threshold.  
-<br />
+
 
 ### Otsu's Method
 Otsu's method is more complex, but ultimately finds a better threshold value. This method searches for the threshold that minimizes the metric known as intra-class variance by using a histogram of the image to split the values into two groups (ideally foreground and background) with the smallest total variance.  
-<br />
+
 
 ### Chow & Kaneko Method
 The Chow & Kaneko method builds on Otsu's method in that it first divides an image into individual regions (typically 9), applies Otsu's method to each individual region, and then uses a weighted threshold based on the nearest 4 regions to each pixel. Regions closer to a pixel will carry more weight.  
 Obviously, this method is more processing intensive than strict Otsu's method (so may not be ideal for real-time applications), but will produce a better overall result when light intensity varies across an image.  
 The Chow & Kaneko method is also known as local or adaptive thresholding.  
-<br />
 
 ## Image Thumbnail Class
 Class for creating a thumbnail size image of a source image.   
-<br />
