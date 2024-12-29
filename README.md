@@ -1,6 +1,8 @@
 # Image Processing Library
 This image processing library is a lightweight open source library targeting [.NET Standard v2.0](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0).  
 
+A packaged build is available for download on [nuget.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
+
 This library may be used as an educational tool on how such image processing methods can be implemented, or used within your own projects that require some form of image processing.  
 
 See the appropriate section for details on each image processing class and their methods available.  
@@ -12,10 +14,42 @@ Notes:
 1. **.NET Standard v2.0** libraries can be used in **.NET Full Framework** and **.NET Core** (now known simply as **.NET**) projects.
 2. The image processing library is only supported on **Windows OS** due to the dependency on Microsoft's [System.Drawing.Common](https://www.nuget.org/packages/System.Drawing.Common) NuGet package.
 
+## Table of Contents
+- [Release History](#release-history)
+- [Usage of Library](#usage-of-library)
+  - [Sample Code Solutions](#sample-code-solutions)
+  - [Usage in Projects](#usage-in-projects)
+  - [Notes on Usage](#notes-on-usage)
+    - [Method Calls](#method-calls)
+    - [Namespace](#namespace)
+    - [Windows Presentation Foundation (WPF)](#windows-presentation-foundation-wpf)
+- [Image Processing Classes](#image-processing-classes)
+  - [Image Binary Class](#image-binary-class)
+  - [Image Bytes Class](#image-bytes-class)
+  - [Image Color Class](#image-color-class)
+  - [Image Combine Class](#image-combine-class)
+  - [Image Contrast Class](#image-contrast-class)
+    - [Contrast Stretch](#contrast-stretch)
+    - [Histogram Equalization](#histogram-equalization)
+  - [Image Convolution Class](#image-convolution-class)
+    - [Convolution Filters](#convolution-filters)
+      - [Edge Filters](#edge-filters)
+      - [Smoothing Filters](#smoothing-filters)
+      - [Special Effect Filters](#special-effect-filters)
+  - [Image Copy Class](#image-copy-class)
+  - [Image Crop Class](#image-crop-class)
+  - [Image EXIF Class](#image-exif-class)
+  - [Image Formatting Class](#image-formatting-class)
+  - [Image Histogram Class](#image-histogram-class)
+  - [Image Resize Class](#image-resize-class)
+  - [Image Thresholding Class](#image-thresholding-class)
+    - [Basic Threshold](#basic-threshold)
+    - [Otsu's Method](#otsus-method)
+    - [Chow & Kaneko Method](#chow--kaneko-method)
+  - [Image Thumbnail Class](#image-thumbnail-class)
+
 
 ## Release History
-The published package is available for download on [nuget.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
-
 
 ### v1.5.1 (2024-12-28)
 * Revision for including readme in NuGet package.
@@ -53,7 +87,18 @@ The published package is available for download on [nuget.org](https://www.nuget
 * Initial release.
 
 
-## Sample Code Solutions
+
+## Usage of Library
+Below are the steps involved in using the Image Processing Library in your own projects.  
+The repository also contains an **ImageViewerApp** (WPF) project to demonstrate usage of the Image Processing Library functions.  
+
+Libaray class methods support the image types found in the **System.Drawing** namespace.
+
+The **Image** class used is **System.Drawing.Image** (base class).  
+The **Bitmap** class used is **System.Drawing.Bitmap**.  
+  
+
+### Sample Code Solutions
 The [GitHub repository](https://github.com/freedom35/image-processing) contains some [Visual Studio](https://visualstudio.microsoft.com) solutions described below.
 
 |Name|Description|
@@ -62,17 +107,7 @@ The [GitHub repository](https://github.com/freedom35/image-processing) contains 
 |Freedom35.ImageProcessing.WindowsDesktop.sln|Extended solution containing projects from base solution, plus an **Image Viewer app** for Windows desktop.|  
 
 
-## Usage of Library
-Below are the steps involved in using the Image Processing Library in your own projects.  
-The repository also contains an **ImageViewerApp** (WPF) project to demonstrate usage of the Image Processing Library.  
-
-Methods support image types found in the **System.Drawing** namespace.
-
-The **Image** class used is **System.Drawing.Image** (base class).  
-The **Bitmap** class used is **System.Drawing.Bitmap**.  
-  
-
-## Usage in Projects
+### Usage in Projects
 Note: Examples are in C#, but the library may also be used in other .NET language projects.
 
 1. Add the [Image Processing Library](https://www.nuget.org/packages/Freedom35.ImageProcessing) NuGet package to your .NET project.  
@@ -98,10 +133,10 @@ Image newImage = ImageContrast.Enhance(currentImage);
 ```  
 
 
-## Notes on Usage
+### Notes on Usage
 Below are some additional notes on using the Image Processing Library in projects.
 
-### Method Calls
+#### Method Calls
 Most methods have a standard method that will return a new image (leaving the original intact), and also a direct method which will alter the original image directly. The **direct methods require using a bitmap** encoded image.  
 
 The standard methods will automatically convert the image to a Bitmap (if required) for processing, and return the processed image in the original format.  
@@ -115,14 +150,14 @@ Image newImage = ImageThreshold.ApplyOtsuMethod(currentImage);
 ImageThreshold.ApplyOtsuMethodDirect(ref currentImage);
 ```  
 
-### Namespace
+#### Namespace
 If you're only making a single call to the library and do not necessarily want to include the namespace at the top of your code file, methods may also be called by explicitly including the full namespace before the method name.  
 ```csharp
 // Example using full namespace
 Image newImage = Freedom35.ImageProcessing.ImageColor.ToNegative(currentImage);
 ```  
 
-### Windows Presentation Foundation (WPF)
+#### Windows Presentation Foundation (WPF)
 If you wish to display images in WPF projects where user controls typically use the **System.Windows.Media.Imaging** namespace for images rather than **System.Drawing** namespace, the ***ImageConverter*** class in the **ImageViewerApp** provides an example of how to convert images for WPF usage.  
 ```csharp
 // Example: Convert System.Drawing image to WPF image
@@ -178,7 +213,6 @@ When an image is contrast stretched, the proportions between each pixel value of
 I.e. In the original image, if a pixel (p1) is twice as bright as another pixel (p2), the first pixel (p1) may become brighter or darker than the original image (depending on the stretch direction) but will still end up twice as bright as the value of the second pixel (p2).  
 
 
-
 ### Histogram Equalization
 Histogram equalization improves the general contrast of an image by re-distributing the pixel value levels within an image so that the difference in brightness between each pixel value is even.  
 This can be useful when the image contains both light and dark areas but is not necessarily using all the available range.  
@@ -208,7 +242,6 @@ The tables below list the types of filters that can be applied to an image using
 |Edge Laplacian of Gaussian|Applies Gaussian smoothing and Laplacian edge. Less sensitive to noise than Laplacian with peak, Gaussian σ = 1.4|
 |Edge Sobel Vertical|Sobel vertical edge/high-pass filter.|
 |Edge Sobel Horizontal|Sobel horizontal edge/high-pass filter.|
-
 
 
 #### Smoothing Filters
