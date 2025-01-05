@@ -17,7 +17,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <Version>1.5.2</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Revision for including readme in NuGet package.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updated package properties.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
