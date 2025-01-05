@@ -51,6 +51,9 @@ Notes:
 
 ## Release History
 
+### v1.5.2 (2025-01-05)
+* Revision to update package properties.
+
 ### v1.5.1 (2024-12-28)
 * Revision for including readme in NuGet package.
 

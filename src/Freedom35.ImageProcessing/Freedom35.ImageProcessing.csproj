@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>.NET Standard library for image processing.</Description>
+    <Description>Open source .NET Standard library for image processing.</Description>
     <Authors>Alan Barr (GitHub: freedom35)</Authors>
     <Company>Alan Barr (GitHub: freedom35)</Company>
-    <Copyright>Copyright © 2022-2024 Alan Barr</Copyright>
+    <Copyright>Copyright © 2020-2025 Alan Barr</Copyright>
     <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -15,9 +15,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.5.1</Version>
+    <Version>1.5.2</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Revision for including readme in NuGet package.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updated package properties.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,14 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Images\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <None Include="Images\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
