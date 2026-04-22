@@ -1,24 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow will build, test a WPF or Windows Forms desktop application
-# built on .NET Core.
-# To learn how to migrate your existing application to .NET Core,
-# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
-#
-# To configure this workflow:
-#
-# 1. Configure environment variables
-# GitHub sets default environment variables for every workflow run.
-# Replace the variables relative to your project in the "env" section below.
-#
-#
-# For more information on GitHub Actions, refer to https://github.com/features/actions
-# For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
-# refer to https://github.com/microsoft/github-actions-for-desktop-apps
-
+# Workflow to build/test image processing lib
 name: Build/Test on Windows Desktop
 
 on:
@@ -27,35 +7,34 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  solution: 'Freedom35.ImageProcessing.sln'
+  build_config: 'Release'
+
 jobs:
 
-  build:
-
-    strategy:
-      matrix:
-        configuration: [ Release ]
+  build-and-test:
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
-    # Install the .NET workload
     - name: Install .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
 
-    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v2
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.solution }}
+
+    - name: Build
+      run: dotnet build ${{ env.solution }} --configuration ${{ env.build_config }} --no-restore
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test Freedom35.ImageProcessing.sln
+      run: dotnet test ${{ env.solution }} --configuration ${{ env.build_config }} --no-build
