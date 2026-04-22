@@ -109,7 +109,7 @@ namespace ImageViewerApp
         private static int GetFilterIndex(string filter, string searchExt)
         {
             // Extract ext types
-            char[] types = filter.Split('|').Where(t => t.StartsWith('*')).Select(t => t.TrimStart('*', '.').First()).ToArray();
+            char[] types = [.. filter.Split('|').Where(t => t.StartsWith('*')).Select(t => t.TrimStart('*', '.').First())];
 
             // Get first char of ext
             char search = searchExt.ToLower().TrimStart('.').FirstOrDefault();

@@ -27,7 +27,7 @@ namespace Freedom35.ImageProcessing.Tests
                 bwImage
             ];
 
-            Assert.ThrowsException<ArgumentException>(() => ImageCombine.All(imagesToCombine));
+            Assert.ThrowsExactly<ArgumentException>(() => ImageCombine.All(imagesToCombine));
         }
 
         [TestMethod]

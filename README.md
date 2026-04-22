@@ -51,6 +51,9 @@ Notes:
 
 ## Release History
 
+### v1.6.0 (2026-04-21)
+* Updated System.Drawing.Common package dependency to v10.0.7.
+
 ### v1.5.2 (2025-01-05)
 * Revision to update package properties.
 

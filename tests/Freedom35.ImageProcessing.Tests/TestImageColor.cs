@@ -55,7 +55,7 @@ namespace Freedom35.ImageProcessing.Tests
             bitmapData.Stride = bitmapData.Width;
             bitmapData.PixelFormat = PixelFormat.Format8bppIndexed;
 
-            Assert.ThrowsException<ArgumentException>(() => ImageColor.ToGrayscale(imageBytes, bitmapData));
+            Assert.ThrowsExactly<ArgumentException>(() => ImageColor.ToGrayscale(imageBytes, bitmapData));
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace Freedom35.ImageProcessing.Tests
                 PixelFormat = PixelFormat.Format24bppRgb
             };
 
-            Assert.ThrowsException<ArgumentException>(() => ImageColor.ToGrayscale(imageBytes, bitmapData));
+            Assert.ThrowsExactly<ArgumentException>(() => ImageColor.ToGrayscale(imageBytes, bitmapData));
         }
 
 
