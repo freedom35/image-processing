@@ -12,16 +12,16 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestFromResource(string resourcePath)
         {
             byte[] imageBytes = ImageBytes.FromResource(resourcePath);
 
             // Check not an empty array
-            Assert.IsTrue(imageBytes.Length > 0);
+            Assert.IsNotEmpty(imageBytes);
 
             // Check for variation in values
-            Assert.IsTrue(imageBytes.Any(b => b > byte.MinValue && b < byte.MaxValue));
+            Assert.Contains(b => b > byte.MinValue && b < byte.MaxValue, imageBytes);
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Freedom35.ImageProcessing.Tests
             ];
 
             // Check expected number in array
-            Assert.AreEqual(expectedBitValues.Length, bitValues.Length);
+            Assert.HasCount(expectedBitValues.Length, bitValues);
 
             // Check each bit
             for (int i = 0; i < expectedBitValues.Length; i++)
@@ -69,7 +69,7 @@ namespace Freedom35.ImageProcessing.Tests
             ];
 
             // Check expected number in array
-            Assert.AreEqual(expectedByteValues.Length, byteValues.Length);
+            Assert.HasCount(expectedByteValues.Length, byteValues);
 
             // Check each bit
             for (int i = 0; i < expectedByteValues.Length; i++)
@@ -140,7 +140,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow(new byte[] { 0x49, 0x49, 0x2a, 0x42, 0x42 }, ImageType.TIFF)]
         [DataRow(new byte[] { 0xff, 0xd8, 0xff, 0xf4, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x42, 0x42 }, ImageType.JPEG)]
         [DataRow(new byte[] { 0x89, 0x50, 0x4e, 0x47, 0x42, 0x42 }, ImageType.PNG)]
-        [DataTestMethod]
+        [TestMethod]
         public void TestTryGetImageType(byte[] imageBytes, ImageType expectedType)
         {
             ImageType type;
@@ -165,7 +165,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow(new byte[] { 0x49, 0x49, 0x2a, 0x42, 0x42 }, ImageType.TIFF)]
         [DataRow(new byte[] { 0xff, 0xd8, 0xff, 0xf4, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x42, 0x42 }, ImageType.JPEG)]
         [DataRow(new byte[] { 0x89, 0x50, 0x4e, 0x47, 0x42, 0x42 }, ImageType.PNG)]
-        [DataTestMethod]
+        [TestMethod]
         public void TestIsImageType(byte[] imageBytes, ImageType expectedType)
         {
             Assert.IsTrue(ImageBytes.IsImageType(imageBytes, expectedType));

@@ -8,7 +8,7 @@ namespace Freedom35.ImageProcessing.Tests
     public class TestImageThreshold
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp", "Freedom35.ImageProcessing.Tests.Resources.clock-otsu.bmp")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestApplyThreshold(string sourceResourcePath, string resultResourcePath)
         {
             // Load source image
@@ -25,7 +25,7 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp", "Freedom35.ImageProcessing.Tests.Resources.clock-otsu.bmp")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestOtsuThreshold(string sourceResourcePath, string resultResourcePath)
         {
             // Load source image
@@ -45,7 +45,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestApplyThresholdValue(string sourceResourcePath)
         {
             // Load source image
@@ -64,7 +64,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestApplyMin(string sourceResourcePath)
         {
             // Load source image
@@ -83,7 +83,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestApplyMax(string sourceResourcePath)
         {
             // Load source image
@@ -102,7 +102,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestApplyMinMax(string sourceResourcePath)
         {
             // Load source image
@@ -123,7 +123,7 @@ namespace Freedom35.ImageProcessing.Tests
             if (pixelFormat.ToString().ToLower().EndsWith("argb"))
             {
                 // Skip last byte (padding) - contents may vary per platform
-                return imageBytes.Where((b, i) => i % 4 != 3).ToArray();
+                return [.. imageBytes.Where((b, i) => i % 4 != 3)];
             }
 
             return imageBytes;

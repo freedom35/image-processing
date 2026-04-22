@@ -10,7 +10,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestByRegion(string resourcePath)
         {
             // Load source image

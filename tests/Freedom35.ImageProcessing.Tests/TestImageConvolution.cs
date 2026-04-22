@@ -43,7 +43,7 @@ namespace Freedom35.ImageProcessing.Tests
             ];
 
             // Check arrays are same length
-            Assert.AreEqual(expectedBytes.Length, resultBytes.Length);
+            Assert.HasCount(expectedBytes.Length, resultBytes);
 
             // Check each byte
             for (int i = 0; i < expectedBytes.Length; i++)
@@ -89,7 +89,7 @@ namespace Freedom35.ImageProcessing.Tests
             ];
 
             // Check arrays are same length
-            Assert.AreEqual(expectedBytes.Length, resultBytes.Length);
+            Assert.HasCount(expectedBytes.Length, resultBytes);
 
             // Check each byte
             for (int i = 0; i < expectedBytes.Length; i++)

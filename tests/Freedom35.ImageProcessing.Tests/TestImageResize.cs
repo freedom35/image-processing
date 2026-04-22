@@ -7,7 +7,7 @@ namespace Freedom35.ImageProcessing.Tests
     public class TestImageResize
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestImageResizeAsNew(string resourcePath)
         {
             // Load source image
@@ -28,7 +28,7 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestImageResizeAsNewByRatio(string resourcePath)
         {
             // Load source image
@@ -45,7 +45,7 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestImageResizeOriginal(string resourcePath)
         {
             // Load source image
@@ -69,7 +69,7 @@ namespace Freedom35.ImageProcessing.Tests
         }
 
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestImageResizeOriginalByRatio(string resourcePath)
         {
             // Load source image

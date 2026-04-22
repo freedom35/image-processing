@@ -11,7 +11,7 @@ namespace Freedom35.ImageProcessing.Tests
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.jpg")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.png")]
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.tif")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestAsBytes(string sourceResourcePath)
         {
             // Load source image
@@ -23,14 +23,14 @@ namespace Freedom35.ImageProcessing.Tests
             byte[] imageBytes = ImageBinary.AsBytes(sourceImage, Threshold);
 
             // Check we have some bytes
-            Assert.IsTrue(imageBytes.Length > 0);
+            Assert.IsNotEmpty(imageBytes);
 
             // Check all converted to binary (0 or 1)
             Assert.IsTrue(imageBytes.All(b => b < 0x02));
 
             // Check correct number of bytes after conversion
             // (Same per source image)
-            Assert.AreEqual(118287, imageBytes.Length);
+            Assert.HasCount(118287, imageBytes);
 
             // Count 1's and 0's
             int countZero = imageBytes.Count(b => b == 0x00);

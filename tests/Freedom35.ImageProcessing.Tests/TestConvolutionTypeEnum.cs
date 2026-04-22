@@ -7,7 +7,7 @@ namespace Freedom35.ImageProcessing.Tests
     {
         [DataRow(ConvolutionType.Edge, "Edge")]
         [DataRow(ConvolutionType.EdgeSobelVertical, "Sobel Vertical Edge")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestGetDescription(ConvolutionType type, string description)
         {
             Assert.AreEqual(type.GetDescription(), description);

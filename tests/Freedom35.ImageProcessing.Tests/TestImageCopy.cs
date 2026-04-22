@@ -7,7 +7,7 @@ namespace Freedom35.ImageProcessing.Tests
     public class TestImageCopy
     {
         [DataRow("Freedom35.ImageProcessing.Tests.Resources.clock.bmp")]
-        [DataTestMethod]
+        [TestMethod]
         public void TestFromSourceToDestination(string resourcePath)
         {
             // Load source image
