@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+
 env:
   solution: 'Freedom35.ImageProcessing.sln'
   build_config: 'Release'
