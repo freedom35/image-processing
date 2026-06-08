@@ -98,7 +98,7 @@ Notes:
 Below are the steps involved in using the Image Processing Library in your own projects.  
 The repository also contains an **ImageViewerApp** (WPF) project to demonstrate usage of the Image Processing Library functions.  
 
-Libaray class methods support the image types found in the **System.Drawing** namespace.
+Library class methods support the image types found in the **System.Drawing** namespace.
 
 The **Image** class used is **System.Drawing.Image** (base class).  
 The **Bitmap** class used is **System.Drawing.Bitmap**.  
