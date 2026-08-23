@@ -68,7 +68,7 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Creates a black & white histogram.
+        /// Creates a black and white histogram.
         /// </summary>
         /// <param name="histogramSource">Image histogram is based on</param>
         /// <param name="histogramSize">Size of histogram to create</param>

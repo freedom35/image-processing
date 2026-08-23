@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <SupportedOSPlatform>windows</SupportedOSPlatform>
     <Description>Open source .NET Standard library for image processing.</Description>
     <Authors>Alan Barr (GitHub: freedom35)</Authors>
     <Company>Alan Barr (GitHub: freedom35)</Company>
     <Copyright>Copyright © 2020-2026 Alan Barr</Copyright>
     <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/freedom35/image-processing</PackageProjectUrl>
     <PackageTags>Image, Processing, Image-Processing, ImageProcessing, Bitmap, JPEG, PNG, TIFF, NetStandard</PackageTags>
@@ -15,13 +17,15 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.6.0</Version>
+    <Version>1.6.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Updated package properties.</PackageReleaseNotes>
+    <PackageReleaseNotes>Lowered System.Drawing.Common package dependency to v10.0.0 for increased compatibility.</PackageReleaseNotes>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="10.0.7" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>

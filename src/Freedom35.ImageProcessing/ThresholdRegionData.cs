@@ -7,7 +7,7 @@ using System;
 namespace Freedom35.ImageProcessing
 {
     /// <summary>
-    /// Region data for Chow & Kaneko thresholding.
+    /// Region data for Chow and Kaneko thresholding.
     /// </summary>
     internal struct ThresholdRegionData
     {

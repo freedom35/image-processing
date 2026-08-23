@@ -26,19 +26,15 @@ namespace Freedom35.ImageProcessing
             {
                 return (T)(Image)CropBitmap(bmp, cropRegion);
             }
-            else
-            {
-                // Convert to bitmap
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    // Crop as bitmap
-                    using (Image croppedBitmap = CropBitmap(bitmap, cropRegion))
-                    {
-                        // Restore original image format
-                        return (T)ImageFormatting.ToFormat(croppedBitmap, image.RawFormat);
-                    }
-                }
-            }
+
+            // Convert to bitmap
+            using Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+            // Crop as bitmap
+            using Image croppedBitmap = CropBitmap(bitmap, cropRegion);
+                    
+            // Restore original image format
+            return (T)ImageFormatting.ToFormat(croppedBitmap, image.RawFormat);
         }
 
         /// <summary>

@@ -94,11 +94,11 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Converts image to black & white.
+        /// Converts image to black and white.
         /// </summary>
         /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to convert</param>
-        /// <returns>Black & white image</returns>
+        /// <returns>Black and white image</returns>
         public static T ToBlackAndWhite<T>(T image) where T : Image
         {
             Bitmap bitmap = ImageFormatting.ToBitmap(image);
@@ -156,7 +156,12 @@ namespace Freedom35.ImageProcessing
         public static byte[] ToBlackAndWhite(byte[] grayscaleBytes, byte whiteThreshold)
         {
             // Check image bytes non-null
-            int length = grayscaleBytes?.Length ?? 0;
+            if (grayscaleBytes == null)
+            {
+                return new byte[0];
+            }
+
+            int length = grayscaleBytes.Length;
 
             // Create new array for converted bytes
             byte[] bwBytes = new byte[length];
@@ -495,7 +500,12 @@ namespace Freedom35.ImageProcessing
         public static byte[] ColorImageToGrayscale(byte[] rgbBytes)
         {
             // Check image bytes non-null
-            int length = rgbBytes?.Length ?? 0;
+            if (rgbBytes == null)
+            {
+                return new byte[0];
+            }
+
+            int length = rgbBytes.Length;
 
             // Check length is valid, otherwise unlikely color
             if (length % 3 != 0)

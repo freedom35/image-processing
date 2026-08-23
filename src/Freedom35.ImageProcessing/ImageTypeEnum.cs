@@ -11,6 +11,9 @@ namespace Freedom35.ImageProcessing
     /// </summary>
     public enum ImageType
     {
+        /// <summary>
+        /// Unknown image type
+        /// </summary>
         Unknown,
 
         /// <summary>
@@ -70,30 +73,24 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Gets array of bytes to identify type of encoding method.
         /// </summary>
-        /// <param name="type">Type of image</param>
+        /// <param name="imageType">Type of image</param>
         /// <returns>Header bytes for image encoding</returns>
         public static byte[] GetHeaderBytes(this ImageType imageType)
         {
-            switch (imageType)
+            return imageType switch
             {
-                case ImageType.Bitmap:
-                    return BitmapEncoding;
+                ImageType.Bitmap => BitmapEncoding,
 
-                case ImageType.TIFF:
-                    return TiffEncoding;
-
-                case ImageType.JPEG:
-                    return JpegEncoding;
-
-                case ImageType.PNG:
-                    return PngEncoding;
-
-                case ImageType.Unknown:
-                    return new byte[0];
-
-                default:
-                    throw new NotImplementedException($"Encoding not implemented for '{imageType}'.");
-            }
+                ImageType.TIFF => TiffEncoding,
+                
+                ImageType.JPEG => JpegEncoding,
+                
+                ImageType.PNG => PngEncoding,
+                
+                ImageType.Unknown => new byte[0],
+                
+                _ => throw new NotImplementedException($"Encoding not implemented for '{imageType}'."),
+            };
         }
     }
 }

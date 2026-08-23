@@ -541,7 +541,7 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
+        /// Applies localized/adaptive region thresholding to image using Chow and Kaneko method.
         /// </summary>
         /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
@@ -552,7 +552,7 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
+        /// Applies localized/adaptive region thresholding to image using Chow and Kaneko method.
         /// </summary>
         /// <typeparam name="T">Image type to process and return</typeparam>
         /// <param name="image">Image to process</param>
@@ -569,7 +569,7 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Applies localized/adaptive region thresholding to image using Chow & Kaneko method.
+        /// Applies localized/adaptive region thresholding to image using Chow and Kaneko method.
         /// </summary>
         /// <param name="bitmap">Image to process</param>
         /// <param name="horizontalRegions">Number of horizonal regions to apply</param>
