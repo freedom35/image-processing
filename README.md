@@ -1,5 +1,5 @@
 # Image Processing Library
-This image processing library is a lightweight open source library targeting [.NET Standard v2.0](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0).  
+This image processing library is a lightweight open source library targeting [.NET Standard 2.0](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0).  
 
 A packaged build is available for download on [nuget.org](https://www.nuget.org/packages/Freedom35.ImageProcessing).  
 
@@ -11,7 +11,7 @@ You are welcome to use/update this software under the terms of the [MIT license]
 
 
 Notes: 
-1. **.NET Standard v2.0** libraries can be used in **.NET Full Framework** and **.NET Core** (now known simply as **.NET**) projects.
+1. **.NET Standard 2.0** libraries can be used in **.NET Full Framework** and **.NET Core** (now known simply as **.NET**) projects.
 2. The image processing library is only supported on **Windows OS** due to the dependency on Microsoft's [System.Drawing.Common](https://www.nuget.org/packages/System.Drawing.Common) NuGet package.
 
 ## Table of Contents
@@ -50,6 +50,9 @@ Notes:
 
 
 ## Release History
+
+### v1.6.1 (2026-08-23)
+* Lowered System.Drawing.Common package dependency to v10.0.0 for increased compatibility.
 
 ### v1.6.0 (2026-04-21)
 * Updated System.Drawing.Common package dependency to v10.0.7.
