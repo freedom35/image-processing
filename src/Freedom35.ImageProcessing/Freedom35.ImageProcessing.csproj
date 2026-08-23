@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <SupportedOSPlatform>windows</SupportedOSPlatform>
     <Description>Open source .NET Standard library for image processing.</Description>
     <Authors>Alan Barr (GitHub: freedom35)</Authors>
     <Company>Alan Barr (GitHub: freedom35)</Company>
