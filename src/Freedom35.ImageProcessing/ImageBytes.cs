@@ -171,7 +171,7 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Gets the minimum & maximum pixel value within an image.
+        /// Gets the minimum and maximum pixel value within an image.
         /// For color images, min/max pixel avg is returned.
         /// </summary>
         /// <param name="image">Image to search</param>
@@ -182,7 +182,7 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Gets the minimum & maximum pixel value within an image.
+        /// Gets the minimum and maximum pixel value within an image.
         /// For color images, min/max pixel avg is returned.
         /// </summary>
         /// <param name="image">Image to search</param>
@@ -205,7 +205,7 @@ namespace Freedom35.ImageProcessing
         }
 
         /// <summary>
-        /// Gets the minimum & maximum pixel value within a bitmap.
+        /// Gets the minimum and maximum pixel value within a bitmap.
         /// For color images, min/max pixel avg is returned.
         /// </summary>
         /// <param name="bitmap">Image to search</param>

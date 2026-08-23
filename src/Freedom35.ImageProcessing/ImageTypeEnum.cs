@@ -11,6 +11,9 @@ namespace Freedom35.ImageProcessing
     /// </summary>
     public enum ImageType
     {
+        /// <summary>
+        /// Unknown image type
+        /// </summary>
         Unknown,
 
         /// <summary>
@@ -70,7 +73,7 @@ namespace Freedom35.ImageProcessing
         /// <summary>
         /// Gets array of bytes to identify type of encoding method.
         /// </summary>
-        /// <param name="type">Type of image</param>
+        /// <param name="imageType">Type of image</param>
         /// <returns>Header bytes for image encoding</returns>
         public static byte[] GetHeaderBytes(this ImageType imageType)
         {
