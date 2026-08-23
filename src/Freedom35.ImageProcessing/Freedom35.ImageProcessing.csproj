@@ -8,6 +8,7 @@
     <Copyright>Copyright © 2020-2026 Alan Barr</Copyright>
     <RepositoryUrl>https://github.com/freedom35/image-processing</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/freedom35/image-processing</PackageProjectUrl>
     <PackageTags>Image, Processing, Image-Processing, ImageProcessing, Bitmap, JPEG, PNG, TIFF, NetStandard</PackageTags>
