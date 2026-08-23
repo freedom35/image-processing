@@ -77,26 +77,20 @@ namespace Freedom35.ImageProcessing
         /// <returns>Header bytes for image encoding</returns>
         public static byte[] GetHeaderBytes(this ImageType imageType)
         {
-            switch (imageType)
+            return imageType switch
             {
-                case ImageType.Bitmap:
-                    return BitmapEncoding;
+                ImageType.Bitmap => BitmapEncoding,
 
-                case ImageType.TIFF:
-                    return TiffEncoding;
-
-                case ImageType.JPEG:
-                    return JpegEncoding;
-
-                case ImageType.PNG:
-                    return PngEncoding;
-
-                case ImageType.Unknown:
-                    return new byte[0];
-
-                default:
-                    throw new NotImplementedException($"Encoding not implemented for '{imageType}'.");
-            }
+                ImageType.TIFF => TiffEncoding,
+                
+                ImageType.JPEG => JpegEncoding,
+                
+                ImageType.PNG => PngEncoding,
+                
+                ImageType.Unknown => new byte[0],
+                
+                _ => throw new NotImplementedException($"Encoding not implemented for '{imageType}'."),
+            };
         }
     }
 }

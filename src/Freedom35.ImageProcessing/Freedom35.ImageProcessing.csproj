@@ -20,6 +20,8 @@
     <Version>1.6.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>Lowered System.Drawing.Common package dependency to v10.0.0 for increased compatibility.</PackageReleaseNotes>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

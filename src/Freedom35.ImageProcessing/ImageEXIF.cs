@@ -31,7 +31,7 @@ namespace Freedom35.ImageProcessing
             if (imageClone.PropertyIdList.Contains(TagIdForOrientation))
             {
                 // Get orientation value
-                int orientation = imageClone.GetPropertyItem(TagIdForOrientation).Value.ElementAtOrDefault(0);
+                int orientation = imageClone.GetPropertyItem(TagIdForOrientation)?.Value.ElementAtOrDefault(0) ?? -1;
 
                 switch (orientation)
                 {

@@ -35,11 +35,11 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image bytes (including header info)</returns>
         public static byte[] FromImageWithHeaderInfo(Image image, ImageFormat format)
         {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                image.Save(stream, format);
-                return stream.ToArray();
-            }
+            using MemoryStream stream = new MemoryStream();
+            
+            image.Save(stream, format);
+
+            return stream.ToArray();
         }
 
         /// <summary>
@@ -64,13 +64,10 @@ namespace Freedom35.ImageProcessing
             {
                 return GetBitmapBytes(bmp, out bitmapData);
             }
-            else
-            {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    return GetBitmapBytes(bitmap, out bitmapData);
-                }
-            }
+
+            using Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                
+            return GetBitmapBytes(bitmap, out bitmapData);
         }
 
         /// <summary>
@@ -116,10 +113,9 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image bytes</returns>
         public static byte[] FromFile(string path)
         {
-            using (Image image = Image.FromFile(path))
-            {
-                return FromImage(image);
-            }
+            using Image image = Image.FromFile(path);
+            
+            return FromImage(image);
         }
 
         /// <summary>
@@ -129,10 +125,9 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image bytes</returns>
         public static byte[] FromStream(Stream stream)
         {
-            using (Image image = Image.FromStream(stream))
-            {
-                return FromImage(image);
-            }
+            using Image image = Image.FromStream(stream);
+
+            return FromImage(image);
         }
 
         /// <summary>
@@ -142,10 +137,9 @@ namespace Freedom35.ImageProcessing
         /// <returns>Image bytes</returns>
         public static byte[] FromResource(string resourcePath)
         {
-            using (Stream resourceStream = System.Reflection.Assembly.GetCallingAssembly().GetManifestResourceStream(resourcePath))
-            {
-                return FromStream(resourceStream);
-            }
+            using Stream resourceStream = System.Reflection.Assembly.GetCallingAssembly().GetManifestResourceStream(resourcePath);
+            
+            return FromStream(resourceStream);
         }
 
         /// <summary>
@@ -195,13 +189,10 @@ namespace Freedom35.ImageProcessing
             {
                 return GetMinMaxBitmapValue(bmp, findMin, findMax);
             }
-            else
-            {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    return GetMinMaxBitmapValue(bitmap, findMin, findMax);
-                }
-            }
+
+            using Bitmap bitmap = ImageFormatting.ToBitmap(image);
+
+            return GetMinMaxBitmapValue(bitmap, findMin, findMax);
         }
 
         /// <summary>
@@ -312,13 +303,10 @@ namespace Freedom35.ImageProcessing
             {
                 return GetAverageBitmapValue(bmp, min, max);
             }
-            else
-            {
-                using (Bitmap bitmap = ImageFormatting.ToBitmap(image))
-                {
-                    return GetAverageBitmapValue(bitmap, min, max);
-                }
-            }
+
+            using Bitmap bitmap = ImageFormatting.ToBitmap(image);
+                
+            return GetAverageBitmapValue(bitmap, min, max);
         }
 
         /// <summary>

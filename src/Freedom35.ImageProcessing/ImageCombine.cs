@@ -21,7 +21,7 @@ namespace Freedom35.ImageProcessing
         /// </summary>
         /// <param name="images">Images to combine</param>
         /// <returns>New combined image as bitmap</returns>
-        public static Bitmap All<T>(IEnumerable<T> images) where T : Image
+        public static Bitmap? All<T>(IEnumerable<T> images) where T : Image
         {
             // Check have at least 1 image
             if (!images.Any())
